@@ -1,6 +1,6 @@
 #include <string>
-#include "Role.cpp"
-#include "io/Join.h"
+#include <tt/Role.h>
+#include <tt/io/Join.h>
 
 #pragma once
 

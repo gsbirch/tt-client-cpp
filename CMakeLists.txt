@@ -12,7 +12,7 @@ add_library(tt
     src/io/Message.cpp
 )
 
-target_include_directories(mylib
+target_include_directories(tt
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>

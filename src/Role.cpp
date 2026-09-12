@@ -21,7 +21,7 @@ namespace tt {
                 return "Game Master";
             case Role::PLAYER:
                 return "Player";
-            case Role::NONE:
+            default:
                 return "No Role";
         }
     }
