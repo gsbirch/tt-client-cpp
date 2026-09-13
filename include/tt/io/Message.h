@@ -44,7 +44,7 @@ namespace tt {
              * parsed. It should check that all the necessary fields are set and that
              * their values are legal values. 
              */
-            virtual void verify();
+            void verify();
 
         private:
             /**
