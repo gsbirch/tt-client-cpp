@@ -47,3 +47,8 @@ void Message::setAgent(Agent agent)
 {
     this->agent = agent;
 }
+
+void tt::Message::verify()
+{
+    // do nothing for now
+}
