@@ -153,7 +153,7 @@ int tt::Client::connect(std::string url, int port)
     inet_pton(AF_INET, addr, &server.sin_addr);
 
     // send a fake join message
-    std::string msg = "{ \"type\": \"Join\", \"name\": \"web\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
+    std::string msg = "{ \"type\": \"BAD_MSG\", \"name\": \"web\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
     char c_msg[1024];
     strcpy(c_msg, msg.c_str());
 
