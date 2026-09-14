@@ -5,6 +5,9 @@
 #include <cstring>
 #include <iostream>
 
+#include <thread>
+#include <chrono>
+
 using namespace tt;
 
 const std::string Client::ENVIRONMENT_VARIABLE_PASSWORD = "password";
@@ -149,6 +152,8 @@ int tt::Client::connect(std::string url, int port)
 
     // connect
     inet_pton(AF_INET, url.c_str(), &server.sin_addr);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     ::connect(sock, (sockaddr*)&server, sizeof(server));
 
