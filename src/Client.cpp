@@ -1,4 +1,9 @@
 #include <tt/Client.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <cstring>
+#include <iostream>
 
 using namespace tt;
 
@@ -125,4 +130,39 @@ Client::Client(std::string name):
 Client(name, "", Role::NONE, "")
 {
     
+}
+
+std::string tt::Client::operator()(ClientFactory factory)
+{
+    return std::string();
+}
+
+int tt::Client::connect(std::string url, int port)
+{
+    // the socket
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    // Server address
+    sockaddr_in server{};
+    server.sin_family = AF_INET;
+    server.sin_port = htons(port);
+    char addr[1024];
+    strcpy(addr, url.c_str());
+
+    // connect
+    inet_pton(AF_INET, addr, &server.sin_addr);
+
+    // send a fake join message
+    std::string msg = "{ \"type\": \"Join\", \"name\": \"web\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
+    char c_msg[1024];
+    strcpy(c_msg, msg.c_str());
+
+    send(sock, c_msg, msg.length(), 0);
+
+    char buffer[2048];
+    int n = recv(sock, buffer, sizeof(buffer) - 1, 0);
+    buffer[n] = '\0';
+    std::cout << "Received: " << buffer << '\n';
+
+    close(sock);
 }

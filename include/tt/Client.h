@@ -1,6 +1,7 @@
 #include <string>
 #include <tt/Role.h>
 #include <tt/io/Join.h>
+#include <tt/ClientFactory.h>
 
 #pragma once
 
@@ -115,6 +116,12 @@ namespace tt {
              * @param name the name the client will use
              */
             Client(std::string name);
+
+            std::string operator ()(ClientFactory factory);
+            int connect(std::string url, int port);
+
+        protected:
+            
 
         private:
             /** The client's API key */

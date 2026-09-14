@@ -10,6 +10,7 @@ add_library(tt
     src/Role.cpp
     src/io/Join.cpp
     src/io/Message.cpp
+    src/ClientFactory.cpp
 )
 
 target_include_directories(tt
