@@ -146,18 +146,16 @@ int tt::Client::connect(std::string url, int port)
     sockaddr_in server{};
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
-    char addr[1024];
-    strcpy(addr, url.c_str());
 
     // connect
-    inet_pton(AF_INET, addr, &server.sin_addr);
+    inet_pton(AF_INET, url.c_str(), &server.sin_addr);
+
+    ::connect(sock, (sockaddr*)&server, sizeof(server));
 
     // send a fake join message
     std::string msg = "{ \"type\": \"BAD_MSG\", \"name\": \"web\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
-    char c_msg[1024];
-    strcpy(c_msg, msg.c_str());
 
-    send(sock, c_msg, msg.length(), 0);
+    send(sock,msg.c_str(), msg.length(), 0);
 
     char buffer[2048];
     int n = recv(sock, buffer, sizeof(buffer) - 1, 0);
