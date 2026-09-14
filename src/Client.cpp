@@ -160,7 +160,7 @@ int tt::Client::connect(std::string url, int port)
     char buffer[2048];
     int n = recv(sock, buffer, sizeof(buffer) - 1, 0);
     buffer[n] = '\0';
-    std::cout << "Received: " << buffer << '\n';
+    std::cout << "Received (new): " << buffer << '\n';
 
     close(sock);
 }
