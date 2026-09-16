@@ -27,6 +27,7 @@ namespace tt {
 
     Role getPartner(Role role);
     std::string rtos(Role role);
+    Role stor(std::string s);
 }
 
 #endif

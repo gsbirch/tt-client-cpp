@@ -2,6 +2,9 @@
 #include <tt/Role.h>
 #include <tt/io/Join.h>
 #include <tt/ClientFactory.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <thread>
 
 #pragma once
 
@@ -117,11 +120,17 @@ namespace tt {
              */
             Client(std::string name);
 
-            std::string operator ()(ClientFactory factory);
-            int connect(std::string url, int port);
+            std::string start();
+            SSL* connect(std::string url, int port);
+
+            ~Client();
+
+            void sendMessage(const tt::Message& m);
+            // actual SSL protocol, separated out from deserialization
+            void sendMessage(const std::string& s);
 
         protected:
-            
+            void onWarning(std::string message);
 
         private:
             /** The client's API key */
@@ -140,10 +149,13 @@ namespace tt {
             Join join;
 
             /** The secure socket used to connect to the server */
-            // private SSLSocket socket = null;
+            SSL* ssl;
+            SSL_CTX* ctx;
+            int sock;
             
             // /** Used to read messages received over the socket */
-            // private ClientInput input = null;
+            std::thread receiveThread_;
+            bool running_ = false;
             
             // /** Used to send messages over the socket */
             // private ClientOutput output = null;
@@ -168,6 +180,12 @@ namespace tt {
             
             // /** The session ID received from the server at the end of the session */
             // private String session = null;
+
+            void receiveLoop();
+
+            void processMessage(const char* data, int length);
+
+            void stop();
     };
 }
 

@@ -25,5 +25,10 @@ namespace tt {
                 return "No Role";
         }
     }
+    Role stor(std::string s)
+    {
+        if (s == "Game Master") return Role::GAME_MASTER;
+        if (s == "Player") return Role::PLAYER;
+        return Role::NONE;
+    }
 }
-

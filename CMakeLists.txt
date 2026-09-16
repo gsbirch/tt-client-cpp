@@ -23,3 +23,17 @@ target_compile_features(tt
     PUBLIC
         cxx_std_17
 )
+
+include(FetchContent)
+
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+
+FetchContent_MakeAvailable(nlohmann_json)
+
+target_link_libraries(tt
+    PRIVATE nlohmann_json::nlohmann_json
+)

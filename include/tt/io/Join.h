@@ -9,35 +9,35 @@
 
 namespace tt {
 
-    class Join: Message {
+    class Join: public Message {
         public:
             /** The new agent's name */
-            const std::string name;
+            std::string name;
             
             /**
              * The new agent's password, which must be provided if the agent is using a
              * {@link #name} that is reserved on this server, or which should be null if
              * the agent is not using a reserved name
              */
-            const std::string password;
+            std::string password;
             
             /**
              * The name of the story world this new agent wants to play in, or null if
              * they are willing to play in any story world
              */
-            const std::string world;
+            std::string world;
             
             /**
              * The role this new agent wants to have in their session, or null if they
              * are willing to play either role
              */
-            const Role role;
+            Role role;
             
             /**
              * The name of the partner this new agent wants to play with, or null if
              * they are willing to play with any partner
              */
-            const std::string partner;
+            std::string partner;
 
             /**
              * Constructs a new join message with an agent's credentials and
@@ -54,8 +54,10 @@ namespace tt {
              * or null if they have no preference
              */
             Join(std::string name, std::string password, std::string world, Role role, std::string partner);
-        
-            std::string toString();
+
+            Join();
+
+            std::string toString() const;
 
             void verify();
 
@@ -72,13 +74,22 @@ namespace tt {
              */
             bool matches(Join other);
 
+            std::string type() const override {
+                return "Join";
+            }
+
         private:
 
         template <typename T>
         static const bool matches(const T* o1, const T* o2) {
             return o1 == nullptr || o2 == nullptr || *o1 == *o2;
         }
+
+        friend std::ostream& operator<<(std::ostream& os, const Join& a);
     };
+
+    void from_json(const nlohmann::json& j, Join& msg);
+    void to_json(nlohmann::json& j, const Join& msg);
 
 }
 

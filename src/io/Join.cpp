@@ -21,7 +21,12 @@ Join::Join(std::string name, std::string password, std::string world, Role role,
 name(name), password(password), world(world), role(role), partner(partner) {
 }
 
-std::string Join::toString() {
+tt::Join::Join():
+name(""), password(""), world(""), role(Role::NONE), partner("")
+{
+}
+
+std::string Join::toString() const {
     std::string string = "[Join Message: name=\"" + name + "\"";
     if(password != "")
         string += "; password";
@@ -65,3 +70,34 @@ bool Join::matches(Join other) {
     else
         return true;
 }
+
+std::ostream &tt::operator<<(std::ostream &os, const Join &a)
+{
+    os << a.toString();
+    return os;
+}
+
+void tt::to_json(json &j, const Join &msg)
+{
+    j = {
+        {"type", "Join"},
+        {"name", msg.name},
+        {"password", msg.password},
+        {"world", msg.world},
+        {"role", rtos(msg.role)},
+        {"partner", msg.partner},
+    };
+}
+
+void tt::from_json(const json &j, Join &msg)
+{
+    j.at("name").get_to(msg.name);
+    j.at("password").get_to(msg.password);
+    j.at("world").get_to(msg.world);
+    std::string rs = "";
+    j.at("name").get_to(rs);
+    msg.role = stor(rs);
+    j.at("partner").get_to(msg.partner);
+}
+
+

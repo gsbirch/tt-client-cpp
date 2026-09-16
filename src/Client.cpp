@@ -4,9 +4,9 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
+#include <openssl/ssl.h>
 
-#include <thread>
-#include <chrono>
+#include <cstdlib>
 
 using namespace tt;
 
@@ -135,15 +135,23 @@ Client(name, "", Role::NONE, "")
     
 }
 
-std::string tt::Client::operator()(ClientFactory factory)
+std::string tt::Client::start()
 {
-    return std::string();
+    // Warn if password or API key are missing.
+    if(join.password == "" && std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()) == nullptr)
+        onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_PASSWORD + "\" is not set. This agent will not use a password.");
+    if(key == "" && std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()) == nullptr)
+			onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_API_KEY + "\" is not set. This agent will not be able to use the external API.");
+    ssl = connect(url, port);
+
+    running_ = true;
+    receiveThread_ = std::thread(&Client::receiveLoop, this);
 }
 
-int tt::Client::connect(std::string url, int port)
+SSL* tt::Client::connect(std::string url, int port)
 {
     // the socket
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    sock = socket(AF_INET, SOCK_STREAM, 0);
 
     // Server address
     sockaddr_in server{};
@@ -153,19 +161,112 @@ int tt::Client::connect(std::string url, int port)
     // connect
     inet_pton(AF_INET, url.c_str(), &server.sin_addr);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
     ::connect(sock, (sockaddr*)&server, sizeof(server));
 
-    // send a fake join message
-    std::string msg = "{ \"type\": \"BAD_MSG\", \"name\": \"web\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
+    // SSL Setup
+    ctx = SSL_CTX_new(TLS_client_method());
+    SSL* ssl_ptr = SSL_new(ctx);
+    SSL_set_fd(ssl_ptr, sock);
 
-    send(sock,msg.c_str(), msg.length(), 0);
+    // Start TLS
+    SSL_connect(ssl_ptr);
 
-    char buffer[2048];
-    int n = recv(sock, buffer, sizeof(buffer) - 1, 0);
-    buffer[n] = '\0';
-    std::cout << "Received (new): " << buffer << '\n';
 
+    // WILL NEED TO BE REMOVED 
+
+        // send a fake join message
+        // std::string msg = "{ \"type\": \"Join\", \"name\": \"webby\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
+
+        // SSL_write(ssl_ptr, msg.c_str(), msg.length());
+        //send(sock,msg.c_str(), msg.length(), 0);
+
+        // char buffer[2048];
+        // int n = SSL_read(ssl_ptr, buffer, sizeof(buffer) - 1);
+        // buffer[n] = '\0';
+        // std::cout << "Received: " << buffer << '\n';                                     
+
+    return ssl_ptr;
+}
+
+tt::Client::~Client()
+{
+    stop();
+}
+
+void tt::Client::sendMessage(const tt::Message& m)
+{
+    json j;
+    j["type"] = m.type();
+
+    if (const auto* join = dynamic_cast<const tt::Join*>(&m)) {
+        j = *join;
+    }
+
+    std::string s = j.dump() + "\n";
+
+    sendMessage(s);
+}
+
+void tt::Client::sendMessage(const std::string &s)
+{
+    const char * data = s.data();
+    std::size_t remaining = s.size();
+
+    while (remaining > 0) {
+        int written = SSL_write(
+            ssl,
+            data,
+            static_cast<int>(remaining)
+        );
+
+        if (written <= 0) {
+            int error = SSL_get_error(ssl, written);
+            throw std::runtime_error(
+                "SSL_write failed: " + std::to_string(error)
+            );
+        }
+
+        data += written;
+        remaining -= written;
+    }
+}
+
+void tt::Client::onWarning(std::string message)
+{
+    std::cerr << "Warning: " << message << std::endl;
+}
+
+void tt::Client::receiveLoop()
+{
+    char buffer[4096];
+
+    while (running_) {
+        int bytesRead = SSL_read(ssl, buffer, sizeof(buffer));
+
+        if (bytesRead > 0) {
+            processMessage(buffer, bytesRead);
+        } else {
+            // Handle SSL error / connection closed
+            std::cerr << "There has been an SSL error, or the connection has been closed!" << std::endl;
+            break;
+        }
+    }
+}
+
+void tt::Client::processMessage(const char *data, int length)
+{
+    std::string message(data, length);
+
+    std::cout << "Received message: " << message << std::endl;
+}
+
+void tt::Client::stop()
+{
+    if (receiveThread_.joinable()) {
+        receiveThread_.join();
+    }
+    SSL_shutdown(ssl);
+    SSL_free(ssl);
+    SSL_CTX_free(ctx);
     close(sock);
 }

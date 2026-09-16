@@ -1,4 +1,5 @@
 #include "../Agent.h"
+#include <nlohmann/json.hpp>
 
 #pragma once
 
@@ -6,8 +7,13 @@
 #define MESSAGE_H
 
 namespace tt {
+    using json = nlohmann::json;
+
     class Message {
         public:
+            // virtual function necessary for JSON serialization
+            // Message must be polymorphic
+            virtual ~Message() = default;
             /**
              * Configures a {@link GsonBuilder} to encode and decode {@link Message}
              * objects as JSON.
@@ -46,6 +52,8 @@ namespace tt {
              */
             void verify();
 
+            virtual std::string type() const = 0;
+
         private:
             /**
              * The agent who sent the message, if this message was sent to the server,
@@ -53,7 +61,8 @@ namespace tt {
              */
             Agent agent;
     };
-
+    
+    
 }
 
 #endif
