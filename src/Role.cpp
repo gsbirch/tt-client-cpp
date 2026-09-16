@@ -18,17 +18,17 @@ namespace tt {
     std::string rtos(Role role) {
         switch (role) {
             case Role::GAME_MASTER:
-                return "Game Master";
+                return "GAME_MASTER";
             case Role::PLAYER:
-                return "Player";
+                return "PLAYER";
             default:
-                return "No Role";
+                return "NONE";
         }
     }
     Role stor(std::string s)
     {
-        if (s == "Game Master") return Role::GAME_MASTER;
-        if (s == "Player") return Role::PLAYER;
+        if (s == "GAME_MASTER") return Role::GAME_MASTER;
+        if (s == "PLAYER") return Role::PLAYER;
         return Role::NONE;
     }
 }

@@ -203,7 +203,7 @@ void tt::Client::sendMessage(const tt::Message& m)
     }
 
     std::string s = j.dump() + "\n";
-
+    std::cout << s << std::endl;
     sendMessage(s);
 }
 
@@ -218,6 +218,7 @@ void tt::Client::sendMessage(const std::string &s)
             data,
             static_cast<int>(remaining)
         );
+        
 
         if (written <= 0) {
             int error = SSL_get_error(ssl, written);
@@ -226,6 +227,7 @@ void tt::Client::sendMessage(const std::string &s)
             );
         }
 
+        
         data += written;
         remaining -= written;
     }

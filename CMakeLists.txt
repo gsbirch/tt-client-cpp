@@ -8,9 +8,10 @@ project(tt
 add_library(tt
     src/Client.cpp
     src/Role.cpp
+    src/ClientFactory.cpp
     src/io/Join.cpp
     src/io/Message.cpp
-    src/ClientFactory.cpp
+    src/io/MessageFactory.cpp
 )
 
 target_include_directories(tt
@@ -35,5 +36,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nlohmann_json)
 
 target_link_libraries(tt
-    PRIVATE nlohmann_json::nlohmann_json
+    PUBLIC nlohmann_json::nlohmann_json
 )
