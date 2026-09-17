@@ -52,15 +52,12 @@ const int Client::DEFAULT_PORT = 9005;
  * @param port the network port on which this client will connect
  */
 Client::Client(std::string name, std::string password, std::string world, Role role, std::string partner, std::string key, std::string url, int port):
-    join(name, password, world, role, partner), key(key), url(url), port(port)
+    key(key), url(url), port(port)
 {
-    // join(name, password, world, role, partner),
+    // should do these?? idk how thats gonna work with the constructors being before
     // Utilities.requireNonNull(name, "name");
-    // this.join = new Join(name, password, world, role, partner);
-    // this.key = key;
     // Utilities.requireNonNull(url, "server URL");
-    // this.url = url;
-    // this.port = port;
+    join = std::make_unique<Join>(name, password, world, role, partner);
 }
 
 /**
@@ -81,7 +78,7 @@ Client::Client(std::string name, std::string password, std::string world, Role r
  * @param port the network port on which this client will connect
  */
 Client::Client(std::string name, std::string world, Role role, std::string partner, std::string url, int port):
-Client(name, "ENV_TODO", world, role, partner, "ENV_TODO", url, port)
+Client(name, std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()), world, role, partner, std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()), url, port)
 {
 
 }
@@ -135,17 +132,67 @@ Client(name, "", Role::NONE, "")
     
 }
 
+std::string tt::Client::toString() const
+{
+    std::string string = "[Client: name=\"" + join->name + "\"";
+    if(join->password != "")
+        string += "; password=\"***\"";
+    if(join->world != "")
+        string += "; world=\"" + join->world + "\"";
+    if(join->role != Role::NONE)
+        string += "; role=" + join->role;
+    if(join->partner != "")
+        string += "; partner=\"" + join->partner + "\"";
+    return string + "]";
+}
+
+std::string tt::Client::getName() const
+{
+    return join->name;
+}
+
+std::string tt::Client::getWorldName() const
+{
+    // if(world == null)
+	// 		return join->world;
+	// 	else
+	// 		return world.name;
+}
+
+Role tt::Client::getRole() const
+{
+    if(role == Role::NONE)
+        return join->role;
+    else
+        return role;
+}
+
+std::string tt::Client::getPartner() const
+{
+    return join->partner;
+}
+
+std::string tt::Client::execute()
+{
+    return execute(nullptr);
+}
+
 std::string tt::Client::start()
 {
     // Warn if password or API key are missing.
-    if(join.password == "" && std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()) == nullptr)
+    if(join->password == "" && std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()) == nullptr)
         onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_PASSWORD + "\" is not set. This agent will not use a password.");
     if(key == "" && std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()) == nullptr)
-			onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_API_KEY + "\" is not set. This agent will not be able to use the external API.");
+		onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_API_KEY + "\" is not set. This agent will not be able to use the external API.");
     ssl = connect(url, port);
 
     running_ = true;
     receiveThread_ = std::thread(&Client::receiveLoop, this);
+}
+
+std::string tt::Client::execute(ClientFactory* factory)
+{
+    return std::string();
 }
 
 SSL* tt::Client::connect(std::string url, int port)
@@ -170,27 +217,13 @@ SSL* tt::Client::connect(std::string url, int port)
 
     // Start TLS
     SSL_connect(ssl_ptr);
-
-
-    // WILL NEED TO BE REMOVED 
-
-        // send a fake join message
-        // std::string msg = "{ \"type\": \"Join\", \"name\": \"webby\", \"password\": \"dummy\", \"world\": \"tutorial\", \"role\": \"PLAYER\", \"partner\": \"random\" }";
-
-        // SSL_write(ssl_ptr, msg.c_str(), msg.length());
-        //send(sock,msg.c_str(), msg.length(), 0);
-
-        // char buffer[2048];
-        // int n = SSL_read(ssl_ptr, buffer, sizeof(buffer) - 1);
-        // buffer[n] = '\0';
-        // std::cout << "Received: " << buffer << '\n';                                     
-
+    
     return ssl_ptr;
 }
 
 tt::Client::~Client()
 {
-    stop();
+    close();
 }
 
 void tt::Client::sendMessage(const tt::Message& m)
@@ -238,6 +271,92 @@ void tt::Client::onWarning(std::string message)
     std::cerr << "Warning: " << message << std::endl;
 }
 
+void tt::Client::onError(std::string message)
+{
+    // if(world == "")
+    //     throw std::runtime_error(message);
+    // else
+    //     System.err.println("Error: " + message);
+}
+
+std::string tt::Client::complete(std::string system, std::string prompt, float temperature)
+{
+    getKey();
+    // TODO
+    return "";
+}
+
+int tt::Client::embed(std::string string, float f[])
+{
+    getKey();
+    // TODO
+    return -1;
+}
+
+void tt::Client::setName(std::string name)
+{
+    failIfJoined("name");
+	join = std::make_unique<Join>(name, join->password, join->world, join->role, join->partner);
+}
+
+void tt::Client::setPassword(std::string password)
+{
+    failIfJoined("password");
+	join = std::make_unique<Join>(join->name, password, join->world, join->role, join->partner);
+}
+
+void tt::Client::setWorldName(std::string world)
+{
+    failIfJoined("world");
+	// join = new Join(join.name, join.password, world, join.role, join.partner);
+}
+
+void tt::Client::setRole(Role role)
+{
+    failIfJoined("role");
+	join = std::make_unique<Join>(join->name, join->password, join->world, role, join->partner);
+}
+
+void tt::Client::setPartner(std::string partner)
+{
+    failIfJoined("partner");
+	join = std::make_unique<Join>(join->name, join->password, join->world, join->role, partner);
+}
+
+std::string tt::Client::getSession()
+{
+    return session;
+}
+
+void tt::Client::onStop(std::string message)
+{
+    // This method is meant to be overridden.
+}
+
+void tt::Client::onClose()
+{
+    // This method is meant to be overridden.
+}
+
+void tt::Client::onDisconnect()
+{
+    // This method is meant to be overridden.
+}
+
+void tt::Client::failIfJoined(std::string property)
+{
+    if(joined)
+		throw std::logic_error("The client's " + property + " can no longer be changed because the client has already joined the server.");
+}
+
+std::string tt::Client::getKey() const
+{
+    if(key == "")
+        throw std::logic_error("The client does not have an API key, so it cannot use the external API.");
+    else
+        return key;
+}
+
 void tt::Client::receiveLoop()
 {
     char buffer[4096];
@@ -262,7 +381,7 @@ void tt::Client::processMessage(const char *data, int length)
     std::cout << "Received message: " << message << std::endl;
 }
 
-void tt::Client::stop()
+void tt::Client::close()
 {
     if (receiveThread_.joinable()) {
         receiveThread_.join();
@@ -270,5 +389,19 @@ void tt::Client::stop()
     SSL_shutdown(ssl);
     SSL_free(ssl);
     SSL_CTX_free(ctx);
-    close(sock);
+    ::close(sock);
+}
+
+std::ostream &tt::operator<<(std::ostream &os, const Client &a)
+{
+    // TODO: insert return statement here
+}
+
+ template <typename T>
+inline T Client::failIfNotStarted(T object, std::string description)
+{
+    if(object == null)
+        throw std::logic_error("The " + description + " is not available because the client's session has not started yet.");
+    else
+        return object;
 }
