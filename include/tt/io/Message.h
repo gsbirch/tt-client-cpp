@@ -1,4 +1,4 @@
-#include "../Agent.h"
+#include <tt/Client.h>
 #include <nlohmann/json.hpp>
 
 #pragma once
@@ -20,7 +20,7 @@ namespace tt {
              * 
              * @param builder the GSON builder to configure
              */
-            static void configure(int builder);
+            // static void configure(int builder);
 
             /**
              * Constructs a message.
@@ -33,7 +33,7 @@ namespace tt {
              * 
              * @return the agent who sent the message, or null
              */
-            Agent getAgent();
+            const Client* getClient() const;
 
             /**
              * Sets the {@link Agent} who sent this message. For messages sent to the
@@ -42,7 +42,7 @@ namespace tt {
              * 
              * @param agent the agent who sent this message
              */
-            void setAgent(Agent agent);
+            void setClient(const Client* client);
 
             /**
              * Checks that this message is correctly configured and throws an exception
@@ -50,16 +50,21 @@ namespace tt {
              * parsed. It should check that all the necessary fields are set and that
              * their values are legal values. 
              */
-            void verify();
+            virtual void verify() const;
 
             virtual std::string type() const = 0;
+
+            virtual std::string toString() const;
+
+            friend std::ostream& operator<<(std::ostream& os, const Message& a);
 
         private:
             /**
              * The agent who sent the message, if this message was sent to the server,
              * or null if this message was sent from the server.
              */
-            Agent agent;
+            // Agent agent;
+            const Client* client;
     };
     
     

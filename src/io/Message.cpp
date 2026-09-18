@@ -8,7 +8,7 @@ using namespace tt;
  * 
  * @param builder the GSON builder to configure
  */
-void Message::configure(int builder) {
+// void Message::configure(int builder) {
     // Read and write the various subclasses of Expression.
     // Expression.configure(builder);
     // // Read and write the various subclasses of Message.
@@ -17,12 +17,13 @@ void Message::configure(int builder) {
     // builder.registerTypeAdapter(Message.class, adapter);
     // // Serialize all implementations of worlds as generic World objects.
     // builder.registerTypeAdapterFactory(new GenericAdapter<>(World.class));
-}
+// }
 
 /**
  * Constructs a message.
  */
-Message::Message() {
+Message::Message():
+client(nullptr) {
     // Do nothing.
 }
 
@@ -32,8 +33,8 @@ Message::Message() {
  * 
  * @return the agent who sent the message, or null
  */
-Agent Message::getAgent() {
-    return agent;
+const Client* Message::getClient() const {
+    return client;
 }
 
 /**
@@ -43,12 +44,27 @@ Agent Message::getAgent() {
  * 
  * @param agent the agent who sent this message
  */
-void Message::setAgent(Agent agent)
+void Message::setClient(const Client* client)
 {
-    this->agent = agent;
+    this->client = client;
 }
 
-void tt::Message::verify()
+void tt::Message::verify() const
+{
+}
+
+std::string tt::Message::toString() const
+{
+    return std::string();
+}
+
+void tt::Message::verify() const
 {
     // do nothing for now
+}
+
+std::ostream &tt::operator<<(std::ostream &os, const Message &a)
+{
+    os << a.toString();
+    return os;
 }

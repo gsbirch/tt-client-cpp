@@ -12,6 +12,14 @@ add_library(tt
     src/io/Join.cpp
     src/io/Message.cpp
     src/io/MessageFactory.cpp
+    src/io/Choice.cpp
+    src/io/Connect.cpp
+    src/io/End.cpp
+    src/io/Error.cpp
+    src/io/Report.cpp
+    src/io/Start.cpp
+    src/io/Stop.cpp
+    src/io/Update.cpp
 )
 
 target_include_directories(tt

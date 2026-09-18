@@ -1,6 +1,6 @@
 #include <string>
 #include <tt/Role.h>
-#include "Message.h"
+#include <tt/io/Message.h>
 
 #pragma once
 
@@ -55,11 +55,9 @@ namespace tt {
              */
             Join(std::string name, std::string password, std::string world, Role role, std::string partner);
 
-            Join();
+            std::string toString() const override;
 
-            std::string toString() const;
-
-            void verify();
+            void verify() const override;
 
             /**
              * Returns true if this join request is compatible with another, meaning a
@@ -85,7 +83,8 @@ namespace tt {
             return o1 == nullptr || o2 == nullptr || *o1 == *o2;
         }
 
-        friend std::ostream& operator<<(std::ostream& os, const Join& a);
+        // should be unnecessary, as the Message class has this, and tostring is virtual??
+        // friend std::ostream& operator<<(std::ostream& os, const Join& a);
     };
 
     void from_json(const nlohmann::json& j, Join& msg);

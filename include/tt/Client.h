@@ -1,6 +1,5 @@
 #include <string>
 #include <tt/Role.h>
-#include <tt/io/Join.h>
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <thread>
@@ -11,8 +10,9 @@
 #define CLIENT_H
 
 namespace tt {
-    // forward declaration to avoid circular inheritance
+    // forward declarations to avoid circular inheritance
     class ClientFactory;
+    class Join;
 
     class Client {
         public:
