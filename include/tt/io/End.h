@@ -28,6 +28,8 @@ namespace tt {
              */
             End(const std::string& session);
 
+            End() {};
+
             std::string toString() const override;
 
             void verify() const override;

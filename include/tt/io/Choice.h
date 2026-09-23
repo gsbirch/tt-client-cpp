@@ -29,6 +29,8 @@ namespace tt {
              */
             Choice(int index);
 
+            Choice(): index(0) {}
+
             std::string toString() const override;
 
             void verify() const override;

@@ -40,6 +40,7 @@ add_library(tt
     include/tt/util/JsonUtil.h
     include/tt/util/ThreadPool.h
     include/tt/util/Util.h
+    src/io/Entry.cpp
 )
 
 target_include_directories(tt

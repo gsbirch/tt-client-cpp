@@ -29,12 +29,14 @@ namespace tt {
              */
             Report(const std::string& item, const std::string& value, const std::string& comment);
 
+            Report() {}
+
             std::string toString() const override;
 
             void verify() const override;
 
             std::string type() const override {
-                return "Error";
+                return "Report";
             }
     };
 

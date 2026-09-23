@@ -34,6 +34,8 @@ namespace tt {
              */
             Error(const std::exception& exception);
 
+            Error() {}
+
             std::string toString() const override;
 
             void verify() const override;

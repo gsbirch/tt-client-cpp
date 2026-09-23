@@ -55,6 +55,8 @@ namespace tt {
              */
             Join(std::string name, std::string password, std::string world, Role role, std::string partner);
 
+            Join(): role(Role::NONE) {}
+
             std::string toString() const override;
 
             void verify() const override;

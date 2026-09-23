@@ -1,4 +1,5 @@
 #include <tt/io/Message.h>
+#include <tt/world/World.h>
 
 #pragma once
 
@@ -15,16 +16,19 @@ namespace tt {
      */
     class Start : public Message {
         public:
-            std::string type;
+            /** The role the recipient of this message will have in the session */
             Role role;
-            
+            /** The story world in which the session will take place */
+            World world;
+
+            Start(): role(Role::NONE) {}
 
             std::string toString() const override;
 
             void verify() const override;
 
             std::string type() const override {
-                return "Error";
+                return "Start";
             }
     };
 

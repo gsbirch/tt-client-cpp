@@ -24,6 +24,17 @@ namespace tt {
             Role role;
             /** All turns that have happened so far in the session */
             std::vector<const Turn *> history;
+            /** Descriptions of the entities that are currently visible to the role */
+            std::vector<const Entity *> descriptions;
+            /** A list of turns the role can take next (which may be none) */
+            std::vector<const Turn *> choices;
+            /** The current values of all variables the story world */
+            const State *state;
+            /**
+             * The ending the session's story has reached, or null if the story has not
+             * yet ended
+             */
+            const Ending *ending;
 
             // default constructor for json deserialization
             Status(): state(nullptr), ending(nullptr), role(Role::NONE) {}
@@ -36,20 +47,9 @@ namespace tt {
             friend void to_json(nlohmann::json& j, const Status& obj);
 
         private:
-            /** The current values of all variables the story world */
-            const State *state;
+            
 
-            /**
-             * The ending the session's story has reached, or null if the story has not
-             * yet ended
-             */
-            const Ending *ending;
-
-            /** Descriptions of the entities that are currently visible to the role */
-            std::vector<const Entity *> descriptions;
-
-            /** A list of turns the role can take next (which may be none) */
-            std::vector<const Turn *> choices;
+            
     };
 
     void from_json(const nlohmann::json& j, Status& obj);
