@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <openssl/ssl.h>
+#include <tt/io/Join.h>
 
 #include <cstdlib>
 
