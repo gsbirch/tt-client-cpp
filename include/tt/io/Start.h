@@ -15,6 +15,9 @@ namespace tt {
      */
     class Start : public Message {
         public:
+            std::string type;
+            Role role;
+            
 
             std::string toString() const override;
 

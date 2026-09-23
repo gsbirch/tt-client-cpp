@@ -95,7 +95,7 @@ void tt::from_json(const json &j, Join &msg)
     j.at("password").get_to(msg.password);
     j.at("world").get_to(msg.world);
     std::string rs = "";
-    j.at("name").get_to(rs);
+    j.at("role").get_to(rs);
     msg.role = stor(rs);
     j.at("partner").get_to(msg.partner);
 }

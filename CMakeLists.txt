@@ -20,6 +20,11 @@ add_library(tt
     src/io/Start.cpp
     src/io/Stop.cpp
     src/io/Update.cpp
+    include/tt/util/Util.h
+    src/world/Ending.cpp
+    src/world/State.cpp
+    src/world/Status.cpp
+    src/world/Turn.cpp
 )
 
 target_include_directories(tt
