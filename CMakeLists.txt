@@ -7,24 +7,39 @@ project(tt
 
 add_library(tt
     src/Client.cpp
-    src/Role.cpp
     src/ClientFactory.cpp
-    src/io/Join.cpp
-    src/io/Message.cpp
-    src/io/MessageFactory.cpp
+    src/Role.cpp
+    
     src/io/Choice.cpp
     src/io/Connect.cpp
     src/io/End.cpp
     src/io/Error.cpp
+    src/io/Join.cpp
+    src/io/Message.cpp
+    src/io/MessageFactory.cpp
     src/io/Report.cpp
     src/io/Start.cpp
     src/io/Stop.cpp
     src/io/Update.cpp
-    include/tt/util/Util.h
+    
+    src/world/Action.cpp
+    src/world/Assignment.cpp
+    src/world/Constant.cpp
     src/world/Ending.cpp
+    src/world/Entity.cpp
+    src/world/Registry.cpp
+    src/world/Signature.cpp
     src/world/State.cpp
     src/world/Status.cpp
     src/world/Turn.cpp
+    src/world/Variable.cpp
+    src/world/World.cpp
+
+    include/tt/util/BlockingQueue.h
+    include/tt/util/CompletionEvent.h
+    include/tt/util/JsonUtil.h
+    include/tt/util/ThreadPool.h
+    include/tt/util/Util.h
 )
 
 target_include_directories(tt
