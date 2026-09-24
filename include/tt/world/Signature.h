@@ -2,6 +2,7 @@
 #include <tt/world/Constant.h>
 #include <tt/world/Entity.h>
 #include <tt/world/Registry.h>
+#include <tt/util/JsonUtil.h>
 
 #pragma once
 

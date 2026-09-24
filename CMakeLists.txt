@@ -13,6 +13,7 @@ add_library(tt
     src/io/Choice.cpp
     src/io/Connect.cpp
     src/io/End.cpp
+    src/io/Entry.cpp
     src/io/Error.cpp
     src/io/Join.cpp
     src/io/Message.cpp
@@ -35,12 +36,14 @@ add_library(tt
     src/world/Variable.cpp
     src/world/World.cpp
 
+    src/util/JsonUtil.cpp
+
     include/tt/util/BlockingQueue.h
     include/tt/util/CompletionEvent.h
-    include/tt/util/JsonUtil.h
+    
     include/tt/util/ThreadPool.h
     include/tt/util/Util.h
-    src/io/Entry.cpp
+    
 )
 
 target_include_directories(tt

@@ -4,6 +4,7 @@
 #include <openssl/err.h>
 #include <thread>
 
+
 #pragma once
 
 #ifndef CLIENT_H
@@ -13,6 +14,7 @@ namespace tt {
     // forward declarations to avoid circular inheritance
     class ClientFactory;
     class Join;
+    class Message;
 
     class Client {
         public:
@@ -306,8 +308,6 @@ namespace tt {
             friend std::ostream& operator<<(std::ostream& os, const Client& a);
 
         protected:
-            void onWarning(std::string message);
-
             /**
              * Sets the name this client will use.
              * 

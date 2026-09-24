@@ -55,7 +55,7 @@ void tt::ClientFactory::execute()
     }
     // Close waiting clients.
     for (const client_ptr& client : waiting) {
-        client->stop();
+        client->close();
     }
     // Wait for clients to finish.
     // stop doesn't return until its threads have terminated.
@@ -168,10 +168,11 @@ void tt::ClientFactory::onStop(const Client* client)
                 [client](const client_ptr& ptr) {
                     return ptr.get() == client;
                 });
-                if (it_w == waiting.end()) return
-                    waiting.erase(it_w);
+                if (it_w == waiting.end()) return;
+                waiting.erase(it_w);
             }
-        }
+        },
+        *this
     ));
 }
 

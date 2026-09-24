@@ -6,6 +6,7 @@
 #include <iostream>
 #include <openssl/ssl.h>
 #include <tt/io/Join.h>
+#include <tt/io/Message.h>
 
 #include <cstdlib>
 
@@ -158,6 +159,7 @@ std::string tt::Client::getWorldName() const
 	// 		return join->world;
 	// 	else
 	// 		return world.name;
+    return "";
 }
 
 Role tt::Client::getRole() const
@@ -189,6 +191,7 @@ std::string tt::Client::start()
 
     running_ = true;
     receiveThread_ = std::thread(&Client::receiveLoop, this);
+    return "";
 }
 
 std::string tt::Client::execute(ClientFactory* factory)
@@ -395,14 +398,16 @@ void tt::Client::close()
 
 std::ostream &tt::operator<<(std::ostream &os, const Client &a)
 {
-    // TODO: insert return statement here
+    os << a.toString();
+    return os;
 }
 
  template <typename T>
 inline T Client::failIfNotStarted(T object, std::string description)
 {
-    if(object == null)
-        throw std::logic_error("The " + description + " is not available because the client's session has not started yet.");
-    else
-        return object;
+    return object;
+    // if(object == null)
+    //     throw std::logic_error("The " + description + " is not available because the client's session has not started yet.");
+    // else
+    //     return object;
 }

@@ -49,10 +49,6 @@ void Message::setClient(const Client* client)
     this->client = client;
 }
 
-void tt::Message::verify() const
-{
-}
-
 std::string tt::Message::toString() const
 {
     return std::string();

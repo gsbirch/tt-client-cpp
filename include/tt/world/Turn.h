@@ -60,6 +60,11 @@ namespace tt {
             /** The action that this turn is relevant to */
             const Action * action;
 
+            /** A natural language description of this turn */
+            std::string description;
+
+            std::string code;
+
             Turn(): role(NONE), type(PASS), action(nullptr) {};
 
             std::string toString() const;
@@ -70,10 +75,7 @@ namespace tt {
             friend void to_json(nlohmann::json& j, const Turn& obj);
 
         private:
-            /** A natural language description of this turn */
-            std::string description;
-
-            std::string code;
+            
     };
 
     void from_json(const nlohmann::json& j, Turn& obj);

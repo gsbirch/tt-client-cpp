@@ -2,7 +2,7 @@
 #include <tt/world/Registry.h>
 #include <tt/world/Entity.h>
 #include <tt/util/JsonUtil.h>
-#include "Turn.h"
+#include <tt/world/Turn.h>
 
 using namespace tt;
 

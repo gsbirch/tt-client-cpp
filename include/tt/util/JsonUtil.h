@@ -1,5 +1,9 @@
+#pragma once
+
 #include <variant>
 #include <memory>
+#include <vector>
+#include <nlohmann/json.hpp>
 #include <tt/world/Constant.h>
 #include <tt/world/Entity.h>
 #include <tt/world/Registry.h>
@@ -68,52 +72,12 @@ namespace tt {
     }
 
     // dispatch function to make it easier to register an entry in a generic helper function
+    // NOTE: declared here but defined (with explicit instantiations) in JsonUtil.cpp.
+    // This avoids needing the full definitions of Action/Assignment/Ending/Entity/State/
+    // Turn/Variable in this header, which was causing a circular include chain with
+    // tt/world/Signature.h and friends.
     template <typename T>
-    const T* registerEntry(const nlohmann::json& j) {
-        std::string code = j.at("code").get<std::string>();
-        if constexpr (std::is_same<T, Action>) {
-            if (const Action* e = Registry::getAction(code))
-                return e;
-            return Registry::registerAction(std::make_unique<Action>(j.get<Action>()));
-        }
-        if constexpr (std::is_same_v<T, Assignment>) {
-            if (const Assignment* e = Registry::getAssignment(code)) {
-                return e;
-            }
-            return Registry::registerAssignment(std::make_unique<Assignment>(j.get<Assignment>()));
-        }
-        if constexpr (std::is_same_v<T, Ending>) {
-            if (const Ending* e = Registry::getEnding(code)) {
-                return e;
-            }
-            return Registry::registerEnding(std::make_unique<Ending>(j.get<Ending>()));
-        }
-        if constexpr (std::is_same_v<T, Entity>) {
-            if (const Entity* e = Registry::getEntity(code)) {
-                return e;
-            }
-            return Registry::registerEntity(std::make_unique<Entity>(j.get<Entity>()));
-        }
-        if constexpr (std::is_same_v<T, State>) {
-            if (const State* e = Registry::getState(code)) {
-                return e;
-            }
-            return Registry::registerState(std::make_unique<State>(j.get<State>()));
-        }
-        if constexpr (std::is_same_v<T, Turn>) {
-            if (const Turn* e = Registry::getTurn(code)) {
-                return e;
-            }
-            return Registry::registerTurn(std::make_unique<Turn>(j.get<Turn>()));
-        }
-        if constexpr (std::is_same_v<T, Variable>) {
-            int id = j.at("id").get<int>();
-            if (const Variable* e = Registry::getVariable(id)) {
-                return e;
-            }
-            return Registry::registerVariable(std::make_unique<Variable>(j.get<Variable>()));
-        }
-    }
+    const T* registerEntry(const nlohmann::json& j);
 
     template <typename T>
     std::vector<const T*> registerEntries(const nlohmann::json& arr) {

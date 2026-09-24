@@ -8,7 +8,7 @@ std::string tt::Constant::toString() const
 {
     if (auto* b = std::get_if<bool>(&value))            return *b ? "true" : "false";
     if (auto* i = std::get_if<std::int64_t>(&value))    return std::to_string(*i);
-    if (auto* d = std::get_if<double>(&value))          return std::to_string(*d);
+    if (auto* d = std::get_if<float>(&value))          return std::to_string(*d);
     return "null";
 }
 

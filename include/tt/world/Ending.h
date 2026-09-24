@@ -22,8 +22,6 @@ namespace tt {
 
             std::string description;
 
-            std::string code;
-
             // default constructor for json deserialization
             Ending(): signature(nullptr) {};
 

@@ -19,7 +19,7 @@ namespace tt {
              * The index of a turn from the most recent {@link Update status update}
              * sent to the agent, starting at 0
              */
-            const int index;
+            int index;
             
             /**
              * Constructs a choice message for a given choice index.

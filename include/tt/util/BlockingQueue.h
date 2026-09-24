@@ -18,11 +18,11 @@ namespace tt {
         bool _bShutdown = false;
 
         public:
-            void Push(const T& item)
+            void Push(T item)
             {
                 {
                 std::unique_lock<std::mutex> lock(_sync);
-                _qu.push(item);
+                _qu.push(std::move(item));
                 }
                 _cvCanPop.notify_one();
             }

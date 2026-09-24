@@ -143,7 +143,7 @@ namespace tt {
              * @return a new instance of the client this factory produces
              * @throws Exception if a problem occurred while creating the client
              */
-            virtual client_ptr create();
+            virtual client_ptr create() const = 0;
 
             /**
              * This method is called once after this factory stops creating new clients

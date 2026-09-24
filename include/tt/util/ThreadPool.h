@@ -46,7 +46,7 @@ namespace tt {
                             }
 
                             // Get the next task from the queue
-                            task = move(tasks_.front());
+                            task = std::move(tasks_.front());
                             tasks_.pop();
                         }
 
@@ -101,7 +101,7 @@ namespace tt {
         std::vector<std::thread> threads_;
 
         // Queue of tasks
-        std::queue<std::function<void()> > tasks_;
+        std::queue<std::unique_ptr<T> > tasks_;
 
         // Mutex to synchronize access to shared data
         std::mutex queue_mutex_;
