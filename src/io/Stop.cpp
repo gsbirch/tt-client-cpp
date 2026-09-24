@@ -1,5 +1,6 @@
 #include <tt/io/Stop.h>
 #include <tt/util/JsonUtil.h>
+#include <tt/Role.h>
 
 tt::Stop::Stop(const Ending *ending):
 ending(ending), role(Role::NONE)

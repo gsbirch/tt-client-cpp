@@ -80,6 +80,7 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Turn& obj);
     void to_json(nlohmann::json& j, const Turn& obj);
+    std::ostream& operator<<(std::ostream& os, const Turn& a);
 
     std::string ttos(Turn::Type type);
     Turn::Type stot(std::string s);

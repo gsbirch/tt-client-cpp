@@ -54,6 +54,7 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Status& obj);
     void to_json(nlohmann::json& j, const Status& obj);
+    std::ostream& operator<<(std::ostream& os, const Status& a);
 }
 
 #endif

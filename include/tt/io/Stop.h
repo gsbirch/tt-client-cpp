@@ -1,5 +1,6 @@
 #include <tt/io/Message.h>
 #include <tt/world/Ending.h>
+#include <tt/Role.h>
 
 #pragma once
 

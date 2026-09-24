@@ -3,6 +3,15 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <thread>
+#include <tt/world/World.h>
+#include <tt/io/Stop.h>
+#include <tt/world/Status.h>
+#include <tt/world/Turn.h>
+#include <tt/io/Connect.h>
+#include <tt/world/State.h>
+#include <tt/Role.h>
+#include <tt/util/BlockingQueue.h>
+#include <atomic>
 
 
 #pragma once
@@ -361,24 +370,7 @@ namespace tt {
              * @param connect the connect message sent from the server
              * @throws Exception if a problem occurs during this method
              */
-            // void onConnect(Connect connect);
-
-            /**
-             * This method is called after the client connects to the server and the
-             * server sends the list of available worlds and agents. This method is
-             * typically the last chance the client has to change its identity, such as
-             * its {@link #setName(String) name} or {@link #setRole(Role) requested
-             * role}, before the client's join request is sent.
-             * <p>
-             * By default, this method does nothing. It can be overridden if the client
-             * wants to react to connecting to the server.
-             * 
-             * @param connect the connect message sent from the server
-             * @throws Exception if a problem occurs during this method
-             */
-            // protected void onConnect(Connect connect) throws Exception {
-                // This method is meant to be overridden.
-            // }
+            void onConnect(Connect connect);
             
             /**
              * This method is called once when the client's session starts.
@@ -392,9 +384,9 @@ namespace tt {
              * begins
              * @throws Exception if a problem occurs during this method
              */
-            // protected void onStart(World world, Role role, State initial) throws Exception {
+            void onStart(World world, Role role, State initial) {
                 // This method is meant to be overridden.
-            // }
+            }
             
             /**
              * This method is called each time the story world changes as a result of a
@@ -409,9 +401,9 @@ namespace tt {
              * history of all turns and the current world state
              * @throws Exception if a problem occurs during this method
              */
-            // protected void onUpdate(Status status) throws Exception {
+            void onUpdate(Status status) {
                 // This method is meant to be overridden.
-            // }
+            }
             
             /**
              * This method is called each time it is this client's turn to make a choice
@@ -428,7 +420,7 @@ namespace tt {
              * from the {@link Status#getChoices() list of choices} given
              * @throws Exception if a problem occurs during this method
              */
-            // protected abstract int onChoice(Status status) throws Exception;
+            int onChoice(Status status);
             
             /**
              * This method is called once if the story reaches one of its {@link
@@ -441,9 +433,9 @@ namespace tt {
              * @param ending the ending of the story
              * @throws Exception if a problem occurs during this method
              */
-            // protected void onEnd(Ending ending) throws Exception {
-            //     // This method is meant to be overridden.
-            // }
+            void onEnd(Ending ending) {
+                // This method is meant to be overridden.
+            }
 
             /**
              * This method is called once when the client's session ends. If the session
@@ -548,6 +540,11 @@ namespace tt {
 
             int embed(std::string string, float f[]);
 
+            std::unique_ptr<Message> receiveAny();
+
+            template <typename T>
+            std::unique_ptr<T> receive();
+
         private:
             /** The client's API key */
             std::string key;
@@ -571,25 +568,25 @@ namespace tt {
             
             /** Used to read messages received over the socket */
             std::thread receiveThread_;
-            bool running_ = false;
+            std::atomic<bool> running_{true};
             
             /** Whether the client has sent its join request yet */
             bool joined = false;
             
             // /** The world in which this client's story takes places */
-            // private World world = null;
+            World world;
             
             /** This client's role in the story */
             Role role = Role::NONE;
             
             // /** The current status of the story world as received from the server */
-            // private Status status = null;
+            Status status;
             
             // /** The current choices available to the client */
-            // private List<Turn> choices = null;
+            std::vector<Turn> choices;
             
             // /** The stop message received from the server */
-            // private Stop stop = null;
+            Stop stop;
             
             // /** The session ID received from the server at the end of the session */
             std::string session = "";
@@ -630,9 +627,12 @@ namespace tt {
 
             void receiveLoop();
 
-            void processMessage(const char* data, int length);
+            BlockingQueue<std::unique_ptr<Message>> messageQueue_;
+            // std::atomic<bool> running_{true};
+
+            std::unique_ptr<Message> processMessage(const char* data, int length);
     };
-   
+    std::ostream& operator<<(std::ostream& os, const Client& a);
 }
 
 #endif

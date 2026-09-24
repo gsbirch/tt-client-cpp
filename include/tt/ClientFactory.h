@@ -261,6 +261,7 @@ namespace tt {
              */
             void onStop(const Client* client);
     };
+    std::ostream& operator<<(std::ostream& os, const ClientFactory& a);
 }
 
 #endif

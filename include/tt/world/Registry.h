@@ -24,6 +24,9 @@ namespace tt {
 
     class Registry {
         public:
+            // solves a linker issue
+            ~Registry();
+
             static const Action* getAction(std::string code);
             static const Assignment* getAssignment(std::string code);
             static const Ending* getEnding(std::string code);

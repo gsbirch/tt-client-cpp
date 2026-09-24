@@ -6,7 +6,10 @@
 #include <iostream>
 #include <openssl/ssl.h>
 #include <tt/io/Join.h>
+#include <tt/io/Start.h>
 #include <tt/io/Message.h>
+#include <tt/io/MessageFactory.h>
+
 
 #include <cstdlib>
 
@@ -54,12 +57,14 @@ const int Client::DEFAULT_PORT = 9005;
  * @param port the network port on which this client will connect
  */
 Client::Client(std::string name, std::string password, std::string world, Role role, std::string partner, std::string key, std::string url, int port):
-    key(key), url(url), port(port)
+key(key), url(url), port(port)
 {
     // should do these?? idk how thats gonna work with the constructors being before
     // Utilities.requireNonNull(name, "name");
     // Utilities.requireNonNull(url, "server URL");
     join = std::make_unique<Join>(name, password, world, role, partner);
+
+    registerMessageTypes();
 }
 
 /**
@@ -191,11 +196,21 @@ std::string tt::Client::start()
 
     running_ = true;
     receiveThread_ = std::thread(&Client::receiveLoop, this);
+
+    std::unique_ptr<Connect> connect = std::move(receive<Connect>());
+    std::cout << *connect << std::endl;
+
+    sendMessage(*join);
+
+    std::unique_ptr<Start> start = std::move(receive<Start>());
+    std::cout << *start << std::endl;
+
     return "";
 }
 
 std::string tt::Client::execute(ClientFactory* factory)
 {
+    start();
     return std::string();
 }
 
@@ -240,7 +255,6 @@ void tt::Client::sendMessage(const tt::Message& m)
     }
 
     std::string s = j.dump() + "\n";
-    std::cout << s << std::endl;
     sendMessage(s);
 }
 
@@ -296,6 +310,7 @@ int tt::Client::embed(std::string string, float f[])
     // TODO
     return -1;
 }
+
 
 void tt::Client::setName(std::string name)
 {
@@ -369,7 +384,10 @@ void tt::Client::receiveLoop()
         int bytesRead = SSL_read(ssl, buffer, sizeof(buffer));
 
         if (bytesRead > 0) {
-            processMessage(buffer, bytesRead);
+            auto msg = processMessage(buffer, bytesRead);
+            if (msg) {
+                messageQueue_.Push(std::move(msg));
+            }
         } else {
             // Handle SSL error / connection closed
             std::cerr << "There has been an SSL error, or the connection has been closed!" << std::endl;
@@ -378,11 +396,25 @@ void tt::Client::receiveLoop()
     }
 }
 
-void tt::Client::processMessage(const char *data, int length)
+std::unique_ptr<Message> tt::Client::processMessage(const char *data, int length)
 {
     std::string message(data, length);
 
-    std::cout << "Received message: " << message << std::endl;
+     nlohmann::json j;
+    try {
+        j = nlohmann::json::parse(data, data + length);
+    } catch (const nlohmann::json::parse_error& e) {
+        std::cerr << "Failed to parse message JSON: " << e.what() << std::endl;
+        return nullptr;
+    }
+
+    std::string type = j["type"].get<std::string>();
+
+    auto msg = MessageFactory::instance().create(type, j);
+    if (!msg) {
+        std::cerr << "Unknown message type: " << type << std::endl;
+    }
+    return msg;
 }
 
 void tt::Client::close()
@@ -402,7 +434,31 @@ std::ostream &tt::operator<<(std::ostream &os, const Client &a)
     return os;
 }
 
- template <typename T>
+std::unique_ptr<Message> tt::Client::receiveAny() {
+    
+    std::unique_ptr<Message> msg;
+    if (!messageQueue_.Pop(msg)) {
+        throw std::runtime_error("Connection closed while waiting for message");
+    }
+    return msg;
+}
+
+template <typename T>
+std::unique_ptr<T> tt::Client::receive()
+{
+    std::unique_ptr<Message> msg = receiveAny();
+
+    if (T* typed = dynamic_cast<T*>(msg.get())) {
+        msg.release();
+        return std::unique_ptr<T>(typed);
+    }
+
+    throw std::runtime_error(
+        "Expected message type '" + std::string(typeid(T).name()) +
+        "' but received type '" + msg->type() + "'");
+}
+
+template <typename T>
 inline T Client::failIfNotStarted(T object, std::string description)
 {
     return object;

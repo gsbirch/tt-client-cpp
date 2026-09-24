@@ -28,6 +28,7 @@ namespace tt {
     Role getPartner(Role role);
     std::string rtos(Role role);
     Role stor(std::string s);
+    std::ostream& operator<<(std::ostream& os, const Role& a);
 }
 
 #endif

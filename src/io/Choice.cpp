@@ -1,4 +1,5 @@
 #include <tt/io/Choice.h>
+#include <tt/Client.h>
 
 tt::Choice::Choice(int index):
 index(index)

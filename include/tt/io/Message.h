@@ -1,4 +1,3 @@
-#include <tt/Client.h>
 #include <nlohmann/json.hpp>
 
 #pragma once
@@ -7,6 +6,10 @@
 #define MESSAGE_H
 
 namespace tt {
+
+    // forward declaration
+    class Client;
+
     using json = nlohmann::json;
 
     class Message {
@@ -67,7 +70,7 @@ namespace tt {
             const Client* client;
     };
     
-    
+    std::ostream& operator<<(std::ostream& os, const Message& a);
 }
 
 #endif

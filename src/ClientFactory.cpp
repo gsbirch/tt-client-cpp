@@ -107,9 +107,9 @@ void tt::ClientFactory::onStop()
 void tt::ClientFactory::createNewClient()
 {
     client_ptr client = create();
-    waiting.push_back(std::move(client));
-
     Client* c_ptr = client.get();
+    
+    waiting.push_back(std::move(client));
 
     tp.enqueue(std::make_unique<Operation>(
         [this, c_ptr] {

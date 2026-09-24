@@ -9,6 +9,15 @@
 
 using namespace tt;
 
+// static member definitions (storage)
+std::unordered_map<std::string, std::unique_ptr<Action>> Registry::actions;
+std::unordered_map<std::string, std::unique_ptr<Assignment>> Registry::assignments;
+std::unordered_map<std::string, std::unique_ptr<Ending>> Registry::endings;
+std::unordered_map<std::string, std::unique_ptr<Entity>> Registry::entities;
+std::unordered_map<std::string, std::unique_ptr<State>> Registry::states;
+std::unordered_map<std::string, std::unique_ptr<Turn>> Registry::turns;
+std::vector<std::unique_ptr<Variable>> Registry::variables;
+
 const Action *tt::Registry::getAction(std::string code)
 {
     auto it = actions.find(code);
@@ -108,3 +117,5 @@ const Variable *tt::Registry::registerVariable(std::unique_ptr<Variable> variabl
     variables[idx] = std::move(variable);
     return getVariable(idx);
 }
+
+tt::Registry::~Registry() = default;

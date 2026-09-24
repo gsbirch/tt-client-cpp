@@ -31,4 +31,9 @@ namespace tt {
         if (s == "PLAYER") return Role::PLAYER;
         return Role::NONE;
     }
+    std::ostream &operator<<(std::ostream &os, const Role &a)
+    {
+        os << rtos(a);
+        return os;
+    }
 }

@@ -94,6 +94,7 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Action& obj);
     void to_json(nlohmann::json& j, const Action& obj);
+    std::ostream& operator<<(std::ostream& os, const Action& a);
 }
 
 #endif

@@ -7,7 +7,7 @@
 
 // this is a space for any utility functions I need
 namespace tt {
-    std::string vtos(const Value &v) {
+    inline std::string vtos(const Value &v) {
         if (auto c = std::get_if<std::shared_ptr<tt::Constant>>(&v)) return (*c)->toString();
         if (auto e = std::get_if<const tt::Entity*>(&v))             return (*e)->toString();
         return "Value of unknown type";

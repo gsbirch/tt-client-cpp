@@ -9,6 +9,7 @@ std::string tt::State::toString() const
         const Assignment * a = assignments[i];
         string += a->toString();
     }
+    return string;
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const State &a)

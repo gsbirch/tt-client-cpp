@@ -1,7 +1,6 @@
 #include <variant>
 #include <tt/world/Constant.h>
 #include <tt/world/Entity.h>
-#include <tt/world/Registry.h>
 #include <tt/util/JsonUtil.h>
 
 #pragma once
@@ -50,6 +49,7 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Signature& obj);
     void to_json(nlohmann::json& j, const Signature& obj);
+    std::ostream& operator<<(std::ostream& os, const Signature& a);
 }
 
 #endif
