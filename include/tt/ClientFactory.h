@@ -119,6 +119,17 @@ namespace tt {
             void close();
 
             /**
+             * This method is called from {@link Client#call() the client's call} method
+             * when the client begins its session. If the {@link #maxClients client
+             * limit} allows, this method will cause the factory to create a new client
+             * to take the starting client's place in the server's queue of waiting
+             * clients.
+             * 
+             * @param client a client created by this factory whose session has started
+             */
+            void onStart(const Client* client);
+
+            /**
              * The maximum number of {@link Client clients} that this factory will
              * create to run simultaneously
              */
@@ -242,16 +253,7 @@ namespace tt {
              */
             void createNewClient();
 
-            /**
-             * This method is called from {@link Client#call() the client's call} method
-             * when the client begins its session. If the {@link #maxClients client
-             * limit} allows, this method will cause the factory to create a new client
-             * to take the starting client's place in the server's queue of waiting
-             * clients.
-             * 
-             * @param client a client created by this factory whose session has started
-             */
-            void onStart(const Client* client);
+            
 
             /**
              * This method is called to alert the factory that a client it created has

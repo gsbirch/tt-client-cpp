@@ -9,7 +9,10 @@
 namespace tt {
     template <typename T>
     const T* registerEntry(const nlohmann::json& j) {
-        std::string code = j.at("code").get<std::string>();
+        std::string code;
+        if (j.contains("code"))
+            code = j.at("code").get<std::string>();
+        else code = "";
         if constexpr (std::is_same_v<T, Action>) {
             if (const Action* e = Registry::getAction(code))
                 return e;

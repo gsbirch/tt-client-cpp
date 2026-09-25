@@ -21,7 +21,9 @@ void tt::from_json(const nlohmann::json &j, Turn &obj)
 {
     obj.role = stor(j.at("role").get<std::string>());
     obj.type = stot(j.at("type").get<std::string>());
-    obj.action = registerEntry<Action>(j.at("action"));
+    if (obj.type != Turn::Type::PASS) {
+        obj.action = registerEntry<Action>(j.at("action"));
+    }
     j.at("description").get_to(obj.description);
     j.at("code").get_to(obj.code);
 }
@@ -31,10 +33,12 @@ void tt::to_json(nlohmann::json &j, const Turn &obj)
     j = {
         {"role", rtos(obj.role)},
         {"type", ttos(obj.type)},
-        {"action", obj.action},
         {"description", obj.description},
         {"code", obj.code},
     };
+    if (obj.type != Turn::Type::PASS) {
+        j["action"] = obj.action;
+    }
 }
 
 std::string tt::ttos(Turn::Type type)

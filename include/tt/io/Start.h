@@ -19,7 +19,7 @@ namespace tt {
             /** The role the recipient of this message will have in the session */
             Role role;
             /** The story world in which the session will take place */
-            World world;
+            std::unique_ptr<World> world;
 
             Start(): role(Role::NONE) {}
 

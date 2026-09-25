@@ -62,7 +62,7 @@ const Turn *tt::Registry::getTurn(std::string code)
 
 const Variable *tt::Registry::getVariable(int id)
 {
-    if (id < variables.size() || variables[id] == nullptr) return nullptr;
+    if (id < 0 || id >= variables.size() || variables[id] == nullptr) return nullptr;
     return variables[id].get();
 }
 
@@ -111,7 +111,7 @@ const Turn *tt::Registry::registerTurn(std::unique_ptr<Turn> turn)
 const Variable *tt::Registry::registerVariable(std::unique_ptr<Variable> variable)
 {
     int idx = variable->id;
-    while (idx > variables.size()) {
+    while (idx + 1 > variables.size()) {
         variables.push_back(nullptr);
     }
     variables[idx] = std::move(variable);

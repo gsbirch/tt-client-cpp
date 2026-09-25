@@ -82,11 +82,10 @@ void tt::to_json(json &j, const Join &msg)
     j = {
         {"type", msg.type()},
         {"name", msg.name},
-        {"password", msg.password},
-        {"world", msg.world},
-        {"role", rtos(msg.role)},
-        {"partner", msg.partner},
     };
+    if (msg.world != "") j["world"] = msg.world;
+    if (msg.role != Role::NONE) j["role"] = rtos(msg.role);
+    if (msg.partner != "") j["partner"] = msg.partner;
 }
 
 void tt::from_json(const json &j, Join &msg)

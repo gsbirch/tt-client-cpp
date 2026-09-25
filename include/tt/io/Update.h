@@ -22,7 +22,7 @@ namespace tt {
              * of the story world, and what turns are available for the agent to take,
              * if any
              */
-            Status status;
+            std::unique_ptr<Status> status;
 
             Update() {};
 

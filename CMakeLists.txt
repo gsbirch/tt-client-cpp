@@ -43,6 +43,7 @@ add_library(tt
     
     include/tt/util/ThreadPool.h
     include/tt/util/Util.h
+    src/Settings.cpp
     
 )
 

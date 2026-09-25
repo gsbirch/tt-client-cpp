@@ -9,6 +9,12 @@
 #include <tt/io/Start.h>
 #include <tt/io/Message.h>
 #include <tt/io/MessageFactory.h>
+#include <tt/Settings.h>
+#include <tt/ClientFactory.h>
+#include <tt/io/Update.h>
+#include <tt/io/End.h>
+#include <tt/io/Error.h>
+#include <tt/io/Choice.h>
 
 
 #include <cstdlib>
@@ -185,33 +191,129 @@ std::string tt::Client::execute()
     return execute(nullptr);
 }
 
-std::string tt::Client::start()
+
+std::string tt::Client::execute(ClientFactory* factory)
 {
     // Warn if password or API key are missing.
     if(join->password == "" && std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()) == nullptr)
         onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_PASSWORD + "\" is not set. This agent will not use a password.");
     if(key == "" && std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()) == nullptr)
 		onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_API_KEY + "\" is not set. This agent will not be able to use the external API.");
+    
+    // Connect the socket
     ssl = connect(url, port);
 
+    // Run a thread for receiving messages
     running_ = true;
     receiveThread_ = std::thread(&Client::receiveLoop, this);
 
-    std::unique_ptr<Connect> connect = std::move(receive<Connect>());
-    std::cout << *connect << std::endl;
-
-    sendMessage(*join);
-
-    std::unique_ptr<Start> start = std::move(receive<Start>());
-    std::cout << *start << std::endl;
-
-    return "";
-}
-
-std::string tt::Client::execute(ClientFactory* factory)
-{
-    start();
-    return std::string();
+    // If an exception is thrown, catch it to throw later
+    std::exception_ptr uncaught = nullptr;
+    try {
+        // Wait for the connect message
+        std::unique_ptr<Connect> connect = std::move(receive<Connect>());
+        if (connect != nullptr) {
+            // Warn if the server's version number does not match.
+            if(connect->version != Settings::VERSION)
+                onWarning("This client is using version " + Settings::VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause misconnunications.");
+            // Notify the client is has connected.
+			onConnect(*connect);
+            // Send the join message.
+            joined = true;
+            sendMessage(*join);
+        }
+        // Wait for the start message.
+        std::unique_ptr<Start> start = std::move(receive<Start>());
+        if (start != nullptr) {
+            world = std::move(start->world);
+            role = start->role;
+            // Notify the factory that created this client that its session has started.
+            if (factory != nullptr)
+                factory->onStart(this);
+        }
+        // Receive and process messages;
+        while (world != nullptr) {
+            std::unique_ptr<Message> message = receiveAny();
+            // Stop if disconnected
+            if (message == nullptr)
+                break;
+            // When the world status updates...
+            if (Update* updatePtr = dynamic_cast<Update*>(message.get())) {
+                message.release();
+                std::unique_ptr<Update> update(updatePtr);
+                if (status == nullptr) {
+                    status = std::move(update->status);
+                    choices = status->choices;
+                    onStart(world.get(), role, status->state);
+                }
+                else {
+                    status = std::move(update->status);
+                    choices = status->choices;
+                    onUpdate(status.get());
+                }
+                // If it is the client's turn, make a choice.
+                if (status->choices.size() > 0) {
+                    int index = onChoice(status.get());
+                    choices.clear();
+                    Choice c(index);
+                    sendMessage(c);
+                }
+                // If the story has ended, notify the client.
+                else if (status->ending != nullptr) {
+                    onEnd(status->ending);
+                }
+            }
+            // Immediately acknowledge stop messages.
+            else if (Stop* stopPtr = dynamic_cast<Stop*>(message.get())) {
+                message.release();
+                std::unique_ptr<Stop> stop(stopPtr);
+                Stop s(role);
+                sendMessage(s);
+                onStop(stop->message);
+            }
+            // Get session ID from end message.
+            else if (End* endPtr = dynamic_cast<End*>(message.get())) {
+                message.release();
+                std::unique_ptr<End> end(endPtr);
+                session = end->session;
+                break;
+            }
+            else if (Error* errorPtr = dynamic_cast<Error*>(message.get())) {
+                message.release();
+                std::unique_ptr<Error> error(errorPtr);
+                onError(error->message);
+            }
+            else
+                onError("The message type \"" +  message->type() + "\" is not recognized.");
+        }
+    }
+    catch (...) {
+        uncaught = std::current_exception();
+    }
+    // If the session has started but not yet stopped, notify.
+    if (uncaught == nullptr) {
+        try {
+            onClose();
+        }
+        catch (...) {
+            uncaught = std::current_exception();
+        }
+    }
+    // Ensure the socket is closed.
+    close();
+    // Notify the client it has disconnected.
+    try {
+        onDisconnect();
+    }
+    catch (...) {
+        if (uncaught == nullptr)
+            uncaught = std::current_exception();
+    }
+    // Throw an uncaught exception or return the session ID.
+    if(uncaught == nullptr)
+        return session;
+    else
+        throw uncaught;
 }
 
 SSL* tt::Client::connect(std::string url, int port)
@@ -347,21 +449,6 @@ std::string tt::Client::getSession()
     return session;
 }
 
-void tt::Client::onStop(std::string message)
-{
-    // This method is meant to be overridden.
-}
-
-void tt::Client::onClose()
-{
-    // This method is meant to be overridden.
-}
-
-void tt::Client::onDisconnect()
-{
-    // This method is meant to be overridden.
-}
-
 void tt::Client::failIfJoined(std::string property)
 {
     if(joined)
@@ -384,13 +471,24 @@ void tt::Client::receiveLoop()
         int bytesRead = SSL_read(ssl, buffer, sizeof(buffer));
 
         if (bytesRead > 0) {
-            auto msg = processMessage(buffer, bytesRead);
-            if (msg) {
-                messageQueue_.Push(std::move(msg));
+            recvBuffer_.append(buffer, bytesRead);
+
+            // Extract as many complete (newline-terminated) messages as are available
+            size_t pos;
+            while ((pos = recvBuffer_.find('\n')) != std::string::npos) {
+                std::string line = recvBuffer_.substr(0, pos);
+                recvBuffer_.erase(0, pos + 1);
+
+                if (line.empty()) continue; // skip stray blank lines
+
+                auto msg = processMessage(line.data(), line.size());
+                if (msg) {
+                    messageQueue_.Push(std::move(msg));
+                }
             }
         } else {
-            // Handle SSL error / connection closed
             std::cerr << "There has been an SSL error, or the connection has been closed!" << std::endl;
+            running_ = false;
             break;
         }
     }

@@ -24,7 +24,9 @@ void tt::from_json(const nlohmann::json &j, Status &obj)
     obj.history = registerEntries<Turn>(j.at("history"));
     obj.state = registerEntry<State>(j.at("state"));
     obj.descriptions = registerEntries<Entity>(j.at("descriptions"));
-    obj.choices = registerEntries<Turn>(j.at("choices"));
+    if (j.contains("choices") && !j["choices"].is_null()) {
+        obj.choices = registerEntries<Turn>(j.at("choices"));
+    }
 }
 
 void tt::to_json(nlohmann::json &j, const Status &obj)

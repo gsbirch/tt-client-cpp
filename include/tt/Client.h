@@ -278,8 +278,6 @@ namespace tt {
             std::string execute();
             std::string execute(ClientFactory* factory);
 
-            std::string start();
-
             /**
              * Establishes a secure socket to the server based on this client's network
              * configuration.
@@ -370,7 +368,9 @@ namespace tt {
              * @param connect the connect message sent from the server
              * @throws Exception if a problem occurs during this method
              */
-            void onConnect(Connect connect);
+            virtual void onConnect(Connect connect){
+
+            };
             
             /**
              * This method is called once when the client's session starts.
@@ -384,7 +384,7 @@ namespace tt {
              * begins
              * @throws Exception if a problem occurs during this method
              */
-            void onStart(World world, Role role, State initial) {
+            virtual void onStart(const World* world, Role role, const State* initial) {
                 // This method is meant to be overridden.
             }
             
@@ -401,7 +401,7 @@ namespace tt {
              * history of all turns and the current world state
              * @throws Exception if a problem occurs during this method
              */
-            void onUpdate(Status status) {
+            virtual void onUpdate(const Status* status) {
                 // This method is meant to be overridden.
             }
             
@@ -420,7 +420,7 @@ namespace tt {
              * from the {@link Status#getChoices() list of choices} given
              * @throws Exception if a problem occurs during this method
              */
-            int onChoice(Status status);
+            virtual int onChoice(const Status* status) = 0;
             
             /**
              * This method is called once if the story reaches one of its {@link
@@ -433,7 +433,7 @@ namespace tt {
              * @param ending the ending of the story
              * @throws Exception if a problem occurs during this method
              */
-            void onEnd(Ending ending) {
+            virtual void onEnd(const Ending *ending) {
                 // This method is meant to be overridden.
             }
 
@@ -449,7 +449,9 @@ namespace tt {
              * no explanation was received
              * @throws Exception if a problem occurs during this method
              */
-            void onStop(std::string message);
+            virtual void onStop(std::string message){
+
+            };
 
             /**
              * This method is called once if the client was {@link #close() closed}, if
@@ -465,7 +467,9 @@ namespace tt {
              * 
              * @throws Exception if a problem occurs during this method
              */
-            void onClose();
+            virtual void onClose(){
+
+            };
 
             /**
              * If the client ever established its connection to the server, this method
@@ -478,7 +482,9 @@ namespace tt {
              * 
              * @throws Exception if a problem occurs during this method
              */
-            void onDisconnect();
+            virtual void onDisconnect(){
+
+            };
 
             /**
              * This method is called if this client encounters a problem which does not
@@ -574,16 +580,16 @@ namespace tt {
             bool joined = false;
             
             // /** The world in which this client's story takes places */
-            World world;
+            std::unique_ptr<World> world;
             
             /** This client's role in the story */
             Role role = Role::NONE;
             
             // /** The current status of the story world as received from the server */
-            Status status;
+            std::unique_ptr<Status> status;
             
             // /** The current choices available to the client */
-            std::vector<Turn> choices;
+            std::vector<const Turn *> choices;
             
             // /** The stop message received from the server */
             Stop stop;
@@ -631,6 +637,7 @@ namespace tt {
             // std::atomic<bool> running_{true};
 
             std::unique_ptr<Message> processMessage(const char* data, int length);
+            std::string recvBuffer_;
     };
     std::ostream& operator<<(std::ostream& os, const Client& a);
 }
