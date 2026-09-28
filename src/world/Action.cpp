@@ -1,22 +1,21 @@
 #include <tt/world/Action.h>
-#include <tt/world/Registry.h>
 #include <tt/world/Entity.h>
 #include <tt/util/JsonUtil.h>
 #include <tt/world/Turn.h>
 
 using namespace tt;
 
-tt::Action::Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code):
-id(id), consenting(consenting), description(description), code(code)
-{
-    this->signature = std::move(signature);
-}
+// tt::Action::Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code):
+// id(id), consenting(consenting), description(description), code(code)
+// {
+//     this->signature = std::move(signature);
+// }
 
 const std::unordered_set<const Entity *> &tt::Action::getConsenting()
 {
     if (consentingSet.empty()) {
         for (const auto& e : consenting) {
-            consentingSet.insert(e);
+            consentingSet.insert(e.get());
         }
     }
     return consentingSet;
@@ -57,7 +56,7 @@ void tt::from_json(const nlohmann::json &j, Action &obj)
     j.at("description").get_to(obj.description);
     j.at("code").get_to(obj.code);
     fromJsonPtr(j, "signature", obj.signature);
-    obj.consenting = registerEntries<Entity>(j.at("consenting"));
+    fromJsonPtrVec(j, "consenting", obj.consenting);
 }
 
 void tt::to_json(nlohmann::json &j, const Action &obj)
@@ -66,8 +65,8 @@ void tt::to_json(nlohmann::json &j, const Action &obj)
         {"id", obj.id},
         {"name", obj.name},
         {"signature", *obj.signature},
-        {"consenting", obj.consenting},
         {"description", obj.description},
         {"code", obj.code},
     };
+    toJsonInVector(j, "consenting", obj.consenting);
 }

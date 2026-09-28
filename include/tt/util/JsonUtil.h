@@ -6,7 +6,6 @@
 #include <nlohmann/json.hpp>
 #include <tt/world/Constant.h>
 #include <tt/world/Entity.h>
-#include <tt/world/Registry.h>
 
 namespace tt {
     using Value = std::variant<std::monostate, std::unique_ptr<Constant>, std::unique_ptr<Entity>>;
@@ -78,15 +77,6 @@ namespace tt {
             out.push_back(std::move(p));
         }
     }
-
-    template <typename T>
-    void fromJsonInRegistryVector(const nlohmann::json& j, const char* key, std::vector<const T*>& p) {
-        for (const auto& aj : j.at("consenting")) {
-            std::string code = aj.at("code");
-            p.push_back(tt::Registry::getEntity(code));
-        }
-    }
-
     template <typename T>
     void toJsonInVector(nlohmann::json& j, const char* key, const std::vector<std::unique_ptr<T>>& p) {
         nlohmann::json vecJson = nlohmann::json::array();
@@ -94,23 +84,5 @@ namespace tt {
             if (a) vecJson.push_back(*a);
         }
         j[key] = std::move(vecJson);
-    }
-
-    // dispatch function to make it easier to register an entry in a generic helper function
-    // NOTE: declared here but defined (with explicit instantiations) in JsonUtil.cpp.
-    // This avoids needing the full definitions of Action/Assignment/Ending/Entity/State/
-    // Turn/Variable in this header, which was causing a circular include chain with
-    // tt/world/Signature.h and friends.
-    template <typename T>
-    const T* registerEntry(const nlohmann::json& j);
-
-    template <typename T>
-    std::vector<const T*> registerEntries(const nlohmann::json& arr) {
-        std::vector<const T*> result;
-        result.reserve(arr.size());
-        for (const auto& j : arr) {
-            result.push_back(registerEntry<T>(j));
-        }
-        return result;
     }
 }

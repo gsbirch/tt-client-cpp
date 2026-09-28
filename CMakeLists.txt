@@ -28,15 +28,12 @@ add_library(tt
     src/world/Constant.cpp
     src/world/Ending.cpp
     src/world/Entity.cpp
-    src/world/Registry.cpp
     src/world/Signature.cpp
     src/world/State.cpp
     src/world/Status.cpp
     src/world/Turn.cpp
     src/world/Variable.cpp
     src/world/World.cpp
-
-    src/util/JsonUtil.cpp
 
     include/tt/util/BlockingQueue.h
     include/tt/util/CompletionEvent.h

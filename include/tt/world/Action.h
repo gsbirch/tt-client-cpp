@@ -40,7 +40,7 @@ namespace tt {
              * @param description the action's description
              * @param code the action's code
              */
-            Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code);
+            // Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code);
 
             // default constructor necessary for JSON deserialization
             Action(): signature(nullptr) {};
@@ -86,7 +86,7 @@ namespace tt {
              * Entities representing characters in the story world who need to agree
              * to take the action
              */
-            std::vector<const Entity*> consenting;
+            std::vector<std::unique_ptr<Entity>> consenting;
 
             /** The action's {@link #consenting consenting characters} as a set */
             std::unordered_set<const Entity*> consentingSet;
