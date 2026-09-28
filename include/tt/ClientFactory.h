@@ -1,11 +1,11 @@
+#pragma once
+
 #include <string>
 #include <deque>
 #include <tt/Client.h>
 #include <tt/util/BlockingQueue.h>
 #include <tt/util/ThreadPool.h>
 #include <tt/util/CompletionEvent.h>
-
-#pragma once
 
 #ifndef CLIENTFACTORY_H
 #define CLIENTFACTORY_H
@@ -58,7 +58,7 @@ namespace tt {
              */
             ClientFactory();
 
-            std::string toString() const;
+            virtual std::string toString() const;
 
             friend std::ostream& operator<<(std::ostream& os, const ClientFactory& a);
 
@@ -144,7 +144,7 @@ namespace tt {
              * 
              * @throws Exception if a problem occurred during this method
              */
-            void onStart();
+            virtual void onStart() const;
 
             /**
              * This method creates and returns a new client of the type produced by this
@@ -169,7 +169,7 @@ namespace tt {
              * 
              * @throws Exception if a problem occurred during this method
              */
-            void onClose();
+            virtual void onClose() const;
 
             /**
              * This method is called once at the end of this factory's shutdown process
@@ -183,7 +183,7 @@ namespace tt {
              * 
              * @throws Exception if a problem occurred during this method
              */
-            void onStop();
+            virtual void onStop() const;
 
         private:
             /**

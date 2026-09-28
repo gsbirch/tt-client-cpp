@@ -89,17 +89,17 @@ void tt::ClientFactory::close()
     ));
 }
 
-void tt::ClientFactory::onStart()
+void tt::ClientFactory::onStart() const
 {
     // This is meant to be overridden
 }
 
-void tt::ClientFactory::onClose()
+void tt::ClientFactory::onClose() const
 {
     // This is meant to be overridden
 }
 
-void tt::ClientFactory::onStop()
+void tt::ClientFactory::onStop() const
 {
     // This is meant to be overridden
 }

@@ -217,7 +217,7 @@ std::string tt::Client::execute(ClientFactory* factory)
             if(connect->version != Settings::VERSION)
                 onWarning("This client is using version " + Settings::VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause misconnunications.");
             // Notify the client is has connected.
-			onConnect(*connect);
+			onConnect(connect.get());
             // Send the join message.
             joined = true;
             sendMessage(*join);

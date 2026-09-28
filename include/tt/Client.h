@@ -133,7 +133,7 @@ namespace tt {
              */
             Client(std::string name);
 
-            std::string toString() const;
+            virtual std::string toString() const;
 
             /**
              * Returns the client's name.
@@ -368,7 +368,7 @@ namespace tt {
              * @param connect the connect message sent from the server
              * @throws Exception if a problem occurs during this method
              */
-            virtual void onConnect(Connect connect){
+            virtual void onConnect(const Connect* connect){
 
             };
             
