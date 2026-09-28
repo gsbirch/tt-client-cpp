@@ -18,8 +18,7 @@ std::ostream &tt::operator<<(std::ostream &os, const Assignment &a)
 
 void tt::from_json(const nlohmann::json &j, Assignment &obj)
 {
-    int id = j.at("variable").at("id").get<int>();
-    obj.variable = Registry::getVariable(id);
+    fromJsonPtr(j, "variable", obj.variable);
     j.at("value").get_to(obj.value);
     j.at("visible").get_to(obj.visible);
     j.at("description").get_to(obj.description);

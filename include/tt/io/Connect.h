@@ -36,7 +36,6 @@ namespace tt {
             std::string toString() const {
                 return "[Available: world=\"" + world + "\"; agent=\"" + agent + "\"]";
             }
-            friend std::ostream& operator<<(std::ostream& os, const Available& a);
     };
     /**
      * The connect message is sent from the {edu.uky.cs.nil.tt.Server server} to an

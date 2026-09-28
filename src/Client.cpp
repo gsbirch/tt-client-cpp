@@ -243,24 +243,24 @@ std::string tt::Client::execute(ClientFactory* factory)
                 std::unique_ptr<Update> update(updatePtr);
                 if (status == nullptr) {
                     status = std::move(update->status);
-                    choices = status->choices;
-                    onStart(world.get(), role, status->state);
+                    choices = status->getChoices();
+                    onStart(world.get(), role, status->getState());
                 }
                 else {
                     status = std::move(update->status);
-                    choices = status->choices;
+                    choices = status->getChoices();
                     onUpdate(status.get());
                 }
                 // If it is the client's turn, make a choice.
-                if (status->choices.size() > 0) {
+                if (status->getChoices().size() > 0) {
                     int index = onChoice(status.get());
                     choices.clear();
                     Choice c(index);
                     sendMessage(c);
                 }
                 // If the story has ended, notify the client.
-                else if (status->ending != nullptr) {
-                    onEnd(status->ending);
+                else if (status->getEnding() != nullptr) {
+                    onEnd(status->getEnding());
                 }
             }
             // Immediately acknowledge stop messages.

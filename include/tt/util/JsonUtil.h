@@ -9,7 +9,7 @@
 #include <tt/world/Registry.h>
 
 namespace tt {
-    using Value = std::variant<std::shared_ptr<Constant>, const Entity*>;
+    using Value = std::variant<std::monostate, std::unique_ptr<Constant>, std::unique_ptr<Entity>>;
 }
 
 namespace nlohmann {
@@ -18,13 +18,17 @@ struct adl_serializer<tt::Value> {
     static void to_json(json& j, const tt::Value& v) {
         std::visit([&](const auto& x) {
             using T = std::decay_t<decltype(x)>;
-            if constexpr (std::is_same_v<T, std::shared_ptr<tt::Constant>>) {
+            if constexpr (std::is_same_v<T, std::monostate>) {
+                // leave j untouched
+            } else if constexpr (std::is_same_v<T, std::unique_ptr<tt::Constant>>) {
                 if (!x) throw std::invalid_argument("null constant");
                 j = *x;
                 j["type"] = tt::Constant::type;
             } else {
+                static_assert(std::is_same_v<T, std::unique_ptr<tt::Entity>>);
                 if (!x) throw std::invalid_argument("null entity");
-                j = {{"type", tt::Entity::type}, {"code", x->code}};
+                j = *x;
+                j["type"] = tt::Entity::type;
             }
         }, v);
     }
@@ -32,12 +36,9 @@ struct adl_serializer<tt::Value> {
     static void from_json(const json& j, tt::Value& v) {
         const auto& type = j.at("type").get_ref<const std::string&>();
         if (type == tt::Constant::type) {
-            v = std::make_shared<tt::Constant>(j.get<tt::Constant>());
+            v = std::make_unique<tt::Constant>(j.get<tt::Constant>());
         } else if (type == tt::Entity::type) {
-            auto code = j.at("code").get<std::string>();
-            const tt::Entity* e = tt::Registry::getEntity(code);
-            if (!e) throw std::runtime_error("unknown entity code: " + code);
-            v = e;
+            v = std::make_unique<tt::Entity>(j.get<tt::Entity>());
         } else {
             throw std::runtime_error("unknown value type: " + type);
         }
@@ -46,12 +47,36 @@ struct adl_serializer<tt::Value> {
 }
 
 namespace tt {
+    // Value-based overload: builds a unique_ptr from a json value
+    template <typename T>
+    void fromJsonPtr(const nlohmann::json& v, std::unique_ptr<T>& p) {
+        p = std::make_unique<T>(v.get<T>());
+    }
+    
     // This code makes it easier to get a unique pointer to a newly deserialized object.
     // This is useful for Signatures, Constants, etc.
     template <typename T>
     void fromJsonPtr(const nlohmann::json& j, const char* key, std::unique_ptr<T>& p) {
-        const auto &v = j.at(key);
-        p = std::make_unique<T>(v.get<T>());
+        fromJsonPtr(j.at(key), p);
+    }
+
+    // Populates a vector of unique_ptrs from a JSON array stored under `key`
+    template <typename T>
+    void fromJsonPtrVec(const nlohmann::json& j, const char* key,
+                        std::vector<std::unique_ptr<T>>& out) {
+        const auto& arr = j.at(key);
+        if (!arr.is_array()) {
+            throw nlohmann::json::type_error::create(
+                302, std::string("'") + key + "' is not an array", &arr);
+        }
+
+        out.clear();
+        out.reserve(arr.size());
+        for (const auto& elem : arr) {
+            std::unique_ptr<T> p;
+            fromJsonPtr(elem, p);
+            out.push_back(std::move(p));
+        }
     }
 
     template <typename T>
@@ -63,9 +88,9 @@ namespace tt {
     }
 
     template <typename T>
-    void toJsonInVector(nlohmann::json& j, const char* key, const std::vector<const T*>& p) {
+    void toJsonInVector(nlohmann::json& j, const char* key, const std::vector<std::unique_ptr<T>>& p) {
         nlohmann::json vecJson = nlohmann::json::array();
-        for (const T* a : p) {
+        for (const auto& a : p) {
             if (a) vecJson.push_back(*a);
         }
         j[key] = std::move(vecJson);

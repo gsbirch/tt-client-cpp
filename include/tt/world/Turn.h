@@ -58,7 +58,7 @@ namespace tt {
             Type type;
             
             /** The action that this turn is relevant to */
-            const Action * action;
+            std::unique_ptr<Action> action;
 
             /** A natural language description of this turn */
             std::string description;

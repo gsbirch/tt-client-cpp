@@ -12,7 +12,7 @@ namespace tt {
     class Assignment {
         public:
             /** The variable that is being assigned a value */
-            const Variable* variable;
+            std::unique_ptr<Variable> variable;
 
             /** The value assigned to the variable */
             Value value;
@@ -31,7 +31,7 @@ namespace tt {
             /** The {@link Encoded code} for this assignment */
             std::string code;
 
-            Assignment(): variable(nullptr), value(nullptr) {};
+            Assignment(): variable(nullptr), value(std::monostate()) {};
 
             std::string toString() const;
 

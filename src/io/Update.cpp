@@ -3,7 +3,7 @@
 
 std::string tt::Update::toString() const
 {
-    return "[Update Message: " + std::to_string(status->choices.size()) + " choices]";
+    return "[Update Message: " + std::to_string(status->getChoices().size()) + " choices]";
 }
 
 void tt::Update::verify() const

@@ -6,7 +6,7 @@ std::string tt::State::toString() const
 {
     std::string string = "[";
     for (int i = 0; i < assignments.size(); i++) {
-        const Assignment * a = assignments[i];
+        const Assignment * a = assignments[i].get();
         string += a->toString();
     }
     return string;
@@ -20,7 +20,7 @@ std::ostream &tt::operator<<(std::ostream &os, const State &a)
 
 void tt::from_json(const nlohmann::json &j, State &obj)
 {
-    obj.assignments = registerEntries<Assignment>(j.at("assignments"));
+    fromJsonPtrVec(j, "assignments", obj.assignments);
     j.at("description").get_to(obj.description);
     j.at("code").get_to(obj.code);
 }
@@ -28,8 +28,8 @@ void tt::from_json(const nlohmann::json &j, State &obj)
 void tt::to_json(nlohmann::json &j, const State &obj)
 {
     j = {
-        {"assignments", obj.assignments},
         {"description", obj.description},
         {"code", obj.code},
     };
+    toJsonInVector(j, "assignments", obj.assignments);
 }

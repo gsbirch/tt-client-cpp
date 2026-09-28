@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <tt/world/Signature.h>
+#include <tt/world/Assignment.h>
 
 #pragma once
 
@@ -11,7 +12,7 @@ namespace tt {
     class State {
         public:
             /** An vector of assignments for each variable in the story world */
-            std::vector<const Assignment *> assignments;
+            std::vector<std::unique_ptr<Assignment>> assignments;
             /** A natural language description of the state */
             std::string description;   
             /** The {@link Encoded encoding} of the state */ 

@@ -2,15 +2,6 @@
 #include <tt/util/JsonUtil.h>
 #include <tt/Role.h>
 
-tt::Stop::Stop(const Ending *ending):
-ending(ending), role(Role::NONE)
-{
-    if(ending != nullptr)
-        this->message = "The story has ended.";
-    else
-        this->message = "";
-}
-
 tt::Stop::Stop(Role role):
 ending(nullptr), role(Role::NONE)
 {
@@ -45,7 +36,7 @@ void tt::from_json(const nlohmann::json &j, Stop &msg)
 {
     j.at("message").get_to(msg.message);
     if (j.contains("ending")) {
-        msg.ending = registerEntry<Ending>(j.at("ending"));
+        fromJsonPtr(j, "ending", msg.ending);
     }
     else {
         msg.role = stor(j.at("role").get<std::string>());

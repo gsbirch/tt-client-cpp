@@ -4,11 +4,11 @@
 
 using namespace tt;
 
-tt::Signature::Signature(std::string name, std::vector<Value> arguments):
-name(name), arguments(arguments)
-{
+// tt::Signature::Signature(std::string name, std::vector<Value> arguments):
+// name(name), arguments(arguments)
+// {
 
-}
+// }
 
 tt::Signature::Signature()
 {

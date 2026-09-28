@@ -24,19 +24,19 @@ std::ostream &tt::operator<<(std::ostream &os, const World &a)
 void tt::from_json(const nlohmann::json &j, World &obj)
 {
     j.at("name").get_to(obj.name);
-    obj.entities = registerEntries<Entity>(j.at("entities"));
-    obj.variables = registerEntries<Variable>(j.at("variables"));
-    obj.actions = registerEntries<Action>(j.at("actions"));
-    obj.endings = registerEntries<Ending>(j.at("endings"));
+    fromJsonPtrVec(j, "entities", obj.entities);
+    fromJsonPtrVec(j, "variables", obj.variables);
+    fromJsonPtrVec(j, "actions", obj.actions);
+    fromJsonPtrVec(j, "endings", obj.endings);
 }
 
 void tt::to_json(nlohmann::json &j, const World &obj)
 {
     j = {
         {"name", obj.name},
-        {"entities", obj.entities},
-        {"variables", obj.variables},
-        {"actions", obj.actions},
-        {"endings", obj.endings},
     };
+    toJsonInVector(j, "entities", obj.entities);
+    toJsonInVector(j, "variables", obj.variables);
+    toJsonInVector(j, "actions", obj.actions);
+    toJsonInVector(j, "endings", obj.endings);
 }

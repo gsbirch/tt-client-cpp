@@ -36,7 +36,7 @@ namespace tt {
          * @param name the signature's name
          * @param arguments an ordered sequence of 0 to many values 
          */
-        Signature(std::string name, std::vector<Value> arguments);
+        // Signature(std::string name, std::vector<Value> arguments);
 
         Signature();
 

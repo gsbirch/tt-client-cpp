@@ -15,7 +15,7 @@ namespace tt {
              * endings} from the story world, or null if this session did not reach one
              * of those endings
              */
-            const Ending * ending;
+            std::unique_ptr<Ending> ending;
             /**
              * The participant who ended the session, or null if the session reached a
              * pre-defined ending or was ended by the server
@@ -24,12 +24,6 @@ namespace tt {
             /** A message explaining how the session ended */
             std::string message;
 
-            /**
-             * Constructs a stop message from a pre-defined story ending.
-             * 
-             * @param ending the pre-defined ending that occurred in the story
-             */
-            Stop(const Ending *ending);
             /**
              * Constructs a stop message for the role who stopped the session before
              * it reached a pre-defined ending.

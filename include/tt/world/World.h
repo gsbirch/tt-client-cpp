@@ -27,16 +27,16 @@ namespace tt {
 
             private:
                 /** This world's entities, as a vector */
-                std::vector<const Entity *> entities;
+                std::vector<std::unique_ptr<Entity>> entities;
 
                 /** This world's variables, as a vector */
-                std::vector<const Variable *> variables;
+                std::vector<std::unique_ptr<Variable>> variables;
 
                 /** This world's actions, as a vector */
-                std::vector<const Action *> actions;
+                std::vector<std::unique_ptr<Action>> actions;
 
                 /** This world's endings, as an array */
-                std::vector<const Ending *> endings;
+                std::vector<std::unique_ptr<Ending>> endings;
     };
 
     void from_json(const nlohmann::json& j, World& obj);
