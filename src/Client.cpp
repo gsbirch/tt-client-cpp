@@ -68,6 +68,7 @@ key(key), url(url), port(port)
     // should do these?? idk how thats gonna work with the constructors being before
     // Utilities.requireNonNull(name, "name");
     // Utilities.requireNonNull(url, "server URL");
+    std::cout << "my password is " << password << std::endl;
     join = std::make_unique<Join>(name, password, world, role, partner);
 
     registerMessageTypes();
