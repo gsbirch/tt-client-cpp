@@ -82,6 +82,7 @@ void tt::to_json(json &j, const Join &msg)
     j = {
         {"type", msg.type()},
         {"name", msg.name},
+        {"password", msg.password},
     };
     if (msg.world != "") j["world"] = msg.world;
     if (msg.role != Role::NONE) j["role"] = rtos(msg.role);
