@@ -358,6 +358,7 @@ void tt::Client::sendMessage(const tt::Message& m)
     }
 
     std::string s = j.dump() + "\n";
+    std::cout << s << std::endl;
     sendMessage(s);
 }
 
