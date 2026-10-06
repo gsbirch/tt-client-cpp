@@ -8,14 +8,15 @@
 #ifndef CONSTANT_H
 #define CONSTANT_H
 
-/**
- * A constant is a {@link Value logical value} that always exists in all {@link
- * World story worlds}, such a the Boolean concepts of True and False, numbers,
- * and so on.
- * 
- * @author Gage Birchmeier
- */
+
 namespace tt {
+    /**
+     * A constant is a {@link Value logical value} that always exists in all {@link
+     * World story worlds}, such a the Boolean concepts of True and False, numbers,
+     * and so on.
+     * 
+     * @author Gage Birchmeier
+     */
     class Constant {
         public:
             // used for json
