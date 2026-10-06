@@ -17,6 +17,7 @@
 #include <tt/io/End.h>
 #include <tt/io/Error.h>
 #include <tt/io/Choice.h>
+#include <tt/util/Util.h>
 
 
 #include <cstdlib>
@@ -29,13 +30,11 @@ const std::string Client::ENVIRONMENT_VARIABLE_API_KEY = "apikey";
 const std::string Client::DEFAULT_URL = "localhost";
 const int Client::DEFAULT_PORT = 9005;
 
-
 Client::Client(const std::string& name, const std::string& password, const std::string& world, Role role, const std::string& partner, const std::string& key, const std::string& url, int port):
 key(key), url(url), port(port)
 {
-    // should do these?? idk how thats gonna work with the constructors being before
-    // Utilities.requireNonNull(name, "name");
-    // Utilities.requireNonNull(url, "server URL");
+    requireNonEmpty(name, "name");
+    requireNonEmpty(url, "server URL");
     join = std::make_unique<Join>(name, password, world, role, partner);
 
     registerMessageTypes();
