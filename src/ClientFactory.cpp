@@ -4,7 +4,6 @@
 tt::ClientFactory::ClientFactory(int maxClients): 
 maxClients(maxClients), tp(maxClients)
 {
-    // If the JVM shuts down, close the server and wait for it to shut down.
 }
 
 /**
@@ -81,27 +80,17 @@ void tt::ClientFactory::execute()
 
 void tt::ClientFactory::close()
 {
+    // multiple calls to close won't break anything
+    if (closeRequested_.exchange(true)) {
+        return;
+    }
+
     queue.Push(std::make_unique<Operation>(
         [this] {
             closed = true;
         },
         *this
     ));
-}
-
-void tt::ClientFactory::onStart() const
-{
-    // This is meant to be overridden
-}
-
-void tt::ClientFactory::onClose() const
-{
-    // This is meant to be overridden
-}
-
-void tt::ClientFactory::onStop() const
-{
-    // This is meant to be overridden
 }
 
 void tt::ClientFactory::createNewClient()
@@ -174,6 +163,12 @@ void tt::ClientFactory::onStop(const Client* client)
         },
         *this
     ));
+}
+
+tt::ClientFactory::~ClientFactory()
+{
+    close();
+    completion.wait();
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const ClientFactory &a)

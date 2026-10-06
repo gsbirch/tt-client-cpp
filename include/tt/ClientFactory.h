@@ -18,8 +18,8 @@ namespace tt {
     using client_ptr = std::unique_ptr<Client>;
 
     /**
-     * A client factory creates continuously creates {@link Client clients} to
-    * connect to a {@link Server server} and is useful for deploying automated
+    * A client factory creates continuously creates {@link tt::Client clients} to
+    * connect to a {@link tt::Server server} and is useful for deploying automated
     * agents.
     * <p>
     * A factory starts by creating one client to join the server's queue of waiting
@@ -35,9 +35,8 @@ namespace tt {
     * <p>
     * This class provides several methods that are all called from the same thread
     * at important moments in the factory's lifecycle. These methods can be
-    * overridden to, for example, log important information. See the {@link
-    * #call()} method for a full description of these methods and when they are
-    * called.
+    * overridden to, for example, log important information. See the {@link #execute()}
+    * method for a full description of these methods and when they are called.
     * 
     * @author Gage Birchmeier
     */
@@ -48,7 +47,7 @@ namespace tt {
              * that it will create simultaneously.
              * 
              * @param maxClients the maximum number of clients that may be running
-             * simultaneously, or 0 if there is no limit
+             * simultaneously
              */
             ClientFactory(int maxClients);
 
@@ -58,13 +57,16 @@ namespace tt {
              */
             ClientFactory();
 
+            /**
+             * Gives a string representation of this client factory.
+             * 
+             * @returns a string representation of this client factory.
+             */
             virtual std::string toString() const;
 
             friend std::ostream& operator<<(std::ostream& os, const ClientFactory& a);
 
             /**
-             * {@inheritDoc}
-             * <p>
              * This method starts the client factory, creates the first client,
              * periodically creates new clients as needed, and shuts down gracefully
              * if the factory is closed or if a client throw an uncaught exception.
@@ -77,7 +79,7 @@ namespace tt {
              * <li>The {@link #onStart()} method is called first. If this method throws
              * an exception it is thrown immediately, and no other methods are called.
              * </li>
-             * <li>The first client is created and {@link Client#call() runs} on a new
+             * <li>The first client is created and {@link Client#execute() runs} on a new
              * virtual thread.</li>
              * <li>Each time a client starts its session, a new client will be created
              * to take its place in the server's queue of waiting clients. If creating a
@@ -90,15 +92,15 @@ namespace tt {
              * will run on the thread which called this method, regardless of which
              * thread called {@link #close()}. If the thread which called this method
              * is interrupted, {@link #onClose()} will not be called.</li>
-             * <li>Any clients whose sessions have not yet begun will be {@link
-             * Client#close() closed}. Clients whose sessions have begun will not be
+             * <li>Any clients whose sessions have not yet begun will be 
+             * {@link Client#close() closed}. Clients whose sessions have begun will not be
              * closed. If this factory stopped because of an exception or because the
              * {@link #close()} method was called, it will wait for all clients whose
              * sessions have started to finish. If this factory stopped because the
              * thread which called this method was interrupted, it will not wait for
              * running clients to finish their sessions.</li>
-             * <li>After all running clients have finished their sessions, {@link
-             * #onStop()} is called. If this factory stopped because the thread which
+             * <li>After all running clients have finished their sessions, {@link #onStop()} 
+             * is called. If this factory stopped because the thread which
              * called this method was interrupted, that method will not be called.</li>
              * <li>If a client threw an exception, that exception will be thrown from
              * this method. If no exception was thrown, this method returns null.</li>
@@ -107,21 +109,19 @@ namespace tt {
             void execute();
 
             /**
-             * {@inheritDoc}
-             * <p>
              * Causes the factory to shut down gracefully, closing any waiting clients
              * and waiting for any running clients to finish. This method can be called
-             * safely from any thread. It will cause the thread which called {@link
-             * #call()} to stop creating new clients, to call the {@link #onClose()}
+             * safely from any thread. It will cause the thread which called {@link #execute()} 
+             * to stop creating new clients, to call the {@link #onClose()}
              * method, to close all clients whose sessions have not started, to wait for
              * all clients whose sessions have started to end, and finally to stop.
              */
             void close();
 
             /**
-             * This method is called from {@link Client#call() the client's call} method
-             * when the client begins its session. If the {@link #maxClients client
-             * limit} allows, this method will cause the factory to create a new client
+             * This method is called from {@link Client#execute() the client's call} method
+             * when the client begins its session. If the {@link #maxClients client limit} 
+             * allows, this method will cause the factory to create a new client
              * to take the starting client's place in the server's queue of waiting
              * clients.
              * 
@@ -130,7 +130,7 @@ namespace tt {
             void onStart(const Client* client);
 
             /**
-             * The maximum number of {@link Client clients} that this factory will
+             * The maximum number of {@link tt::Client clients} that this factory will
              * create to run simultaneously
              */
             const int maxClients;
@@ -144,12 +144,14 @@ namespace tt {
              * 
              * @throws Exception if a problem occurred during this method
              */
-            virtual void onStart() const;
+            virtual void onStart() const{
+                // This is meant to be overridden
+            }
 
             /**
              * This method creates and returns a new client of the type produced by this
              * factory. The factory will always call this method from the thread which
-             * called {@link #call()}.
+             * called {@link #execute()}.
              * 
              * @return a new instance of the client this factory produces
              * @throws Exception if a problem occurred while creating the client
@@ -161,21 +163,23 @@ namespace tt {
              * and has begun shutting down. This method is called either because this
              * factory was {@link #close() closed} or because a client threw an
              * exception. This method will always be called from the thread which called
-             * {@link #call()}. This method will not be called if the client shuts down
-             * because the {@link #call()} method was interrupted.
+             * {@link #execute()}. This method will not be called if the client shuts down
+             * because the {@link #execute()} method was interrupted.
              * <p>
              * By default, this method does nothing. It can be overridden if the factory
              * wants to do something when the factory first begins shutting down.
              * 
              * @throws Exception if a problem occurred during this method
              */
-            virtual void onClose() const;
+            virtual void onClose() const{
+                // This is meant to be overridden
+            }
 
             /**
              * This method is called once at the end of this factory's shutdown process
              * after all clients have stopped running. This method will always be called
-             * from the thread which called {@link #call()}. This method will not be
-             * called if the client shuts down because the {@link #call()} method was
+             * from the thread which called {@link #execute()}. This method will not be
+             * called if the client shuts down because the {@link #execute()} method was
              * interrupted.
              * <p>
              * By default, this method does nothing. It can be overridden if the factory
@@ -183,7 +187,9 @@ namespace tt {
              * 
              * @throws Exception if a problem occurred during this method
              */
-            virtual void onStop() const;
+            virtual void onStop() const{
+                // This is meant to be overridden
+            };
 
         private:
             /**
@@ -220,7 +226,7 @@ namespace tt {
                     ClientFactory& factory_;
             };
 
-            /** A queue of operations to run on the {@link #call() calling thread} */
+            /** A queue of operations to run on the {@link #execute() calling thread} */
             BlockingQueue<std::unique_ptr<Operation>> queue;
             
             /** Clients that are waiting for their sessions to start */
@@ -233,8 +239,8 @@ namespace tt {
             ThreadPool<Operation> tp;
             
             /**
-             * An exception that was not caught by a factory {@link Operation operation}
-             * that will be thrown at the end of the {@link #call()} method
+             * An exception that was not caught by a factory {@link tt::Operation operation}
+             * that will be thrown at the end of the {@link #execute()} method
              */
             std::exception_ptr uncaught = nullptr;
             
@@ -247,13 +253,11 @@ namespace tt {
             /**
              * {@link #create() Creates} a new client and starts a new thread for it to
              * run on. This method should always be called from the thread which called
-             * {@link #call()}.
+             * {@link #execute()}.
              * 
              * @throws Exception if a problem occurs while creating the client
              */
             void createNewClient();
-
-            
 
             /**
              * This method is called to alert the factory that a client it created has
@@ -262,6 +266,11 @@ namespace tt {
              * @param client a client created by this factory which is finished running
              */
             void onStop(const Client* client);
+
+            ~ClientFactory();
+
+            /* A boolean to make sure closing multiple times doesn't break anything */
+            std::atomic<bool> closeRequested_{false};
     };
     std::ostream& operator<<(std::ostream& os, const ClientFactory& a);
 }
