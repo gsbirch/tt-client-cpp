@@ -21,3 +21,9 @@
  * Story {@link World worlds} define the objects, concepts, and actions that
  * exist in a story.
  */
+
+ /**
+  * @dir tt/util
+  * Various data structures and json helpers to help with different tasks.
+  * Most implementations of clients shouldn't need these.
+  */
