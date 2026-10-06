@@ -7,6 +7,11 @@
 #define SETTINGS_H
 
 namespace tt {
+    /**
+     * Constants and other project-wide settings.
+     * 
+     * @author Gage Birchmeier
+     */
     class Settings {
         public:
             /** The name of this project */
