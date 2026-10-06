@@ -24,8 +24,8 @@ namespace tt {
     class Join;
     class Message;
     /** 
-     * A client connects to a {@link tt::Server server} to find a partner and play a
-     * {@link tt::Role role} in a storytelling {@link tt::Session session}.
+     * A client connects to a server to find a partner and play a
+     * {@link tt::Role role} in a storytelling session.
      * <p>
      * This abstract class implements the necessary communication protocol to
      * connect to the server, find a partner, and start a session. Each time a

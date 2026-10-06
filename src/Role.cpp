@@ -1,13 +1,6 @@
 #include <tt/Role.h>
 
 namespace tt {
-    /**
-     * Returns the partner of this role. If this role is the game master, this
-     * method returns the player. If this role is the player, this method
-     * return the game master.
-     * 
-     * @return the partner of this role
-     */
     Role getPartner(Role role) {
         if(role == Role::GAME_MASTER)
             return Role::PLAYER;

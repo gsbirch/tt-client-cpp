@@ -14,12 +14,12 @@ namespace tt {
     // forward declaration to avoid circular inheritance
     class Client;
 
-    // alias to shorten up code
+    /* Alias for a pointer to a client to clean up code. */
     using client_ptr = std::unique_ptr<Client>;
 
     /**
     * A client factory creates continuously creates {@link tt::Client clients} to
-    * connect to a {@link tt::Server server} and is useful for deploying automated
+    * connect to a server and is useful for deploying automated
     * agents.
     * <p>
     * A factory starts by creating one client to join the server's queue of waiting
@@ -272,6 +272,14 @@ namespace tt {
             /* A boolean to make sure closing multiple times doesn't break anything */
             std::atomic<bool> closeRequested_{false};
     };
+
+    /**
+     * Override stream insertion operator to allow printing the Client class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to a client factory object
+     * @returns the output stream referenced
+     */ 
     std::ostream& operator<<(std::ostream& os, const ClientFactory& a);
 }
 
