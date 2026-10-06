@@ -153,6 +153,11 @@ namespace tt {
              */
             Client(const std::string& name);
 
+            /**
+             * Gives a string representation of this client.
+             * 
+             * @returns a string representation of this client.
+             */
             virtual std::string toString() const;
 
             /**
@@ -713,7 +718,13 @@ namespace tt {
             /* A buffer used by {@link #receiveLoop} to store messages if they are received in parts*/
             std::string recvBuffer_;
     };
-    // Override stream insertion operator to allow printing the Client class
+    /**
+     * Override stream insertion operator to allow printing the Client class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to a client object
+     * @returns the output stream referenced
+     */ 
     std::ostream& operator<<(std::ostream& os, const Client& a);
 }
 
