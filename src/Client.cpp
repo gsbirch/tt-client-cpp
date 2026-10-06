@@ -18,8 +18,6 @@
 #include <tt/io/Error.h>
 #include <tt/io/Choice.h>
 #include <tt/util/Util.h>
-
-
 #include <cstdlib>
 
 using namespace tt;
