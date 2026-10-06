@@ -27,7 +27,7 @@ namespace tt {
 	 * message of the exception which is thrown if the string is empty
 	 * @throws std::invalid_argument if the string given is empty
 	 */
-    void requireNonEmpty(const std::string& s, const std::string& description) {
+    inline void requireNonEmpty(const std::string& s, const std::string& description) {
         if (s.empty())
             throw std::invalid_argument(description + " cannot be empty");
     }
