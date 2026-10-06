@@ -145,8 +145,8 @@ std::string tt::Client::execute(ClientFactory* factory)
         std::unique_ptr<Connect> connect = std::move(receive<Connect>());
         if (connect != nullptr) {
             // Warn if the server's version number does not match.
-            if(connect->version != Settings::VERSION)
-                onWarning("This client is using version " + Settings::VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause misconnunications.");
+            // if(connect->version != Settings::VERSION)
+                // onWarning("This client is using version " + Settings::VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause misconnunications.");
             // Notify the client is has connected.
 			onConnect(connect.get());
             // Send the join message.
