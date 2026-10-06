@@ -11,15 +11,16 @@
 
 namespace tt {
     /**
-     * An action is a {@link SignedAsset signed asset} that causes a change in a
-     * {@link World story world's} {@link State state}. The {@link
-     * edu.uky.cs.nil.tt.Agent agents} in a session negotiate when actions happen
-     * via {@link Turn turns}.
+     * An action is an asset that causes a change in a
+     * {@link tt::World story world's} {@link tt::State state}. The {@link
+     * agents in a session negotiate when actions happen
+     * via {@link tt::Turn turns}.
      * 
      * @author Gage Birchmeier
      */
     class Action {
         public:
+            /* Message type identifier */
             const static std::string type;
 
             int id;
@@ -29,18 +30,6 @@ namespace tt {
             std::string code;
             // an action owns its own signature
             std::unique_ptr<Signature> signature;
-
-            /**
-             * Constructs a new action.
-             * 
-             * @param id the action's unique ID number
-             * @param signature the action's unique signature
-             * @param consenting an array of entities representing characters in the
-             * the story world who need to agree to take the action
-             * @param description the action's description
-             * @param code the action's code
-             */
-            // Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code);
 
             // default constructor necessary for JSON deserialization
             Action(): signature(nullptr) {};

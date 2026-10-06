@@ -135,6 +135,8 @@ namespace tt {
              */
             const int maxClients;
 
+            ~ClientFactory();
+
         protected:
             /**
              * This method is called once when this factory begins running.
@@ -266,8 +268,6 @@ namespace tt {
              * @param client a client created by this factory which is finished running
              */
             void onStop(const Client* client);
-
-            ~ClientFactory();
 
             /* A boolean to make sure closing multiple times doesn't break anything */
             std::atomic<bool> closeRequested_{false};

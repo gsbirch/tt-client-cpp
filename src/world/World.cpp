@@ -1,4 +1,4 @@
-#include <tt/world/World.h>8
+#include <tt/world/World.h>
 #include <tt/world/Action.h>
 #include <tt/util/JsonUtil.h>
 
