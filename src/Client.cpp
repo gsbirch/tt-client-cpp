@@ -5,6 +5,8 @@
 #include <cstring>
 #include <iostream>
 #include <openssl/ssl.h>
+#include <netdb.h>
+#include <stdexcept>
 #include <tt/io/Join.h>
 #include <tt/io/Start.h>
 #include <tt/io/Message.h>
@@ -21,48 +23,14 @@
 
 using namespace tt;
 
+// Setting static strings
 const std::string Client::ENVIRONMENT_VARIABLE_PASSWORD = "password";
-
-/**
- * The name of the environment variable where the client expects to find the
- * API key used to authenticate with the service that provides functions
- * which require special external resources or computation. If this
- * environment variable is not set and no API key is provided in the
- * constructor, this agent will not be able to use the external API.
- */
 const std::string Client::ENVIRONMENT_VARIABLE_API_KEY = "apikey";
-
-/**
- * The default URL the client will attempt to connect to if one is not
- * explicitly provided in the constructor
- */
 const std::string Client::DEFAULT_URL = "localhost";
-
-/**
- * The default network port the client will attempt to connect to if one is
- * not explicitly provided in the constructor
- */
 const int Client::DEFAULT_PORT = 9005;
 
-/**
- * Constructs a client with the given session preferences, password, API
- * key, and network details.
- * 
- * @param name the name the client will use
- * @param password the password the client will provide to the server, or
- * null if the client will not use a password
- * @param world the name of the world the client wants their session to take
- * place in, or null if the client has no preference for a story world
- * @param role the role the client wants to play in the session, or null if
- * the client is willing to play either role
- * @param partner the name of the client's desired partner, or null if the
- * client is willing to play with any partner
- * @param key the API key the client will use to access external resources
- * and computation, or null if the client will not use the external API
- * @param url the URL of the server to which this client will connect
- * @param port the network port on which this client will connect
- */
-Client::Client(std::string name, std::string password, std::string world, Role role, std::string partner, std::string key, std::string url, int port):
+
+Client::Client(const std::string& name, const std::string& password, const std::string& world, Role role, const std::string& partner, const std::string& key, const std::string& url, int port):
 key(key), url(url), port(port)
 {
     // should do these?? idk how thats gonna work with the constructors being before
@@ -74,73 +42,25 @@ key(key), url(url), port(port)
     registerMessageTypes();
 }
 
-/**
- * Constructs a client with the given session preferences and network
- * details, reading the password and API key from the environment. The
- * client's password will be read from {@link
- * #ENVIRONMENT_VARIABLE_PASSWORD}. The client's API key will be read from
- * {@link #ENVIRONMENT_VARIABLE_API_KEY}.
- * 
- * @param name the name the client will use
- * @param world the name of the world the client wants their session to take
- * place in, or null if the client has no preference for a story world
- * @param role the role the client wants to play in the session, or null if
- * the client is willing to play either role
- * @param partner the name of the client's desired partner, or null if the
- * client is willing to play with any partner
- * @param url the URL of the server to which this client will connect
- * @param port the network port on which this client will connect
- */
-Client::Client(std::string name, std::string world, Role role, std::string partner, std::string url, int port):
+Client::Client(const std::string& name, const std::string& world, Role role, const std::string& partner, const std::string& url, int port):
 Client(name, std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()), world, role, partner, std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()), url, port)
 {
 
 }
 
-/**
- * Constructs a client with the given session preferences, reading the
- * password and API key from the environment, and using the default network
- * settings.
- * 
- * @param name the name the client will use
- * @param world the name of the world the client wants their session to take
- * place in, or null if the client has no preference for a story world
- * @param role the role the client wants to play in the session, or null if
- * the client is willing to play either role
- * @param partner the name of the client's desired partner, or null if the
- * client is willing to play with any partner
- */
-Client::Client(std::string name, std::string world, Role role, std::string partner):
+Client::Client(const std::string& name, const std::string& world, Role role, const std::string& partner):
 Client(name, world, role, partner, DEFAULT_URL, DEFAULT_PORT) 
 {
 
 }
 
-/**
- * Constructs a client with a name, role, and world name, which has no
- * preference for a partner, reading the password and API key from the
- * environment, and using the default network settings.
- * 
- * @param name the name the client will use
- * @param world the name of the world the client wants their session to take
- * place in, or null if the client has no preference for a story world
- * @param role the role the client wants to play in the session, or null if
- * the client is willing to play either role
- */
-Client::Client(std::string name, std::string world, Role role):
+Client::Client(const std::string& name, const std::string& world, Role role):
 Client(name, world, role, "") 
 {
 
 }
 
-/**
- * Constructs a client with a given name, which has no preference for its
- * role, world, or partner, reading the password and API key from the
- * environment, and using the default network settings.
- * 
- * @param name the name the client will use
- */
-Client::Client(std::string name):
+Client::Client(const std::string& name):
 Client(name, "", Role::NONE, "")
 {
     
@@ -160,18 +80,17 @@ std::string tt::Client::toString() const
     return string + "]";
 }
 
-std::string tt::Client::getName() const
+const std::string& tt::Client::getName() const
 {
     return join->name;
 }
 
-std::string tt::Client::getWorldName() const
+const std::string& tt::Client::getWorldName() const
 {
-    // if(world == null)
-	// 		return join->world;
-	// 	else
-	// 		return world.name;
-    return "";
+    if(world == nullptr)
+        return join->world;
+    else
+        return world->name;
 }
 
 Role tt::Client::getRole() const
@@ -182,9 +101,24 @@ Role tt::Client::getRole() const
         return role;
 }
 
-std::string tt::Client::getPartner() const
+const std::string& tt::Client::getPartner() const
 {
     return join->partner;
+}
+
+const World* tt::Client::getWorld()
+{
+    return failIfNotStarted(world, "world");
+}
+
+std::vector<const Turn *> tt::Client::getHistory() const
+{
+    return failIfNotStarted(status, "history")->getHistory();
+}
+
+const State *tt::Client::getState() const
+{
+    return failIfNotStarted(status, "state")->getState();
 }
 
 std::string tt::Client::execute()
@@ -317,29 +251,43 @@ std::string tt::Client::execute(ClientFactory* factory)
         throw uncaught;
 }
 
-SSL* tt::Client::connect(std::string url, int port)
+SSL* tt::Client::connect(const std::string& url, int port)
 {
-    // the socket
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (port < 1 || port > 65535)
+        throw std::invalid_argument("Port out of range: " + std::to_string(port));
 
-    // Server address
-    sockaddr_in server{};
-    server.sin_family = AF_INET;
-    server.sin_port = htons(port);
+    // Resolve the host name
+    addrinfo hints{};
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
 
-    // connect
-    inet_pton(AF_INET, url.c_str(), &server.sin_addr);
+    addrinfo* result = nullptr;
+    int rc = getaddrinfo(url.c_str(), std::to_string(port).c_str(), &hints, &result);
+    if (rc != 0)
+        throw std::invalid_argument("Unknown host '" + url + "': " + gai_strerror(rc));
 
-    ::connect(sock, (sockaddr*)&server, sizeof(server));
+    // Connect
+    sock = ::socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+    if (sock < 0) {
+        freeaddrinfo(result);
+        throw std::runtime_error("Failed to create socket");
+    }
 
-    // SSL Setup
+    if (::connect(sock, result->ai_addr, result->ai_addrlen) < 0) {
+        freeaddrinfo(result);
+        throw std::runtime_error("Failed to connect to " + url);
+    }
+    freeaddrinfo(result);
+
+    // SSL setup
     ctx = SSL_CTX_new(TLS_client_method());
     SSL* ssl_ptr = SSL_new(ctx);
     SSL_set_fd(ssl_ptr, sock);
 
     // Start TLS
-    SSL_connect(ssl_ptr);
-    
+    if (SSL_connect(ssl_ptr) != 1)
+        throw std::runtime_error("TLS handshake failed");
+
     return ssl_ptr;
 }
 
@@ -350,6 +298,8 @@ tt::Client::~Client()
 
 void tt::Client::sendMessage(const tt::Message& m)
 {
+    if (ssl == nullptr) 
+        throw std::logic_error("A message cannot be sent because the client has not connected to the server yet.");
     json j;
     j["type"] = m.type();
 
@@ -361,7 +311,7 @@ void tt::Client::sendMessage(const tt::Message& m)
     sendMessage(s);
 }
 
-void tt::Client::sendMessage(const std::string &s)
+void tt::Client::sendMessage(const std::string& s)
 {
     const char * data = s.data();
     std::size_t remaining = s.size();
@@ -387,27 +337,27 @@ void tt::Client::sendMessage(const std::string &s)
     }
 }
 
-void tt::Client::onWarning(std::string message)
+void tt::Client::onWarning(const std::string& message)
 {
     std::cerr << "Warning: " << message << std::endl;
 }
 
-void tt::Client::onError(std::string message)
+void tt::Client::onError(const std::string& message)
 {
-    // if(world == "")
-    //     throw std::runtime_error(message);
-    // else
-    //     System.err.println("Error: " + message);
+    if(world == nullptr)
+        throw std::runtime_error(message);
+    else
+        std::cerr << "Error: " << message << std::endl;
 }
 
-std::string tt::Client::complete(std::string system, std::string prompt, float temperature)
+std::string tt::Client::complete(const std::string& system, const std::string& prompt, float temperature)
 {
     getKey();
     // TODO
     return "";
 }
 
-int tt::Client::embed(std::string string, float f[])
+int tt::Client::embed(const std::string& string, float f[])
 {
     getKey();
     // TODO
@@ -415,22 +365,22 @@ int tt::Client::embed(std::string string, float f[])
 }
 
 
-void tt::Client::setName(std::string name)
+void tt::Client::setName(const std::string& name)
 {
     failIfJoined("name");
 	join = std::make_unique<Join>(name, join->password, join->world, join->role, join->partner);
 }
 
-void tt::Client::setPassword(std::string password)
+void tt::Client::setPassword(const std::string& password)
 {
     failIfJoined("password");
 	join = std::make_unique<Join>(join->name, password, join->world, join->role, join->partner);
 }
 
-void tt::Client::setWorldName(std::string world)
+void tt::Client::setWorldName(const std::string& world)
 {
     failIfJoined("world");
-	// join = new Join(join.name, join.password, world, join.role, join.partner);
+	join = std::make_unique<Join>(join->name, join->password, world, join->role, join->partner);
 }
 
 void tt::Client::setRole(Role role)
@@ -439,24 +389,30 @@ void tt::Client::setRole(Role role)
 	join = std::make_unique<Join>(join->name, join->password, join->world, role, join->partner);
 }
 
-void tt::Client::setPartner(std::string partner)
+void tt::Client::setPartner(const std::string& partner)
 {
     failIfJoined("partner");
 	join = std::make_unique<Join>(join->name, join->password, join->world, join->role, partner);
 }
 
-std::string tt::Client::getSession()
+std::vector<const Turn *> tt::Client::getChoices() const
+{
+    // return failIfNotStarted(choices, "list of choices");
+    return choices;
+}
+
+const std::string &tt::Client::getSession()
 {
     return session;
 }
 
-void tt::Client::failIfJoined(std::string property)
+void tt::Client::failIfJoined(const std::string& property)
 {
     if(joined)
 		throw std::logic_error("The client's " + property + " can no longer be changed because the client has already joined the server.");
 }
 
-std::string tt::Client::getKey() const
+const std::string& tt::Client::getKey() const
 {
     if(key == "")
         throw std::logic_error("The client does not have an API key, so it cannot use the external API.");
@@ -518,6 +474,9 @@ std::unique_ptr<Message> tt::Client::processMessage(const char *data, int length
 
 void tt::Client::close()
 {
+    // This mainly cleans up SSL stuff, so if it isn't open yet, do nothing
+    if (ssl == nullptr) return;
+
     if (receiveThread_.joinable()) {
         receiveThread_.join();
     }
@@ -558,11 +517,16 @@ std::unique_ptr<T> tt::Client::receive()
 }
 
 template <typename T>
-inline T Client::failIfNotStarted(T object, std::string description)
+const T *tt::Client::failIfNotStarted(const T *object, const std::string &description)
 {
-    return object;
-    // if(object == null)
-    //     throw std::logic_error("The " + description + " is not available because the client's session has not started yet.");
-    // else
-    //     return object;
+    if(object == nullptr)
+        throw std::logic_error("The " + description + " is not available because the client's session has not started yet.");
+    else
+        return object;
+}
+
+template <typename T>
+const T *tt::Client::failIfNotStarted(const std::unique_ptr<T> &object, const std::string &description)
+{
+    return failIfNotStarted(object.get(), description);
 }
