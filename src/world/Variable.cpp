@@ -11,6 +11,11 @@ std::string tt::Variable::toString() const
     return name;
 }
 
+bool tt::Variable::operator==(const Variable &rhs) const
+{
+    return false;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Variable &a)
 {
     os << a.toString();

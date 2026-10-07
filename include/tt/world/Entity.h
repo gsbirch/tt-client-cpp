@@ -43,6 +43,8 @@ namespace tt {
             bool isPlayer() const;
 
             std::string toString() const;
+
+            bool operator==(const Entity& rhs) const;
             friend std::ostream& operator<<(std::ostream& os, const Entity& a);
 
         private:

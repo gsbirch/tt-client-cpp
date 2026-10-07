@@ -57,6 +57,8 @@ namespace tt {
 
             std::string toString() const;
 
+            bool operator==(const Constant& rhs) const;
+
             friend std::ostream& operator<<(std::ostream& os, const Constant& a);
     };
 

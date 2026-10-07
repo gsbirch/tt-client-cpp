@@ -19,6 +19,11 @@ std::string tt::Entity::toString() const
     return name;
 }
 
+bool tt::Entity::operator==(const Entity &rhs) const
+{
+    return false;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Entity &a)
 {
     os << a.toString();

@@ -10,6 +10,26 @@ std::string tt::Assignment::toString() const
     return variable->toString() + " = " + vtos(value);
 }
 
+const std::string &tt::Assignment::getDescription() const
+{
+    return description;
+}
+
+const std::string &tt::Assignment::getCode() const
+{
+    return code;
+}
+
+const Variable *tt::Assignment::getVariable() const
+{
+    return variable.get();
+}
+
+bool tt::Assignment::operator==(const Assignment &rhs) const
+{
+    return *variable == *(rhs.variable) ;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Assignment &a)
 {
     os << a.toString();

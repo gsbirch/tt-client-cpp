@@ -2,14 +2,9 @@
 #include <tt/world/Entity.h>
 #include <tt/util/JsonUtil.h>
 #include <tt/world/Turn.h>
+#include <tt/util/Util.h>
 
 using namespace tt;
-
-// tt::Action::Action(int id, std::unique_ptr<Signature> signature, std::vector<const Entity *> consenting, std::string description, std::string code):
-// id(id), consenting(consenting), description(description), code(code)
-// {
-//     this->signature = std::move(signature);
-// }
 
 const std::unordered_set<const Entity *> &tt::Action::getConsenting()
 {
@@ -38,9 +33,24 @@ bool tt::Action::consents(Role role)
         return player;
 }
 
-std::string tt::Action::toString() const
+const std::string& tt::Action::toString() const
 {
     return name;
+}
+
+const std::string& tt::Action::getDescription() const
+{
+    return description;
+}
+
+const std::string &tt::Action::getCode() const
+{
+    return code;
+}
+
+bool tt::Action::operator==(const Action &rhs) const
+{
+    return id == rhs.id && name == rhs.name;
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const Action &a)
@@ -52,7 +62,9 @@ std::ostream &tt::operator<<(std::ostream &os, const Action &a)
 void tt::from_json(const nlohmann::json &j, Action &obj)
 {
     j.at("id").get_to(obj.id);
+    requireNonNegative(obj.id, "ID");
     j.at("name").get_to(obj.name);
+    requireNonEmpty(obj.name, "name");
     j.at("description").get_to(obj.description);
     j.at("code").get_to(obj.code);
     fromJsonPtr(j, "signature", obj.signature);

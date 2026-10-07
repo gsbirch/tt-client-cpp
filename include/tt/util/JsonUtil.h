@@ -8,8 +8,29 @@
 #include <tt/world/Entity.h>
 
 namespace tt {
-    using Value = std::variant<std::monostate, std::unique_ptr<Constant>, std::unique_ptr<Entity>>;
-}
+    // Value is a simple joint type between Constant, Entity, and null
+    // This code allows Value to be used like any other type without interference
+    // And allows for equality.,
+    struct Value : std::variant<std::monostate,
+                                std::unique_ptr<Constant>,
+                                std::unique_ptr<Entity>> {
+        using variant::variant;
+
+        friend bool operator==(const Value& a, const Value& b) {
+            return std::visit([](const auto& x, const auto& y) {
+                using X = std::decay_t<decltype(x)>;
+                using Y = std::decay_t<decltype(y)>;
+                if constexpr (!std::is_same_v<X, Y>)
+                    return false;
+                else if constexpr (std::is_same_v<X, std::monostate>)
+                    return true;
+                else
+                    return (x && y) ? *x == *y : (!x && !y);
+            }, static_cast<const variant&>(a), static_cast<const variant&>(b));
+        }
+    };
+};
+
 
 namespace nlohmann {
 template <>

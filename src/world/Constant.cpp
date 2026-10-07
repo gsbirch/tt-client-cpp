@@ -12,6 +12,11 @@ std::string tt::Constant::toString() const
     return "null";
 }
 
+bool tt::Constant::operator==(const Constant &rhs) const
+{
+    return false;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Constant &a)
 {
     os << a.toString();
