@@ -1,15 +1,15 @@
+#pragma once
+
 #include <string>
 #include <tt/world/Variable.h>
 #include <tt/world/Signature.h>
-
-#pragma once
 
 #ifndef ASSIGNMENT_H
 #define ASSIGNMENT_H
 
 namespace tt {
     /**
-     * An assignment is a logical formula that assets that some
+     * An assignment is a logical formula that asserts that some
      * {@link tt::Variable variable} in a {@link tt::World story world} has a 
      * {@link tt::Value value}.
      * 
@@ -31,6 +31,11 @@ namespace tt {
 
             Assignment(): variable(nullptr), value(std::monostate()) {};
 
+            /**
+             * Returns a string representation of this action.
+             * 
+             * @returns a string describing this action
+             */
             std::string toString() const;
 
             /**
@@ -66,10 +71,8 @@ namespace tt {
         private:
             /** A natural language description of this assignments */
             std::string description;
-
-            /** The code for this assignment */
+            /** The assignment's encoding */
             std::string code;
-
             /** The variable that is being assigned a value */
             std::unique_ptr<Variable> variable;
     };

@@ -9,19 +9,19 @@
 
 namespace tt {
     /**
-     * A turn is one participant in a {@link  edu.uky.cs.nil.tt.Session session}
-     * communicating their intentions for an {@link Action action} to the other
-     * participant.
+     * A turn is one participant in a session
+     * communicating their intentions for an {@link tt::Action action}
+     * to the other participant.
      * <p>
      * There are four types of turns:
      * <ul>
-     * <li>{@link Type#PROPOSE Propose}</li>
-     * <li>{@link Type#SUCCEED Succeed}</li>
-     * <li>{@link Type#FAIL Fail}</li>
-     * <li>{@link Type#PASS Pass}</li>
+     * <li>{@link Turn::Type#PROPOSE Propose}</li>
+     * <li>{@link Turn::Type#SUCCEED Succeed}</li>
+     * <li>{@link Turn::Type#FAIL Fail}</li>
+     * <li>{@link Turn::Type#PASS Pass}</li>
      * </ul>
      * 
-     * @author Stephen G. Ware
+     * @author Gage Birchmeier
      */
     class Turn {
         public:
@@ -53,21 +53,41 @@ namespace tt {
 
             /** The role of the participant taking this turn */
             Role role;
-
             /** The kind of turn being taken */
             Type type;
-            
-            /** The action that this turn is relevant to */
-            std::unique_ptr<Action> action;
-
-            /** A natural language description of this turn */
-            std::string description;
-
-            std::string code;
 
             Turn(): role(NONE), type(PASS), action(nullptr) {};
 
+            /**
+             * Returns a string representation of this action.
+             * 
+             * @returns a string describing this action
+             */
             std::string toString() const;
+
+            /**
+             * Returns a human-readable natural language description of the object.
+             * 
+             * @return a human-readable natural language description of the object
+             */
+            const std::string& getDescription() const;
+
+            /**
+             * Returns a string of {@code 1}'s and {@code 0}'s that uniquely represents
+             * this object among other objects of the same type in the same story world.
+             * Every encoded object of the same type should return a string of the same
+             * length, even if it must be padded with {@code 0}'s.
+             * 
+             * @return a string of 1's and 0's
+             */
+            const std::string& getCode() const;
+
+            /**
+             * Returns the action associated with this turn.
+             * 
+             * @return the action associated with this turn
+             */
+            const Action* getAction() const;
 
             friend std::ostream& operator<<(std::ostream& os, const Turn& a);
 
@@ -75,7 +95,14 @@ namespace tt {
             friend void to_json(nlohmann::json& j, const Turn& obj);
 
         private:
-            
+            /** The action that this turn is relevant to */
+            std::unique_ptr<Action> action;
+
+            /** A natural language description of this turn */
+            std::string description;
+
+            /** The Turn's encoding */
+            std::string code;
     };
 
     void from_json(const nlohmann::json& j, Turn& obj);

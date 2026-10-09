@@ -23,6 +23,24 @@ namespace tt {
     class ClientFactory;
     class Join;
     class Message;
+
+    /** The URL to which large language model text embedding requests will be sent.*/
+    const std::string EMBED_URL = "https://openrouter.ai/api/v1/embeddings";
+    /** The model to be used for large language model text embedding requests. */
+    const std::string EMBED_MODEL = "qwen/qwen3-embedding-8b";
+    /** The maximum number of input tokens that can use for text embedding requests.*/
+    const int EMBED_TOKENS_LIMIT = 1000000;
+
+    /** The URL to which large language model text completion requests will be sent. */
+    const std::string COMPLETE_URL = "https://openrouter.ai/api/v1/chat/completions";
+    /** The large language model to be used for text completion requests. */
+    const std::string COMPLETE_MODEL = "deepseek/deepseek-v4-flash-0731";
+    /** The maximum number of input tokens that can use for text completion requests. */
+    const int COMPLETE_IN_TOKENS_LIMIT = 1000000;
+    /** The maximum number of output tokens that can use for text completion requests.*/
+    const int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
+    /** The seed used for large language model text completion requests. */
+    const int COMPLETE_SEED = 0;
     /** 
      * A client connects to a server to find a partner and play a
      * {@link tt::Role role} in a storytelling session.
@@ -531,22 +549,38 @@ namespace tt {
             virtual void onError(const std::string& message);
 
             /**
-             * Makes an external call to a large language model API to complete a text
-             * prompt.
-             * <p>
-             * This method requires the agent to have an {@link #ENVIRONMENT_VARIABLE_API_KEY API key}; 
-             * without one, this method will throw an exception.
+             * Queries the external text completion API and returns its response as a
+             * string. Each time this method is called, the number of tokens used
+             * in the prompt is added to `complete_in_tokens` and the number of
+             * tokens used in reasoning and completion is added to
+             * `complete_out_tokens`. If the number of tokens used exceeds
+             * `COMPLETE_IN_TOKENS_LIMIT` or `COMPLETE_OUT_TOKENS_LIMIT`
+             * respectively, this method will raise an exception.
              * 
-             * @param system the system prompt which instructs the language model how
-             * to respond to the prompt
-             * @param prompt the prompt which the large language model will respond to
-             * @param temperature a parameter influencing the predictability of the
-             * language model's output, where 0 means completely predictable and
-             * higher values mean less predictable (more "creative") output
-             * @return the response from the large language model to the prompt
+             * @param messages An array of strings representing a conversation.
+             * The first string will be used as the system prompt. Every odd
+             * numbered message will be treated as a message from the user. 
+             * Every even numbered message (after the first) will be treated as 
+             * a response from the assistant.
+             * @param reasoning The level of reasoning used by the large language
+             * model during text completion. Value includes `max`, `high`,
+             * `medium`, `low`, and `none`.
+             * @param maxt The maximum number of tokens the model may use to
+             * generate its response.
+             * @param temp Influences the randomness of the response. A value of
+             * 0.0 will give deterministic responses. The max value is 2.0.
+             * @param topk When choosing a next token to add to the output, the
+             * model may only choose from the best k tokens.
+             * @param topp When choosing a next token to add to the output, the
+             * model may only choose from tokens whose probability add to p.
+             * @param minp When choosing a next token to add to the output, the
+             * model may only choose from tokens whose probability is p times
+             * the probability of the most likely token.
+             * @returns The response for the text completion API as a string
              * @throws std::logic_error if the client does not have an API key
              */
-            std::string complete(const std::string& system, const std::string& prompt, float temperature);
+            std::string complete(const std::vector<std::string>& messages, const std::string& reasoning, int maxt = -1, float temp = 0.0, int topk = -1, float topp = -1.0, float minp = -1.0);
+
 
             /**
              * Makes an external call to a large language model API to embed a text
@@ -561,7 +595,17 @@ namespace tt {
              * @throws std::logic_error if the client does not have an API key
              */
 
-            int embed(const std::string& string, float f[]);
+            /**
+             * Queries the external text embedding API and returns its response as a
+             * vector of floats. Each time this method is called, the number of tokens
+             * used it added to `embed_tokens`. If the number of tokens used exceeds
+             * `EMBED_TOKENS_LIMIT`, this method will raise an exception.
+             * 
+             * @param text The text which will be embedded as an array of floats.
+             * @param dim The number of dimensions in the returned array.
+             * @returns the vector embedding of the text as a vector of floats
+             */
+            std::vector<float> embed(std::string text, int dim = 1028);
 
             /**
              * Waits for a {@link tt::Message Message} of any type to be received.

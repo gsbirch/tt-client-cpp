@@ -1,19 +1,26 @@
 #include <tt/world/Variable.h>
 #include <tt/util/JsonUtil.h>
 
-tt::Variable::Variable():
-id(0), signature(nullptr)
-{
-}
+using namespace tt;
 
 std::string tt::Variable::toString() const
 {
     return name;
 }
 
+const std::string &tt::Variable::getDescription() const
+{
+    return description;
+}
+
+const Signature *tt::Variable::getSignature() const
+{
+    return signature.get();
+}
+
 bool tt::Variable::operator==(const Variable &rhs) const
 {
-    return false;
+    return id == rhs.id;
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const Variable &a)

@@ -4,14 +4,19 @@ using namespace tt;
 
 const std::string Entity::type = "Entity";
 
-tt::Entity::Entity(int id, std::string name, std::string description, std::string code):
-id(id), name(name), description(description), code(code)
-{
-}
-
 bool tt::Entity::isPlayer() const
 {
     return id == 0;
+}
+
+const std::string &tt::Entity::getDescription() const
+{
+    return description;
+}
+
+const std::string &tt::Entity::getCode() const
+{
+    return code;
 }
 
 std::string tt::Entity::toString() const
@@ -21,7 +26,7 @@ std::string tt::Entity::toString() const
 
 bool tt::Entity::operator==(const Entity &rhs) const
 {
-    return false;
+    return id == rhs.id;
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const Entity &a)

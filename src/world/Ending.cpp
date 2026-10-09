@@ -8,6 +8,26 @@ std::string tt::Ending::toString() const
     return name;
 }
 
+const std::string &tt::Ending::getDescription() const
+{
+    return description;
+}
+
+const std::string &tt::Ending::getCode() const
+{
+    return code;
+}
+
+const Signature *tt::Ending::getSignature() const
+{
+    return signature.get();
+}
+
+bool tt::Ending::operator==(const Ending &rhs) const
+{
+    return id == rhs.id;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Ending &a)
 {
     os << a.toString();

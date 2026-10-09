@@ -11,6 +11,21 @@ std::string tt::Turn::toString() const
 		return string;
 }
 
+const std::string &tt::Turn::getDescription() const
+{
+    return description;
+}
+
+const std::string &tt::Turn::getCode() const
+{
+    return code;
+}
+
+const Action *tt::Turn::getAction() const
+{
+    return action.get();
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const Turn &a)
 {
     os << a.toString();

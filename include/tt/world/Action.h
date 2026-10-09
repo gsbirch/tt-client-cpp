@@ -11,7 +11,7 @@
 
 namespace tt {
     /**
-     * An action is an asset that causes a change in a
+     * An action is a signed asset that causes a change in a
      * {@link tt::World story world's} {@link tt::State state}. The
      * agents in a session negotiate when actions happen
      * via {@link tt::Turn turns}.
@@ -20,24 +20,16 @@ namespace tt {
      */
     class Action {
         public:
-            /* Message type identifier */
-            const static std::string type;
-
-            /**
-             * This asset's ID number, which is unique among other assets of the same type
-             */
+            /* This asset's ID number, which is unique among other assets of the same type */
             int id;
-            /**
-             * This asset's name, which is unique among other assets of the same type
-             */
+            /* This asset's name, which is unique among other assets of the same type */
             std::string name;
-            /** The asset's unique signature */
-            std::unique_ptr<Signature> signature;
+            
 
             /**
              * Constructs a new blank action.
              */
-            Action(): signature(nullptr) {};
+            Action():id(0), signature(nullptr) {};
 
             /**
              * Returns an unmodifiable set of entities in the story world representing
@@ -92,6 +84,13 @@ namespace tt {
              */
             const std::string& getCode() const;
 
+            /**
+             * Returns the signature of this object.
+             * 
+             * @return a pointer to the signature of this Action.
+             */
+            const Signature* getSignature() const;
+
             friend std::ostream& operator<<(std::ostream& os, const Action& a);
 
             friend void from_json(const nlohmann::json& j, Action& obj);
@@ -109,8 +108,10 @@ namespace tt {
 
             /** A human-readable description of the asset */
             std::string description;
-            /** The action's code */
+            /** The action's encoding */
             std::string code;
+            /** The asset's unique signature */
+            std::unique_ptr<Signature> signature;
     };
 
     void from_json(const nlohmann::json& j, Action& obj);

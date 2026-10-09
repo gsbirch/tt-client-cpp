@@ -41,7 +41,6 @@ key(key), url(url), port(port)
 Client::Client(const std::string& name, const std::string& world, Role role, const std::string& partner, const std::string& url, int port):
 Client(name, std::getenv(ENVIRONMENT_VARIABLE_PASSWORD.c_str()), world, role, partner, std::getenv(ENVIRONMENT_VARIABLE_API_KEY.c_str()), url, port)
 {
-
 }
 
 Client::Client(const std::string& name, const std::string& world, Role role, const std::string& partner):
@@ -346,18 +345,10 @@ void tt::Client::onError(const std::string& message)
         std::cerr << "Error: " << message << std::endl;
 }
 
-std::string tt::Client::complete(const std::string& system, const std::string& prompt, float temperature)
+std::string tt::Client::complete(const std::vector<std::string> &messages, const std::string &reasoning, int maxt, float temp, int topk, float topp, float minp)
 {
     getKey();
-    // TODO
-    return "";
-}
-
-int tt::Client::embed(const std::string& string, float f[])
-{
-    getKey();
-    // TODO
-    return -1;
+    return std::string();
 }
 
 
@@ -488,8 +479,15 @@ std::ostream &tt::operator<<(std::ostream &os, const Client &a)
     return os;
 }
 
-std::unique_ptr<Message> tt::Client::receiveAny() {
-    
+std::vector<float> tt::Client::embed(std::string text, int dim)
+{
+    std::string key = getKey();
+    return std::vector<float>();
+}
+
+std::unique_ptr<Message> tt::Client::receiveAny()
+{
+
     std::unique_ptr<Message> msg;
     if (!messageQueue_.Pop(msg)) {
         throw std::runtime_error("Connection closed while waiting for message");

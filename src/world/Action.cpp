@@ -48,6 +48,11 @@ const std::string &tt::Action::getCode() const
     return code;
 }
 
+const Signature *tt::Action::getSignature() const
+{
+    return signature.get();
+}
+
 bool tt::Action::operator==(const Action &rhs) const
 {
     return id == rhs.id && name == rhs.name;

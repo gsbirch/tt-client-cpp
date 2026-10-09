@@ -14,6 +14,54 @@ std::string tt::World::toString() const
     return string + "]";
 }
 
+const std::vector<const Entity *>& tt::World::getEntities() const
+{
+    if (entitiesPtrs.size() != entities.size()) {
+        entitiesPtrs.clear();
+        entitiesPtrs.reserve(entities.size());
+        for (const auto& p : entities) {
+            entitiesPtrs.push_back(p.get());
+        }
+    }
+    return entitiesPtrs;
+}
+
+const std::vector<const Variable *> &tt::World::getVariables() const
+{
+    if (variablesPtrs.size() != variables.size()) {
+        variablesPtrs.clear();
+        variablesPtrs.reserve(variables.size());
+        for (const auto& p : variables) {
+            variablesPtrs.push_back(p.get());
+        }
+    }
+    return variablesPtrs;
+}
+
+const std::vector<const Action *> &tt::World::getActions() const
+{
+    if (actionsPtrs.size() != actions.size()) {
+        actionsPtrs.clear();
+        actionsPtrs.reserve(actions.size());
+        for (const auto& p : actions) {
+            actionsPtrs.push_back(p.get());
+        }
+    }
+    return actionsPtrs;
+}
+
+const std::vector<const Ending *> &tt::World::getEndings() const
+{
+    if (endingsPtrs.size() != endings.size()) {
+        endingsPtrs.clear();
+        endingsPtrs.reserve(endings.size());
+        for (const auto& p : endings) {
+            endingsPtrs.push_back(p.get());
+        }
+    }
+    return endingsPtrs;
+}
+
 std::ostream &tt::operator<<(std::ostream &os, const World &a)
 {
     os << a.toString();
