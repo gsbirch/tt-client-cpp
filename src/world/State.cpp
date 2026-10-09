@@ -54,7 +54,7 @@ bool tt::State::operator==(const State &rhs) const
 {
     // Compare both the assignment arrays elementwise
     return std::equal(assignments.begin(), assignments.end(), rhs.assignments.begin(), rhs.assignments.end(),
-                    [](const auto& x, const auto& y) {return *x == *y});
+                    [](const auto& x, const auto& y) { return *x == *y; });
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const State &a)

@@ -75,7 +75,15 @@ void tt::ClientFactory::execute()
     queue.Clear();
     //Signal that the server is done shutting down
     completion.signal();
-    if (uncaught) throw uncaught;
+    try {
+        std::rethrow_exception(uncaught);   // or: throw uncaught;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << '\n';
+        throw;
+    } catch (...) {
+        std::cerr << "Unknown (non-std::exception) error\n";
+        throw;
+    }
 }
 
 void tt::ClientFactory::close()

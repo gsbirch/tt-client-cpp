@@ -11,15 +11,15 @@
 
 namespace tt {
     /**
-     * A constant is a {@link Value logical value} that always exists in all {@link
-     * World story worlds}, such a the Boolean concepts of True and False, numbers,
-     * and so on.
+     * A constant is a {@link Value logical value} that always exists in all 
+     * {@link tt::World story worlds}, such a the Boolean concepts of True and 
+     * False, numbers, and so on.
      * 
      * @author Gage Birchmeier
      */
     class Constant {
         public:
-            /* Type used for JSON deserialization */
+            /** Type used for JSON deserialization */
             static const std::string type;
 
             /** A constant representing nothing or the absence of a value */
@@ -91,6 +91,14 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Constant& obj);
     void to_json(nlohmann::json& j, const Constant& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the Constant class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an constant object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Constant& a);
 }
 

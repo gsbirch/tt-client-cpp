@@ -79,6 +79,14 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, State& obj);
     void to_json(nlohmann::json& j, const State& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the State class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an state object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const State& a);
 }
 

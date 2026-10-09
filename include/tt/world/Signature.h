@@ -27,18 +27,15 @@ namespace tt {
 	    /** The signature's arguments */
 	    std::vector<Value> arguments;
 
-        /**
-         * Constructs a new signature from a name and an array of arguments.
-         * 
-         * @param name the signature's name
-         * @param arguments an ordered sequence of 0 to many values 
-         */
-        // Signature(std::string name, std::vector<Value> arguments);
-
         Signature();
 
         bool operator==(const Signature& s);
 
+        /**
+             * Returns a string representation of this action.
+             * 
+             * @returns a string describing this action
+             */
         std::string toString() const;
 
         friend std::ostream& operator<<(std::ostream& os, const Signature& a);
@@ -46,6 +43,14 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Signature& obj);
     void to_json(nlohmann::json& j, const Signature& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the Signature class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an signature object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Signature& a);
 }
 

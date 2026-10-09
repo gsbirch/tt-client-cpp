@@ -18,9 +18,9 @@ namespace tt {
      */
     class Variable {
         public:
-            /* This asset's ID number, which is unique among other assets of the same type */
+            /** This asset's ID number, which is unique among other assets of the same type */
             int id;
-            /* This asset's name, which is unique among other assets of the same type */
+            /** This asset's name, which is unique among other assets of the same type */
             std::string name;
 
             /**
@@ -67,6 +67,14 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Variable& obj);
     void to_json(nlohmann::json& j, const Variable& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the Variable class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an variable object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Variable& a);
 }
 

@@ -16,9 +16,9 @@ namespace tt {
      */
     class Ending {
         public:
-            /* This asset's ID number, which is unique among other assets of the same type */
+            /** This asset's ID number, which is unique among other assets of the same type */
             int id;
-            /* This asset's name, which is unique among other assets of the same type */
+            /** This asset's name, which is unique among other assets of the same type */
             std::string name;
 
             // default constructor for json deserialization
@@ -72,6 +72,14 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Ending& obj);
     void to_json(nlohmann::json& j, const Ending& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the Ending class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an ending object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Ending& a);
 }
 

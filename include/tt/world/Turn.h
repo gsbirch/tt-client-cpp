@@ -107,9 +107,31 @@ namespace tt {
 
     void from_json(const nlohmann::json& j, Turn& obj);
     void to_json(nlohmann::json& j, const Turn& obj);
+
+    /**
+     * Override stream insertion operator to allow printing the Turn class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an turn object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Turn& a);
 
+    /**
+     * Utility function to get the string representation of a {@link tt::Turn} {@link tt:Turn::Type type}.
+     * 
+     * @param type the type of turn
+     * @return the string representation of that turn type
+     */
     std::string ttos(Turn::Type type);
+
+    /**
+     * Utility function to get the correct {@link tt::Turn} {@link tt:Turn::Type type}
+     * enum from the string representation.
+     * 
+     * @param s the string representing a turn type
+     * @return the corresponding turn type enum value
+     */
     Turn::Type stot(std::string s);
 }
 

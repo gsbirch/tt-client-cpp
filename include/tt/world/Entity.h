@@ -15,12 +15,12 @@ namespace tt {
      */
     class Entity {
         public:
-            /* Type used for JSON deserialization */
+            /** Type used for JSON deserialization */
             static const std::string type;
 
-            /* This asset's ID number, which is unique among other assets of the same type */
+            /** This asset's ID number, which is unique among other assets of the same type */
             int id;
-            /* This asset's name, which is unique among other assets of the same type */
+            /** This asset's name, which is unique among other assets of the same type */
             std::string name;
 
             // default constructor for json deserialization
@@ -76,6 +76,14 @@ namespace tt {
     };
     void from_json(const nlohmann::json& j, Entity& msg);
     void to_json(nlohmann::json& j, const Entity& msg);
+
+    /**
+     * Override stream insertion operator to allow printing the Entity class
+     * 
+     * @param os an output stream to insert into
+     * @param a a reference to an entity object
+     * @returns the output stream referenced
+     */
     std::ostream& operator<<(std::ostream& os, const Entity& a);
 }
 

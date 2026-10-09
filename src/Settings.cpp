@@ -1,21 +1,17 @@
 #include <tt/Settings.h>
 
-/** The name of this project */
 const std::string tt::Settings::NAME = "Tandem Tales C++ Library";
 
-/** The current version of this project */
 const std::string tt::Settings::VERSION = "0.9.0";
 
-/** The people who contributed significantly to this project */
+const std::string tt::Settings::SERVER_VERSION = "0.9.1";
+
 const std::string tt::Settings::AUTHORS = "Gage Birchmeier";
 
-/** A full title, including name, version number, and authors */
 const std::string tt::Settings::TITLE = tt::Settings::NAME + " v" + tt::Settings::VERSION + " by " + tt::Settings::AUTHORS;
 
-/** The maximum number of characters allowed in a {@link Named name} */
 const int tt::Settings::NAME_MAX_LENGTH = 20;
 
-/** The characters that can be legally used in a {@link Named name} */
 const std::unordered_set<char> tt::Settings::NAME_ALLOWED_CHARACTERS;
 
 /**

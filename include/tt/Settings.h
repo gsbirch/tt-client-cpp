@@ -20,16 +20,19 @@ namespace tt {
             /** The current version of this project */
             static const std::string VERSION;
 
+            /** The server version number this project expects */
+            static const std::string SERVER_VERSION;
+
             /** The people who contributed significantly to this project */
             static const std::string AUTHORS;
 
             /** A full title, including name, version number, and authors */
             static const std::string TITLE;
 
-            /** The maximum number of characters allowed in a {@link Named name} */
+            /** The maximum number of characters allowed in a name */
             static const int NAME_MAX_LENGTH;
 
-            /** The characters that can be legally used in a {@link Named name} */
+            /** The characters that can be legally used in a name */
             static const std::unordered_set<char> NAME_ALLOWED_CHARACTERS;
 
             /**

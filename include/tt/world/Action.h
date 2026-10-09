@@ -20,9 +20,9 @@ namespace tt {
      */
     class Action {
         public:
-            /* This asset's ID number, which is unique among other assets of the same type */
+            /** This asset's ID number, which is unique among other assets of the same type */
             int id;
-            /* This asset's name, which is unique among other assets of the same type */
+            /** This asset's name, which is unique among other assets of the same type */
             std::string name;
             
 
