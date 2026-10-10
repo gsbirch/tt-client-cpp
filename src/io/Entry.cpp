@@ -1,14 +1,10 @@
 #include <tt/io/Entry.h>
 
+using namespace tt;
+
 std::string tt::Entry::toString() const
 {
     return "[Entry: \"" + name + "\"]";
-}
-
-std::ostream &tt::operator<<(std::ostream &os, const Entry &a)
-{
-    os << a.toString();
-    return os;
 }
 
 void tt::from_json(const nlohmann::json &j, Entry &msg)

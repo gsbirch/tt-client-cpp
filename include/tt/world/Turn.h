@@ -15,10 +15,10 @@ namespace tt {
      * <p>
      * There are four types of turns:
      * <ul>
-     * <li>{@link Turn::Type#PROPOSE Propose}</li>
-     * <li>{@link Turn::Type#SUCCEED Succeed}</li>
-     * <li>{@link Turn::Type#FAIL Fail}</li>
-     * <li>{@link Turn::Type#PASS Pass}</li>
+     * <li>{@link tt::Turn::PROPOSE Propose}</li>
+     * <li>{@link tt::Turn::SUCCEED Succeed}</li>
+     * <li>{@link tt::Turn::FAIL Fail}</li>
+     * <li>{@link tt::Turn::PASS Pass}</li>
      * </ul>
      * 
      * @author Gage Birchmeier
@@ -59,9 +59,9 @@ namespace tt {
             Turn(): role(NONE), type(PASS), action(nullptr) {};
 
             /**
-             * Returns a string representation of this action.
+             * Returns a string representation of this object.
              * 
-             * @returns a string describing this action
+             * @returns a string describing this object
              */
             std::string toString() const;
 
@@ -118,7 +118,7 @@ namespace tt {
     std::ostream& operator<<(std::ostream& os, const Turn& a);
 
     /**
-     * Utility function to get the string representation of a {@link tt::Turn} {@link tt:Turn::Type type}.
+     * Utility function to get the string representation of a {@link tt::Turn} {@link tt::Turn::Type type}.
      * 
      * @param type the type of turn
      * @return the string representation of that turn type
@@ -126,7 +126,7 @@ namespace tt {
     std::string ttos(Turn::Type type);
 
     /**
-     * Utility function to get the correct {@link tt::Turn} {@link tt:Turn::Type type}
+     * Utility function to get the correct {@link tt::Turn} {@link tt::Turn::Type type}
      * enum from the string representation.
      * 
      * @param s the string representing a turn type

@@ -2,6 +2,8 @@
 #include <tt/util/JsonUtil.h>
 #include <tt/Role.h>
 
+using namespace tt;
+
 tt::Stop::Stop(Role role):
 ending(nullptr), role(Role::NONE)
 {
@@ -28,9 +30,11 @@ std::string tt::Stop::toString() const
     return "[Stop Message: \"" + message + "\"]";
 }
 
-void tt::Stop::verify() const
+const Ending *tt::Stop::getEnding() const
 {
+    return ending.get();
 }
+
 
 void tt::from_json(const nlohmann::json &j, Stop &msg)
 {

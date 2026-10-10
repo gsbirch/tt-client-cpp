@@ -1,24 +1,12 @@
 #include <tt/io/Error.h>
 
-tt::Error::Error(const std::string& message):
-message(message)
-{
-}
-
-tt::Error::Error(const std::exception& exception):
-message(exception.what())
-{
-}
+using namespace tt;
 
 std::string tt::Error::toString() const
 {
     return "[Error Message: \"" + message + "\"]";
 }
 
-void tt::Error::verify() const
-{
-    // Utilities.requireNonNull(message, "message");
-}
 
 void tt::from_json(const nlohmann::json &j, Error &msg)
 {

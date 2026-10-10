@@ -1,15 +1,15 @@
+#pragma once
+
 #include <tt/io/Message.h>
 #include <string>
-
-#pragma once 
 
 #ifndef END_H
 #define END_H
 
 namespace tt {
     /**
-     * The end message is sent from the {edu.uky.cs.nil.tt.Server server} to an
-     * {@link edu.uky.cs.nil.tt.Agent agent} to indicate that the session had ended
+     * The end message is sent from the server to an
+     * agent to indicate that the session had ended
      * and that they should now disconnect. If the server is logging sessions, this
      * message contains ID of the logged session.
      * 
@@ -20,19 +20,9 @@ namespace tt {
             /** The ID of the session, or null if the session was not logged */
             std::string session;
 
-            /**
-             * Constructs a new end message with the given session ID.
-             * 
-             * @param session the ID of the session that ended, or null if the session
-             * was not logged
-             */
-            End(const std::string& session);
-
             End() {};
 
             std::string toString() const override;
-
-            void verify() const override;
 
             std::string type() const override {
                 return "End";

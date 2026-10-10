@@ -1,7 +1,7 @@
+#pragma once
+
 #include <string>
 #include <nlohmann/json.hpp>
-
-#pragma once
 
 #ifndef ENTRY_H
 #define ENTRY_H
@@ -9,15 +9,15 @@
 namespace tt {
     /**
 	 * A database entry represents an individual elements in the database,
-	 * including its meta-data, such as its {@link #title title} and {@link
-	 * #description description}.
+	 * including its meta-data, such as its {@link #title title} and 
+     * {@link #description description}.
 	 * 
 	 * @author Gage Birchmeier
 	 */
     class Entry {
         public:
             /**
-             * The unique system {@link Named name} for this element, which is
+             * The unique system name for this element, which is
              * primarily used internally by the server
              */
             std::string name;
@@ -33,20 +33,15 @@ namespace tt {
              */
             std::string description;
 
-            Entry(const std::string& name, const std::string& title, const std::string& description):
-            name(name), title(title), description(description) {}
-
-            Entry(const std::string& name): name(name) {}
-
-            Entry(const Entry& other):
-            name(other.name), title(other.title), description(other.description) {}
-
             // default constructor for json deserialization
             Entry() {}
 
+            /**
+             * Returns a string representation of this object.
+             * 
+             * @returns a string describing this object
+             */
             std::string toString() const;
-
-            friend std::ostream& operator<<(std::ostream& os, const Entry& a);
     };
 
     void from_json(const nlohmann::json& j, Entry& msg);

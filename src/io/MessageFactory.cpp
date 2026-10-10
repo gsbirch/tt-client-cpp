@@ -10,6 +10,7 @@
 #include <tt/io/End.h>
 #include <tt/io/Error.h>
 
+using namespace tt;
 
 void tt::registerMessageTypes()
 {

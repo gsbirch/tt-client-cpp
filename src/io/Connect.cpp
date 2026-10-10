@@ -8,10 +8,6 @@ std::string tt::Connect::toString() const
     return "[Connect Message: " + std::to_string(worlds.size()) + " worlds; " + std::to_string(agents.size()) + " agents]";
 }
 
-void tt::Connect::verify() const
-{
-}
-
 void tt::from_json(const nlohmann::json &j, Connect &msg)
 {
     j.at("version").get_to(msg.version);
@@ -31,13 +27,13 @@ void tt::to_json(nlohmann::json &j, const Connect &msg)
     };
 }
 
-void tt::from_json(const nlohmann::json &j, Available &obj)
+void tt::from_json(const nlohmann::json &j, Connect::Available &obj)
 {
     j.at("agent").get_to(obj.agent);
     j.at("world").get_to(obj.world);
 }
 
-void tt::to_json(nlohmann::json &j, const Available &obj)
+void tt::to_json(nlohmann::json &j, const Connect::Available &obj)
 {
     j = {
         {"agent", obj.agent},

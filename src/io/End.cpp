@@ -1,17 +1,10 @@
 #include <tt/io/End.h>
 
-tt::End::End(const std::string& session):
-session(session)
-{
-}
+using namespace tt;
 
 std::string tt::End::toString() const
 {
     return "[End Message: session=\"" + session + "\"" + "]";
-}
-
-void tt::End::verify() const
-{
 }
 
 void tt::from_json(const nlohmann::json &j, End &msg)

@@ -14,7 +14,7 @@ namespace tt {
     // forward declaration to avoid circular inheritance
     class Client;
 
-    /* Alias for a pointer to a client to clean up code. */
+    /** Alias for a pointer to a client to clean up code. */
     using client_ptr = std::unique_ptr<Client>;
 
     /**

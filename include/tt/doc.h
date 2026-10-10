@@ -18,7 +18,7 @@
 
 /**
  * @dir tt/world
- * Story {@link World worlds} define the objects, concepts, and actions that
+ * Story {@link tt::World worlds} define the objects, concepts, and actions that
  * exist in a story.
  */
 

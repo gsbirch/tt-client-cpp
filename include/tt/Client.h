@@ -229,8 +229,8 @@ namespace tt {
             /**
              * Returns the list of all {@link Turn turns} that have been taken so far in
              * this client's session that this client has observed. If the client is the
-             * {@link tt::Role#GAME_MASTER game master}, they always observe all turns. If
-             * this client is the {@link tt::Role#PLAYER player}, they may not observe all
+             * {@link tt::GAME_MASTER game master}, they always observe all turns. If
+             * this client is the {@link tt::PLAYER player}, they may not observe all
              * turns.
              * 
              * @return the list of all turns that have been taken so far in the session
@@ -312,7 +312,9 @@ namespace tt {
              * </ul>
              */
             std::string execute();
+            /// @cond
             std::string execute(ClientFactory* factory);
+            /// @endcond
 
             /**
              * Establishes a secure socket to the server based on this client's network
@@ -437,9 +439,9 @@ namespace tt {
             
             /**
              * This method is called each time the story world changes as a result of a
-             * turn the client observes. If this client is the {@link tt::Role#GAME_MASTER
+             * turn the client observes. If this client is the {@link tt::GAME_MASTER
              * game master}, it will observe all turns. If this client is the
-             * {@link tt::Role#PLAYER player}, it may not observe all turns.
+             * {@link tt::PLAYER player}, it may not observe all turns.
              * <p>
              * By default, this method does nothing. It can be overridden if the client
              * wants to react to a change in the world state.

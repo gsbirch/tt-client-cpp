@@ -1,7 +1,12 @@
+#pragma once
+
 #include <functional>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <tt/io/Message.h>
+
+#ifndef MESSAGEFACTORY_H
+#define MESSAGEFACTORY_H
 
 namespace tt {
     class MessageFactory {
@@ -42,3 +47,5 @@ namespace tt {
 
     void registerMessageTypes();
 }
+
+#endif

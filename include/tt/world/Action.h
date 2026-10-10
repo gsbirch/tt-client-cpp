@@ -61,9 +61,9 @@ namespace tt {
             bool consents(Role role);
 
             /**
-             * Returns a string representation of this action.
+             * Returns a string representation of this object.
              * 
-             * @returns a string describing this action
+             * @returns a string describing this object
              */
             const std::string& toString() const;
 

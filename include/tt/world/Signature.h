@@ -32,9 +32,9 @@ namespace tt {
         bool operator==(const Signature& s);
 
         /**
-             * Returns a string representation of this action.
+             * Returns a string representation of this object.
              * 
-             * @returns a string describing this action
+             * @returns a string describing this object
              */
         std::string toString() const;
 

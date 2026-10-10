@@ -1,11 +1,18 @@
-#include <tt/io/Message.h>
-
 #pragma once
+
+#include <tt/io/Message.h>
 
 #ifndef REPORT_H
 #define REPORT_H
 
 namespace tt {
+    /**
+     * The report message is sent from an agent to
+     * the server to indicate the value of a question on
+     * a survey about the session they are playing.
+     * 
+     * @author Gage Birchmeier
+     */
     class Report : public Message {
         public:
             /** The name or ID of the survey question */
@@ -32,8 +39,6 @@ namespace tt {
             Report() {}
 
             std::string toString() const override;
-
-            void verify() const override;
 
             std::string type() const override {
                 return "Report";

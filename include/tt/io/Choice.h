@@ -1,14 +1,14 @@
-#include <tt/io/Message.h>
-
 #pragma once
+
+#include <tt/io/Message.h>
 
 #ifndef CHOICE_H
 #define CHOICE_H
 
 namespace tt {
     /**
-     * The choice message is sent from an {@link edu.uky.cs.nil.tt.Agent agent} to
-     * the {edu.uky.cs.nil.tt.Server server} to signal what turn the agent wants
+     * The choice message is sent from an agent to
+     * the server to signal what turn the agent wants
      * to take.
      * 
      * @author Gage Birchmeier
@@ -30,10 +30,8 @@ namespace tt {
             Choice(int index);
 
             Choice(): index(0) {}
-
+            
             std::string toString() const override;
-
-            void verify() const override;
 
             std::string type() const override {
                 return "Choice";

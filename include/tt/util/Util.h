@@ -35,7 +35,7 @@ namespace tt {
     /**
 	 * Throws an exception if the given number is less than 0.
 	 * 
-	 * @param s the string which should not be non-negative
+	 * @param x the number which should not be positive
 	 * @param description a short description of the number, used in the
 	 * message of the exception which is thrown if the string is empty
 	 * @throws std::invalid_argument if the number is negative

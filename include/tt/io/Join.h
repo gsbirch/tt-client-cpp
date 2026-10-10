@@ -1,14 +1,20 @@
+#pragma once
+
 #include <string>
 #include <tt/Role.h>
 #include <tt/io/Message.h>
-
-#pragma once
 
 #ifndef JOIN_H
 #define JOIN_H
 
 namespace tt {
-
+    /**
+     * The join message is the first message sent from a client 
+     * to the server to provide the agent's credentials and its 
+     * preferences for what story world, role, and partner they want for their session.
+     * 
+     * @author Gage Birchmeier
+     */
     class Join: public Message {
         public:
             /** The new agent's name */
@@ -16,19 +22,19 @@ namespace tt {
             
             /**
              * The new agent's password, which must be provided if the agent is using a
-             * {@link #name} that is reserved on this server, or which should be null if
+             * {@link #name} that is reserved on this server, or which should be empty if
              * the agent is not using a reserved name
              */
             std::string password;
             
             /**
-             * The name of the story world this new agent wants to play in, or null if
+             * The name of the story world this new agent wants to play in, or empty if
              * they are willing to play in any story world
              */
             std::string world;
             
             /**
-             * The role this new agent wants to have in their session, or null if they
+             * The role this new agent wants to have in their session, or empty if they
              * are willing to play either role
              */
             Role role;
@@ -59,8 +65,6 @@ namespace tt {
 
             std::string toString() const override;
 
-            void verify() const override;
-
             /**
              * Returns true if this join request is compatible with another, meaning a
              * session could be created between the agents who sent the messages. This
@@ -79,14 +83,12 @@ namespace tt {
             }
 
         private:
-
-        template <typename T>
-        static const bool matches(const T* o1, const T* o2) {
-            return o1 == nullptr || o2 == nullptr || *o1 == *o2;
-        }
-
-        // should be unnecessary, as the Message class has this, and tostring is virtual??
-        // friend std::ostream& operator<<(std::ostream& os, const Join& a);
+            /// @cond
+            template <typename T>
+            static const bool matches(const T* o1, const T* o2) {
+                return o1 == nullptr || o2 == nullptr || *o1 == *o2;
+            }
+            /// @endcond
     };
 
     void from_json(const nlohmann::json& j, Join& msg);

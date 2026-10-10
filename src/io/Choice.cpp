@@ -1,6 +1,8 @@
 #include <tt/io/Choice.h>
 #include <tt/Client.h>
 
+using namespace tt;
+
 tt::Choice::Choice(int index):
 index(index)
 {
@@ -13,11 +15,6 @@ std::string tt::Choice::toString() const
         string += " \"" + getClient()->getName() + "\"";
     string += " " + index;
     return string + "]";
-}
-
-void tt::Choice::verify() const
-{
-    // Utilities.requireNonNegative(index, "choice");
 }
 
 void tt::to_json(json &j, const Choice &msg)

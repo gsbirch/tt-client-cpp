@@ -21,7 +21,7 @@ namespace tt {
         GAME_MASTER,
         
         /**
-         * The player role, who controls one characters, often the main character
+         * The player role, who controls one character, often the main character
          * of the story
          */
         PLAYER,

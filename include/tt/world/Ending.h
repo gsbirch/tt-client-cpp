@@ -25,9 +25,9 @@ namespace tt {
             Ending():id(0), signature(nullptr) {};
 
             /**
-             * Returns a string representation of this action.
+             * Returns a string representation of this object.
              * 
-             * @returns a string describing this action
+             * @returns a string describing this object
              */
             std::string toString() const;
 

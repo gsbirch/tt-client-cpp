@@ -56,9 +56,9 @@ namespace tt {
             const std::string& getCode() const;
 
             /**
-             * Returns a string representation of this action.
+             * Returns a string representation of this object.
              * 
-             * @returns a string describing this action
+             * @returns a string describing this object
              */
             std::string toString() const;
 

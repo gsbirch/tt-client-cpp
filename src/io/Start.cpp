@@ -8,11 +8,6 @@ std::string tt::Start::toString() const
     return "[Start Message: world=\"" + world->name + "\"; role=\"" + rtos(role) + "\"]";
 }
 
-void tt::Start::verify() const
-{
-
-}
-
 void tt::from_json(const nlohmann::json &j, Start &msg)
 {
     msg.role = stor(j.at("role").get<std::string>());
