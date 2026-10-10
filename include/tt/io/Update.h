@@ -16,16 +16,19 @@ namespace tt {
      */
     class Update : public Message {
         public:
+            /**
+             * An object describing the history of the story so far, the current state
+             * of the story world, and what turns are available for the agent to take,
+             * if any.
+             * Note that this is an exposed unique_ptr. This is because the {@link tt::Client}
+             * will take ownership of the Status object after it is received.
+             * This pointer will be invalid after the Client moves its value.
+             */
+            std::unique_ptr<Status> status;
+
             Update() {};
 
             std::string toString() const override;
-
-            /**
-             * Returns the status object in this message.
-             * 
-             * @return the status included in this message
-             */
-            const Status *getStatus() const;
 
             std::string type() const override {
                 return "Update";
@@ -34,12 +37,7 @@ namespace tt {
             friend void from_json(const nlohmann::json& j, Update& msg);
             friend void to_json(nlohmann::json& j, const Update& msg);
         private:
-            /**
-             * An object describing the history of the story so far, the current state
-             * of the story world, and what turns are available for the agent to take,
-             * if any
-             */
-            std::unique_ptr<Status> status;
+            
     };
 
     void from_json(const nlohmann::json& j, Update& msg);
