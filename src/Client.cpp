@@ -18,6 +18,7 @@
 #include <tt/io/Error.h>
 #include <tt/io/Choice.h>
 #include <tt/util/Util.h>
+#include <tt/io/Report.h>
 #include <cstdlib>
 
 using namespace tt;
@@ -300,6 +301,15 @@ void tt::Client::sendMessage(const tt::Message& m)
 
     if (const auto* join = dynamic_cast<const tt::Join*>(&m)) {
         j = *join;
+    }
+    if (const auto* choice = dynamic_cast<const tt::Choice*>(&m)) {
+        j = *choice;
+    }
+    if (const auto* stop = dynamic_cast<const tt::Stop*>(&m)) {
+        j = *stop;
+    }
+    if (const auto* report = dynamic_cast<const tt::Report*>(&m)) {
+        j = *report;
     }
 
     std::string s = j.dump() + "\n";
