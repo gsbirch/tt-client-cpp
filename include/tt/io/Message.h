@@ -15,6 +15,8 @@ namespace tt {
 
     /**
      * A message is information sent to or from a server in JSON format.
+     * Each message type has a to/from JSON function associated with it
+     * from the [Nlohmann JSON Library](https://github.com/nlohmann/json).
      * 
      * @author Gage Birchmeier
      */
