@@ -70,10 +70,10 @@ namespace tt {
             const Client* client;
     };
     /**
-     * Override stream insertion operator to allow printing the Action class
+     * Override stream insertion operator to allow printing the Message class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an action object
+     * @param a a reference to a message object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Message& a);

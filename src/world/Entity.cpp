@@ -2,8 +2,6 @@
 
 using namespace tt;
 
-const std::string Entity::type = "Entity";
-
 bool tt::Entity::isPlayer() const
 {
     return id == 0;
@@ -24,15 +22,20 @@ std::string tt::Entity::toString() const
     return name;
 }
 
-bool tt::Entity::operator==(const Entity &rhs) const
+const Entity *tt::Entity::toEntity() const
 {
-    return id == rhs.id;
+    return this;
 }
 
-std::ostream &tt::operator<<(std::ostream &os, const Entity &a)
+std::string_view tt::Entity::getType() const
 {
-    os << a.toString();
-    return os;
+    return TYPE;
+}
+
+bool tt::Entity::equals(const Value &other) const
+{
+    const Entity& o = static_cast<const Entity&>(other);
+    return id == o.id;
 }
 
 void tt::from_json(const nlohmann::json &j, Entity &obj)

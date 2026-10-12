@@ -23,13 +23,18 @@ namespace tt {
         public:
         /** The signature's name */
 	    std::string name;
-	
-	    /** The signature's arguments */
-	    std::vector<Value> arguments;
 
-        Signature();
+        Signature() {};
 
         bool operator==(const Signature& s);
+
+        /**
+         * Returns an unmodifiable list of all arguments defined in this story
+         * world ordered by the ID numbers.
+         * 
+         * @return a vector of arguments defined in this story world
+         */
+        const std::vector<const Value *>& getArguments() const;
 
         /**
              * Returns a string representation of this object.
@@ -39,6 +44,14 @@ namespace tt {
         std::string toString() const;
 
         friend std::ostream& operator<<(std::ostream& os, const Signature& a);
+        friend void from_json(const nlohmann::json& j, Signature& obj);
+        friend void to_json(nlohmann::json& j, const Signature& obj);
+
+        private:
+            /** The signature's arguments */
+            std::vector<std::unique_ptr<Value>> arguments;
+            /** Cache of argument ptrs */
+            mutable std::vector<const Value *> argumentsPtrs;
     };
 
     void from_json(const nlohmann::json& j, Signature& obj);

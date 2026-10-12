@@ -6,8 +6,6 @@ const Constant Constant::NULL_CONSTANT = Constant(std::monostate());
 const Constant Constant::TRUE = Constant(true);
 const Constant Constant::FALSE = Constant(false);
 
-const std::string Constant::type = "Constant";
-
 std::string tt::Constant::toString() const
 {
     if (auto* p = std::get_if<bool>(&value))            return *p ? "true" : "false";
@@ -29,15 +27,15 @@ double tt::Constant::toNumber() const
     return 0.0;  // monostate
 }
 
-bool tt::Constant::operator==(const Constant &rhs) const
+std::string_view tt::Constant::getType() const
 {
-    return value == rhs.value;
+    return TYPE;
 }
 
-std::ostream &tt::operator<<(std::ostream &os, const Constant &a)
+bool tt::Constant::equals(const Value &other) const
 {
-    os << a.toString();
-    return os;
+    const Constant& o = static_cast<const Constant&>(other);
+    return value == o.value;
 }
 
 void tt::from_json(const nlohmann::json &j, Constant &msg) {

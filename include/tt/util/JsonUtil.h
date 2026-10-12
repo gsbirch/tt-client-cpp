@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <tt/world/Value.h>
 #include <tt/world/Constant.h>
 #include <tt/world/Entity.h>
 
@@ -11,7 +12,7 @@ namespace tt {
     // Value is a simple joint type between Constant, Entity, and null
     // This code allows Value to be used like any other type without interference
     // And allows for equality.,
-    struct Value : std::variant<std::monostate,
+    /* struct Value : std::variant<std::monostate,
                                 std::unique_ptr<Constant>,
                                 std::unique_ptr<Entity>> {
         using variant::variant;
@@ -28,39 +29,41 @@ namespace tt {
                     return (x && y) ? *x == *y : (!x && !y);
             }, static_cast<const variant&>(a), static_cast<const variant&>(b));
         }
-    };
+    }; */
 };
 
 
 namespace nlohmann {
 template <>
-struct adl_serializer<tt::Value> {
-    static void to_json(json& j, const tt::Value& v) {
-        std::visit([&](const auto& x) {
-            using T = std::decay_t<decltype(x)>;
-            if constexpr (std::is_same_v<T, std::monostate>) {
-                // leave j untouched
-            } else if constexpr (std::is_same_v<T, std::unique_ptr<tt::Constant>>) {
-                if (!x) throw std::invalid_argument("null constant");
-                j = *x;
-                j["type"] = tt::Constant::type;
-            } else {
-                static_assert(std::is_same_v<T, std::unique_ptr<tt::Entity>>);
-                if (!x) throw std::invalid_argument("null entity");
-                j = *x;
-                j["type"] = tt::Entity::type;
-            }
-        }, v);
+struct adl_serializer<std::unique_ptr<tt::Value>> {
+
+    static void to_json(json& j, const std::unique_ptr<tt::Value>& v) {
+        if (!v) { j = nullptr; return; }
+
+        if (auto* e = dynamic_cast<const tt::Entity*>(v.get())) {
+            j = *e;                                   // uses Entity's to_json
+        } else if (auto* c = dynamic_cast<const tt::Constant*>(v.get())) {
+            j = *c;
+        } else {
+            throw std::runtime_error("Cannot serialize generic Value");
+        }
+        j["type"] = std::string(v->getType());           // tag added on top
     }
 
-    static void from_json(const json& j, tt::Value& v) {
-        const auto& type = j.at("type").get_ref<const std::string&>();
-        if (type == tt::Constant::type) {
-            v = std::make_unique<tt::Constant>(j.get<tt::Constant>());
-        } else if (type == tt::Entity::type) {
-            v = std::make_unique<tt::Entity>(j.get<tt::Entity>());
+    static void from_json(const json& j, std::unique_ptr<tt::Value>& v) {
+        if (j.is_null()) { v.reset(); return; }
+
+        const auto type = j.at("type").get<std::string>();
+        if (type == Entity::TYPE) {
+            auto e = std::make_unique<tt::Entity>();
+            j.get_to(*e);
+            v = std::move(e);
+        } else if (type == Constant::TYPE) {
+            auto c = std::make_unique<tt::Constant>();
+            j.get_to(*c);
+            v = std::move(c);
         } else {
-            throw std::runtime_error("unknown value type: " + type);
+            throw std::runtime_error("Unknown Value type: " + type);
         }
     }
 };

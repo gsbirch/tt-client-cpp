@@ -4,26 +4,28 @@
 
 using namespace tt;
 
-// tt::Signature::Signature(std::string name, std::vector<Value> arguments):
-// name(name), arguments(arguments)
-// {
-
-// }
-
-tt::Signature::Signature()
-{
-}
-
 bool tt::Signature::operator==(const Signature &s)
 {
     return name == s.name && arguments == s.arguments;
+}
+
+const std::vector<const Value *> &tt::Signature::getArguments() const
+{
+    if (argumentsPtrs.size() != arguments.size()) {
+        argumentsPtrs.clear();
+        argumentsPtrs.reserve(arguments.size());
+        for (const auto& p : arguments) {
+            argumentsPtrs.push_back(p.get());
+        }
+    }
+    return argumentsPtrs;
 }
 
 std::string tt::Signature::toString() const
 {
     std::string string = name + "(";
     for(int i = 0; i < arguments.size(); i++)
-        string += (i == 0 ? "" : ", ") + vtos(arguments[i]);
+        string += (i == 0 ? "" : ", ") + arguments[i]->toString();
     return string + ")";
 }
 

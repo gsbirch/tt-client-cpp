@@ -7,7 +7,7 @@ using namespace tt;
 
 std::string tt::Assignment::toString() const
 {
-    return variable->toString() + " = " + vtos(value);
+    return variable->toString() + " = " + value->toString();
 }
 
 const std::string &tt::Assignment::getDescription() const
@@ -23,6 +23,11 @@ const std::string &tt::Assignment::getCode() const
 const Variable *tt::Assignment::getVariable() const
 {
     return variable.get();
+}
+
+const Value *tt::Assignment::getValue() const
+{
+    return value.get();
 }
 
 bool tt::Assignment::operator==(const Assignment &rhs) const

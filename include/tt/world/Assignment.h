@@ -17,10 +17,6 @@ namespace tt {
      */
     class Assignment {
         public:
-
-            /** The value assigned to the variable */
-            Value value;
-
             /**
              * Whether or not this assignment can currently be observed. When an
              * assignment can be observed, it is known to be the case. When it cannot
@@ -29,7 +25,7 @@ namespace tt {
              */
             bool visible;
 
-            Assignment(): variable(nullptr), value(std::monostate()) {};
+            Assignment(): variable(nullptr), value(nullptr) {};
 
             /**
              * Returns a string representation of this object.
@@ -62,6 +58,13 @@ namespace tt {
              */
             const Variable* getVariable() const;
 
+             /**
+             * Returns the value the variable is assigned.
+             * 
+             * @return a pointer to the value
+             */
+            const Value* getValue() const;
+
             bool operator==(const Assignment& rhs) const;
 
             friend void from_json(const nlohmann::json& j, Assignment& obj);
@@ -75,6 +78,8 @@ namespace tt {
             std::string code;
             /** The variable that is being assigned a value */
             std::unique_ptr<Variable> variable;
+            /** The value assigned to the variable */
+            std::unique_ptr<Value> value;
     };
 
     void from_json(const nlohmann::json& j, Assignment& obj);

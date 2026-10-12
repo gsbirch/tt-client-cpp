@@ -2,6 +2,7 @@
 
 #include <string>
 #include <nlohmann/json.hpp>
+#include <tt/world/Value.h>
 
 #ifndef ENTITY_H
 #define ENTITY_H
@@ -13,10 +14,9 @@ namespace tt {
      * 
      * @author Gage Birchmeier
      */
-    class Entity {
+    class Entity : public Value {
         public:
-            /** Type used for JSON deserialization */
-            static const std::string type;
+            static constexpr std::string_view TYPE = "Entity";
 
             /** This asset's ID number, which is unique among other assets of the same type */
             int id;
@@ -55,18 +55,15 @@ namespace tt {
              */
             const std::string& getCode() const;
 
-            /**
-             * Returns a string representation of this object.
-             * 
-             * @returns a string describing this object
-             */
-            std::string toString() const;
-
-            bool operator==(const Entity& rhs) const;
+            std::string toString() const override;
+            virtual const Entity * toEntity() const override;
+            virtual std::string_view getType() const override;
 
             friend void from_json(const nlohmann::json& j, Entity& msg);
             friend void to_json(nlohmann::json& j, const Entity& msg);
-            friend std::ostream& operator<<(std::ostream& os, const Entity& a);
+
+        protected:
+            virtual bool equals(const Value& other) const override;
 
         private:
             /** A natural language description of this assignments */
@@ -76,15 +73,6 @@ namespace tt {
     };
     void from_json(const nlohmann::json& j, Entity& msg);
     void to_json(nlohmann::json& j, const Entity& msg);
-
-    /**
-     * Override stream insertion operator to allow printing the Entity class
-     * 
-     * @param os an output stream to insert into
-     * @param a a reference to an entity object
-     * @returns the output stream referenced
-     */
-    std::ostream& operator<<(std::ostream& os, const Entity& a);
 }
 
 #endif

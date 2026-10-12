@@ -34,6 +34,7 @@ add_library(tt
     src/world/Turn.cpp
     src/world/Variable.cpp
     src/world/World.cpp
+    src/world/Value.cpp
 
     include/tt/util/BlockingQueue.h
     include/tt/util/CompletionEvent.h

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <nlohmann/json.hpp>
+#include <tt/world/Value.h>
 
 #ifndef CONSTANT_H
 #define CONSTANT_H
@@ -11,16 +12,15 @@
 
 namespace tt {
     /**
-     * A constant is a {@link Value logical value} that always exists in all 
+     * A constant is a {@link tt::Value logical value} that always exists in all 
      * {@link tt::World story worlds}, such a the Boolean concepts of True and 
      * False, numbers, and so on.
      * 
      * @author Gage Birchmeier
      */
-    class Constant {
+    class Constant : public Value {
         public:
-            /** Type used for JSON deserialization */
-            static const std::string type;
+            static constexpr std::string_view TYPE = "Constant";
 
             /** A constant representing nothing or the absence of a value */
             static const Constant NULL_CONSTANT;
@@ -63,43 +63,17 @@ namespace tt {
             // default constructor necessary for
             Constant(): value(std::monostate()) {};
 
-            /**
-             * Returns a string representation of this object.
-             * 
-             * @returns a string describing this object
-             */
-            std::string toString() const;
-
-            /**
-             * Returns whether the value is a boolean equal to true
-             * 
-             * @return true if the value is equivalent to the bool true, false otherwise
-             */
-            bool toBool() const;
-
-            /**
-             * Returns the numeric value of this constant
-             * 
-             * @return the value converted to a double
-             */
-            double toNumber() const;
-
-            bool operator==(const Constant& rhs) const;
-
-            friend std::ostream& operator<<(std::ostream& os, const Constant& a);
+            std::string toString() const override;
+            bool toBool() const override;
+            double toNumber() const override;
+            virtual std::string_view getType() const override;
+        
+        protected:
+            virtual bool equals(const Value& other) const override;
     };
 
     void from_json(const nlohmann::json& j, Constant& obj);
     void to_json(nlohmann::json& j, const Constant& obj);
-
-    /**
-     * Override stream insertion operator to allow printing the Constant class
-     * 
-     * @param os an output stream to insert into
-     * @param a a reference to an constant object
-     * @returns the output stream referenced
-     */
-    std::ostream& operator<<(std::ostream& os, const Constant& a);
 }
 
 #endif
