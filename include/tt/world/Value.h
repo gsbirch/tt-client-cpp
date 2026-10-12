@@ -1,11 +1,14 @@
 #pragma once
 
-#include <tt/world/Entity.h>
+#include <string>
 
 #ifndef VALUE_H
 #define VALUE_H
 
 namespace tt {
+    // Forward declaration
+    class Entity;
+
     /**
      * A value is a logical expression which evaluates to itself.
      * 

@@ -1,4 +1,5 @@
 #include <tt/world/Value.h>
+#include <tt/world/Entity.h>
 #include <limits>
 
 using namespace tt;
