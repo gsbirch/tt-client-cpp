@@ -54,7 +54,7 @@ struct adl_serializer<std::unique_ptr<tt::Value>> {
         if (j.is_null()) { v.reset(); return; }
 
         const auto type = j.at("type").get<std::string>();
-        if (type == Entity::TYPE) {
+        if (type == tt::Entity::TYPE) {
             auto e = std::make_unique<tt::Entity>();
             j.get_to(*e);
             v = std::move(e);
