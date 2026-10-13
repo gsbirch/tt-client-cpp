@@ -318,6 +318,7 @@ void tt::Client::sendMessage(const tt::Message& m)
 
 void tt::Client::sendMessage(const std::string& s)
 {
+    std::cout << "[[I am sending the following message: " << s << "]]" << std::endl;
     const char * data = s.data();
     std::size_t remaining = s.size();
 

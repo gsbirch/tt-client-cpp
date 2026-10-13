@@ -245,6 +245,16 @@ namespace tt {
              * that will be thrown at the end of the {@link #execute()} method
              */
             std::exception_ptr uncaught = nullptr;
+
+            /** Mutex for modifying uncaught */
+            std::mutex uncaughtMutex;
+
+            /**
+             * A function for catching errors and printing detailed information about them.
+             * 
+             * @param stage the stage of the factory's execute function
+             */
+            void captureException(const char* stage);
             
             /** Whether {@link #close()} has been called */
             bool closed = false;

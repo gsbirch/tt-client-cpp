@@ -4,7 +4,7 @@ const std::string tt::Settings::NAME = "Tandem Tales C++ Library";
 
 const std::string tt::Settings::VERSION = "0.9.0";
 
-const std::string tt::Settings::SERVER_VERSION = "0.9.1";
+const std::string tt::Settings::SERVER_VERSION = "0.9.2";
 
 const std::string tt::Settings::AUTHORS = "Gage Birchmeier";
 

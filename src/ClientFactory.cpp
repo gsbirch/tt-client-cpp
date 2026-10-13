@@ -1,5 +1,8 @@
 #include <tt/ClientFactory.h>
 #include <tt/Client.h>
+#include <cxxabi.h>
+#include <typeinfo>
+#include <memory>
 
 tt::ClientFactory::ClientFactory(int maxClients): 
 maxClients(maxClients), tp(maxClients)
@@ -25,64 +28,45 @@ std::string tt::ClientFactory::toString() const
 
 void tt::ClientFactory::execute()
 {
-    // Notify factory that it has started.
     onStart();
-    // Interrupting skips lifecycle methods.
     bool interrupted = false;
+
     try {
-        // Create first client.
         createNewClient();
-        // Run operations until closed.
         while (!closed) {
-            std::unique_ptr<Operation> ptr = nullptr;
+            std::unique_ptr<Operation> ptr;
             queue.Pop(ptr);
+            if (!ptr) continue;          // avoid null deref if Pop gives nothing
             ptr->execute();
         }
-        // Notify factory that it has closed.
-        try {
-            onClose();
-        }
-        catch (...) {
-            if (uncaught == nullptr) {
-                uncaught = std::current_exception();
-            }
-        }
-    }
-    // probably need to fix this
-    catch (...) {
+        try { onClose(); }
+        catch (...) { captureException("onClose"); }
+    } catch (...) {
         interrupted = true;
+        captureException("main loop");
     }
-    // Close waiting clients.
-    for (const client_ptr& client : waiting) {
-        client->close();
-    }
-    // Wait for clients to finish.
-    // stop doesn't return until its threads have terminated.
-    tp.stop();
-    // Notify factory it has stopped
+
+    // Shutdown steps must not throw, or they'd skip the remaining cleanup.
+    try {
+        for (const client_ptr& client : waiting) client->close();
+    } catch (...) { captureException("closing clients"); }
+
+    try { tp.stop(); }
+    catch (...) { captureException("thread pool stop"); }
+
     if (!interrupted) {
-        try {
-            onStop();
-        }
-        catch (...) {
-            if (uncaught == nullptr)
-                uncaught = std::current_exception();
-        }
+        try { onStop(); }
+        catch (...) { captureException("onStop"); }
     }
-    // Empty the lists and queue.
+
     waiting.clear();
     running.clear();
     queue.Clear();
-    //Signal that the server is done shutting down
     completion.signal();
-    try {
-        std::rethrow_exception(uncaught);   // or: throw uncaught;
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << '\n';
-        throw;
-    } catch (...) {
-        std::cerr << "Unknown (non-std::exception) error\n";
-        throw;
+
+    // Only rethrow if something actually failed.
+    if (uncaught) {
+        std::rethrow_exception(uncaught);
     }
 }
 
@@ -99,6 +83,24 @@ void tt::ClientFactory::close()
         },
         *this
     ));
+}
+
+void tt::ClientFactory::captureException(const char *stage)
+{
+    std::exception_ptr ep = std::current_exception();   // must be called inside a catch block
+    try {
+        std::rethrow_exception(ep);
+    } catch (const std::exception& e) {
+        int status = 0;
+        std::unique_ptr<char, void(*)(void*)> name(
+            abi::__cxa_demangle(typeid(e).name(), nullptr, nullptr, &status), std::free);
+        std::cerr << "[" << stage << "] " << (status == 0 ? name.get() : typeid(e).name())
+                  << ": " << e.what() << '\n';
+    } catch (...) {
+        std::cerr << "[" << stage << "] non-std::exception thrown\n";
+    }
+    std::lock_guard<std::mutex> lock(uncaughtMutex);
+    if (!uncaught) uncaught = ep;
 }
 
 void tt::ClientFactory::createNewClient()

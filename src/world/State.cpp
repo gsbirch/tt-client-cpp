@@ -40,10 +40,7 @@ const Value *tt::State::get(const Variable* variable) const
 {
     for (const auto& p : assignments) {
         if (*p->getVariable() == *variable) {
-            if (p->value == std::monostate())
-                // the value is "null"
-                return nullptr;
-            return &(p->value);;
+            return p->getValue();
         }
     }
     // We couldn't find the variable
