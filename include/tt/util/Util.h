@@ -8,18 +8,6 @@
 // this is a space for any utility functions I need
 namespace tt {
     /**
-     * A function to convert a Value object into a string.
-     * 
-     * @param v A Value object
-     * @returns A string representation of v
-     */
-    inline std::string vtos(const Value &v) {
-        if (auto c = std::get_if<std::unique_ptr<tt::Constant>>(&v)) return (*c)->toString();
-        if (auto e = std::get_if<std::unique_ptr<tt::Entity>>(&v))  return (*e)->toString();
-        return "Value of unknown type";
-    }
-
-    /**
 	 * Throws an exception if the given string is empty.
 	 * 
 	 * @param s the string which should not be empty
