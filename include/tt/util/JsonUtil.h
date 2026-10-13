@@ -58,7 +58,7 @@ struct adl_serializer<std::unique_ptr<tt::Value>> {
             auto e = std::make_unique<tt::Entity>();
             j.get_to(*e);
             v = std::move(e);
-        } else if (type == Constant::TYPE) {
+        } else if (type == tt::Constant::TYPE) {
             auto c = std::make_unique<tt::Constant>();
             j.get_to(*c);
             v = std::move(c);
