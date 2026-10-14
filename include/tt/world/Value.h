@@ -75,7 +75,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the Value class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an value object
+     * @param obj a reference to an value object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Value& obj);

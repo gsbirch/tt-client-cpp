@@ -16,6 +16,7 @@ namespace tt {
      */
     class Entity : public Value {
         public:
+            /** Type identifier used for deserialization */
             static constexpr std::string_view TYPE = "Entity";
 
             /** This asset's ID number, which is unique among other assets of the same type */

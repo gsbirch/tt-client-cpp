@@ -20,6 +20,7 @@ namespace tt {
      */
     class Constant : public Value {
         public:
+            /** Type identifier used for deserialization */
             static constexpr std::string_view TYPE = "Constant";
 
             /** A constant representing nothing or the absence of a value */
