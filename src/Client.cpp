@@ -418,6 +418,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
     std::cout << "I got a response" << std::endl;
     // Process the response.
     if (!cpr::status::is_success(r.status_code)) {
+        std::cout << "HTTP " + std::to_string(r.status_code) + ": " + r.text << std::endl;
         throw std::runtime_error(
         "HTTP " + std::to_string(r.status_code) + ": " + r.text);
     }
