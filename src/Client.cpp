@@ -409,7 +409,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
     // Send the request.
     std::cout << "Im about to send the payload" << std::endl;
     cpr::Response r = cpr::Post(
-        cpr::Url{COMPLETE_MODEL},
+        cpr::Url{COMPLETE_URL},
         cpr::Header{{"Content-Type", "application/json"},
                     {"Authorization", "Bearer " + key}},
         cpr::Body{data.dump()},
