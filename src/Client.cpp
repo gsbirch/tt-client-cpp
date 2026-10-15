@@ -36,7 +36,6 @@ key(key), url(url), port(port)
     requireNonEmpty(name, "name");
     requireNonEmpty(url, "server URL");
     join = std::make_unique<Join>(name, password, world, role, partner);
-    std::cout << "Here is my key: " << key << std::endl;
 
     registerMessageTypes();
 }
@@ -320,7 +319,6 @@ void tt::Client::sendMessage(const tt::Message& m)
 
 void tt::Client::sendMessage(const std::string& s)
 {
-    std::cout << "[[I am sending the following message: " << s << "]]" << std::endl;
     const char * data = s.data();
     std::size_t remaining = s.size();
 
@@ -360,7 +358,6 @@ void tt::Client::onError(const std::string& message)
 
 std::string tt::Client::complete(const std::vector<std::string> &messages, const std::string &reasoning, int maxt, float temp, int topk, float topp, float minp)
 {
-    std::cout << key << std::endl;
     // Check if this request is possible.
     //std::string key = getKey();
     if (completeInTokens > COMPLETE_IN_TOKENS_LIMIT) {
@@ -369,7 +366,6 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
     if (completeOutTokens > COMPLETE_OUT_TOKENS_LIMIT) {
         throw std::length_error("The input token limit " + std::to_string(COMPLETE_OUT_TOKENS_LIMIT) + " has been exceeded.");
     }
-    std::cout << "my key is" << key << std::endl;
     std::vector<json> msg;
     // The message will always be an array of strings
     if (messages.size() % 2 == 1) {
@@ -382,7 +378,6 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         else
             msg.push_back({{"role", "assistant"}, {"content", messages[i]}});
     }
-    std::cout << "Im preparing the data" << std::endl;
     json data = {
         {"model", COMPLETE_MODEL},
         {"messages", msg},
@@ -407,7 +402,6 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         data["min_p"] = minp;
     }
     // Send the request.
-    std::cout << "Im about to send the payload" << std::endl;
     cpr::Response r = cpr::Post(
         cpr::Url{COMPLETE_URL},
         cpr::Header{{"Content-Type", "application/json"},
@@ -415,10 +409,8 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         cpr::Body{data.dump()},
         cpr::Timeout{10000}
     );
-    std::cout << "I got a response" << std::endl;
     // Process the response.
     if (!cpr::status::is_success(r.status_code)) {
-        std::cout << "HTTP " + std::to_string(r.status_code) + ": " + r.text << std::endl;
         throw std::runtime_error(
         "HTTP " + std::to_string(r.status_code) + ": " + r.text);
     }
@@ -580,7 +572,7 @@ std::vector<float> tt::Client::embed(std::string text, int dim)
     }
     // Send the request.
     cpr::Response r = cpr::Post(
-        cpr::Url{EMBED_MODEL},
+        cpr::Url{EMBED_URL},
         cpr::Header{{"Content-Type", "application/json"},
                     {"Authorization", "Bearer " + key}},
         cpr::Body{data.dump()},
