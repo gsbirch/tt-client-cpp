@@ -403,6 +403,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         data["min_p"] = minp;
     }
     // Send the request.
+    std::cout << "Im about to send the payload" << std::endl;
     cpr::Response r = cpr::Post(
         cpr::Url{COMPLETE_MODEL},
         cpr::Header{{"Content-Type", "application/json"},
@@ -410,7 +411,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         cpr::Body{data.dump()},
         cpr::Timeout{10000}
     );
-
+    std::cout << "I got a response" << std::endl;
     // Process the response.
     if (!cpr::status::is_success(r.status_code)) {
         throw std::runtime_error(
@@ -418,9 +419,9 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
     }
     if (r.status_code == 200) {
         json responseData = json::parse(r.text);
-        completeInTokens += responseData['usage']['prompt_tokens'].get<int>();
-        completeOutTokens += responseData['usage']['completion_tokens'].get<int>();
-        return responseData['choices'][0]['message']['content'].get<std::string>();
+        completeInTokens += responseData["usage"]["prompt_tokens"].get<int>();
+        completeOutTokens += responseData["usage"]["completion_tokens"].get<int>();
+        return responseData["choices"][0]["message"]["content"].get<std::string>();
     }
 
     return "";
