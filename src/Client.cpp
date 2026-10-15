@@ -581,6 +581,7 @@ std::vector<float> tt::Client::embed(std::string text, int dim)
 
     // Process the response.
     if (!cpr::status::is_success(r.status_code)) {
+        std::cout << "HTTP " + std::to_string(r.status_code) + ": " + r.text << std::endl;
         throw std::runtime_error(
         "HTTP " + std::to_string(r.status_code) + ": " + r.text);
     }
