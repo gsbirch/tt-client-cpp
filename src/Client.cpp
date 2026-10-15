@@ -20,6 +20,7 @@
 #include <tt/util/Util.h>
 #include <tt/io/Report.h>
 #include <cstdlib>
+#include <cpr/cpr.h>
 
 using namespace tt;
 
@@ -358,8 +359,71 @@ void tt::Client::onError(const std::string& message)
 
 std::string tt::Client::complete(const std::vector<std::string> &messages, const std::string &reasoning, int maxt, float temp, int topk, float topp, float minp)
 {
-    getKey();
-    return std::string();
+    // Check if this request is possible.
+    std::string key = getKey();
+    if (completeInTokens > COMPLETE_IN_TOKENS_LIMIT) {
+        throw std::length_error("The input token limit " + std::to_string(COMPLETE_IN_TOKENS_LIMIT) + " has been exceeded.");
+    }
+    if (completeOutTokens > COMPLETE_OUT_TOKENS_LIMIT) {
+        throw std::length_error("The input token limit " + std::to_string(COMPLETE_OUT_TOKENS_LIMIT) + " has been exceeded.");
+    }
+    std::vector<json> msg;
+    // The message will always be an array of strings
+    if (messages.size() % 2 == 1) {
+        throw std::length_error("Conversation must have an even number of messages.");
+    }
+    msg.push_back({{"role", "system"}, {"content", messages[0]}});
+    for (int i = 1; i < messages.size(); i++) {
+        if (i % 2 == 0)
+            msg.push_back({{"role", "user"}, {"content", messages[i]}});
+        else
+            msg.push_back({{"role", "assistant"}, {"content", messages[i]}});
+    }
+    json data = {
+        {"model", COMPLETE_MODEL},
+        {"messages", msg},
+        {"seed", COMPLETE_SEED},
+    };
+    if (reasoning != "") {
+        data["reasoning_effort"] = reasoning;
+    }
+    if (maxt != -1) {
+        data["max_completion_tokens"] = maxt;
+    }
+    if (temp != -1.0) {
+        data["temperature"] = temp;
+    }
+    if (topk != -1) {
+        data["top_k"] = topk;
+    }
+    if (topp != -1) {
+        data["top_p"] = topp;
+    }
+    if (minp != -1) {
+        data["min_p"] = minp;
+    }
+    // Send the request.
+    cpr::Response r = cpr::Post(
+        cpr::Url{COMPLETE_MODEL},
+        cpr::Header{{"Content-Type", "application/json"},
+                    {"Authorization", "Bearer " + key}},
+        cpr::Body{data.dump()},
+        cpr::Timeout{10000}
+    );
+
+    // Process the response.
+    if (!cpr::status::is_success(r.status_code)) {
+        throw std::runtime_error(
+        "HTTP " + std::to_string(r.status_code) + ": " + r.text);
+    }
+    if (r.status_code == 200) {
+        json responseData = json::parse(r.text);
+        completeInTokens += responseData['usage']['prompt_tokens'].get<int>();
+        completeOutTokens += responseData['usage']['completion_tokens'].get<int>();
+        return responseData['choices'][0]['message']['content'].get<std::string>();
+    }
+
+    return "";
 }
 
 
@@ -492,7 +556,41 @@ std::ostream &tt::operator<<(std::ostream &os, const Client &a)
 
 std::vector<float> tt::Client::embed(std::string text, int dim)
 {
+    // Check if this request is possible.
     std::string key = getKey();
+    if (embedTokens > EMBED_TOKENS_LIMIT) {
+        throw std::length_error("The input token limit " + std::to_string(EMBED_TOKENS_LIMIT) + " has been exceeded.");
+    }
+    // Construct the data object.
+    json data = {
+        {"model", EMBED_MODEL},
+        {"input_type", "string"},
+        {"input", text},
+        {"encoding_format", "float"}
+    };
+    if (dim != -1) {
+        requireNonNegative(dim, "dimension count");
+        data["dimensions"] = dim;
+    }
+    // Send the request.
+    cpr::Response r = cpr::Post(
+        cpr::Url{EMBED_MODEL},
+        cpr::Header{{"Content-Type", "application/json"},
+                    {"Authorization", "Bearer " + key}},
+        cpr::Body{data.dump()},
+        cpr::Timeout{10000}
+    );
+
+    // Process the response.
+    if (!cpr::status::is_success(r.status_code)) {
+        throw std::runtime_error(
+        "HTTP " + std::to_string(r.status_code) + ": " + r.text);
+    }
+    if (r.status_code == 200) {
+        json responseData = json::parse(r.text);
+        embedTokens += responseData["usage"]["total_tokens"].get<int>();
+        return responseData["data"][0]["embedding"].get<std::vector<float>>();
+    }
     return std::vector<float>();
 }
 

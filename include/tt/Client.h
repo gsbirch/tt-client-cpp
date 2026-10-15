@@ -583,20 +583,6 @@ namespace tt {
              */
             std::string complete(const std::vector<std::string>& messages, const std::string& reasoning, int maxt = -1, float temp = 0.0, int topk = -1, float topp = -1.0, float minp = -1.0);
 
-
-            /**
-             * Makes an external call to a large language model API to embed a text
-             * string in the model's latent space.
-             * <p>
-             * This method requires the agent to have an {@link #ENVIRONMENT_VARIABLE_API_KEY API key}; 
-             * without one, this method will throw an exception.
-             * 
-             * @param string the string to embed
-             * @param f an array that will be populated with a vector representation
-             * of the string's embedding
-             * @throws std::logic_error if the client does not have an API key
-             */
-
             /**
              * Queries the external text embedding API and returns its response as a
              * vector of floats. Each time this method is called, the number of tokens
@@ -678,6 +664,13 @@ namespace tt {
             
             /** The session ID received from the server at the end of the session */
             std::string session = "";
+
+            /** The number of input tokens used so far by the text embedding model. */
+            int embedTokens = 0;
+            /** The number of input tokens used so far by the text completion model. */
+            int completeInTokens = 0;
+            /** The number of output toeksn used so far by the text completion model. */
+            int completeOutTokens = 0;
 
             /**
              * If the client has sent its join request, this method throws an exception

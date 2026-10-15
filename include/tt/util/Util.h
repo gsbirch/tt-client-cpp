@@ -31,7 +31,7 @@ namespace tt {
     template <typename T>
     inline void requireNonNegative(const T& x, const std::string& description) {
         if (x < 0)
-            throw std::invalid_argument(description + " cannot be empty");
+            throw std::invalid_argument(description + " cannot be negative");
     }
 }
 

@@ -66,6 +66,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(nlohmann_json)
 
+FetchContent_Declare(
+    cpr 
+    GIT_REPOSITORY 
+    https://github.com/libcpr/cpr.git
+    GIT_TAG 1.10.5)
+FetchContent_MakeAvailable(cpr)
+
+
 target_link_libraries(tt
     PUBLIC nlohmann_json::nlohmann_json
+    PRIVATE cpr::cpr
 )
