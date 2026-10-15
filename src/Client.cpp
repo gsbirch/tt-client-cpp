@@ -367,6 +367,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
     if (completeOutTokens > COMPLETE_OUT_TOKENS_LIMIT) {
         throw std::length_error("The input token limit " + std::to_string(COMPLETE_OUT_TOKENS_LIMIT) + " has been exceeded.");
     }
+    std::cout << "my key is" << key << std::endl;
     std::vector<json> msg;
     // The message will always be an array of strings
     if (messages.size() % 2 == 1) {
@@ -379,6 +380,7 @@ std::string tt::Client::complete(const std::vector<std::string> &messages, const
         else
             msg.push_back({{"role", "assistant"}, {"content", messages[i]}});
     }
+    std::cout << "Im preparing the data" << std::endl;
     json data = {
         {"model", COMPLETE_MODEL},
         {"messages", msg},
