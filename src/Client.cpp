@@ -36,6 +36,7 @@ key(key), url(url), port(port)
     requireNonEmpty(name, "name");
     requireNonEmpty(url, "server URL");
     join = std::make_unique<Join>(name, password, world, role, partner);
+    std::cout << "Here is my key: " << key << std::endl;
 
     registerMessageTypes();
 }
@@ -359,8 +360,9 @@ void tt::Client::onError(const std::string& message)
 
 std::string tt::Client::complete(const std::vector<std::string> &messages, const std::string &reasoning, int maxt, float temp, int topk, float topp, float minp)
 {
+    std::cout << key << std::endl;
     // Check if this request is possible.
-    std::string key = getKey();
+    //std::string key = getKey();
     if (completeInTokens > COMPLETE_IN_TOKENS_LIMIT) {
         throw std::length_error("The input token limit " + std::to_string(COMPLETE_IN_TOKENS_LIMIT) + " has been exceeded.");
     }
