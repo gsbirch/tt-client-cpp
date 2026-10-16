@@ -80,9 +80,9 @@ tt::ClientFactory has the following lifecycle methods:
 tt::Client also provides a way to call an external API for expensive
 operations like text embedding and text completion.
 
-- tt::ClientFactory::embed lets you embed a text string as an
+- tt::Client::embed lets you embed a text string as an
   array of `float`s.
-- tt::ClientFactory::complete lets you complete a textconversation.
+- tt::Client::complete lets you complete a textconversation.
 
 This [more complete example](https://github.com/gsbirch/tt-random-agent-cpp)
 shows you everything you need to download and run a Tandem Tales server and
