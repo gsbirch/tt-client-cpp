@@ -3,13 +3,13 @@
 This C++ libray provides the abstract `tt::Client` and `tt::Factory` classes
 that can be extended to create [Tandem Tales](https://sgware.github.io/tt)
 agents. See
-[this example C++ agent](https://github.com/sgware/tt-random-agent-python)
+[this example C++ agent](https://github.com/gsbirch/tt-random-agent-cpp)
 for a demonstration of how to download and run a Tandem Tales server, define a
 Python agent, connect it to the server, and play with it.
 
 ## Download and Install
 
-If your project has a (`CMakeLists.txt`)[https://cmake.org/] file, you can add this library
+If your project has a [`CMakeLists.txt`](https://cmake.org/) file, you can add this library
 to your project by adding the following lines:
 ```
 include(FetchContent)
