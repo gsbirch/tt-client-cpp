@@ -130,7 +130,8 @@ std::string tt::ExternalAPI::complete(const std::vector<std::string> &messages)
 
 std::string tt::ExternalAPI::complete(const std::string &message)
 {
-    return complete({message});
+    std::vector<std::string> msgs = {message};
+    return complete(msgs);
 }
 
 void tt::ExternalAPI::setReasoning(const std::optional<std::string> &value)
