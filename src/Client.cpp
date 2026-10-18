@@ -250,8 +250,17 @@ std::string tt::Client::execute(ClientFactory* factory)
     // Throw an uncaught exception or return the session ID.
     if(uncaught == nullptr)
         return session;
-    else
-        throw uncaught;
+    else {
+        // print out the exception
+        try {
+            std::rethrow_exception(uncaught);
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << '\n';
+        } catch (...) {
+            std::cerr << "Unknown error\n";
+        }
+        std::rethrow_exception(uncaught);
+    }
 }
 
 SSL* tt::Client::connect(const std::string& url, int port)
