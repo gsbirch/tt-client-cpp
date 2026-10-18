@@ -78,11 +78,12 @@ tt::ClientFactory has the following lifecycle methods:
 - tt::ClientFactory::onStop, which runs before the factory stops.
 
 tt::Client also provides a way to call an external API for expensive
-operations like text embedding and text completion.
+operations like text embedding and text completion. It does so through its
+tt::Client::external member variable.
 
-- tt::Client::embed lets you embed a text string as an
+- tt::ExternalAPI::embed lets you embed a text string as an
   array of `float`s.
-- tt::Client::complete lets you complete a textconversation.
+- tt::ExternalAPI::complete lets you complete a textconversation.
 
 This [more complete example](https://github.com/gsbirch/tt-random-agent-cpp)
 shows you everything you need to download and run a Tandem Tales server and

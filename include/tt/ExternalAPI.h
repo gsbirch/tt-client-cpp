@@ -75,7 +75,7 @@ namespace tt
 
             /**
              * Queries the external text completion API and returns its response as a
-             * string. With a single string as iput, the model will use its default 
+             * string. With a single string as input, the model will use its default 
              * system prompt and treat the string as a message from the user. 
              * 
              * Each time this method is called, the number of tokens used
