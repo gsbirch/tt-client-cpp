@@ -312,7 +312,7 @@ namespace tt {
              * new SSL session.
              * <p>
              * The caller takes ownership of the returned object and is responsible for
-             * releasing it with <code>SSL_free()</code>.
+             * releasing it with `SSL_free()`.
              *
              * @param url the host name or IP address of the server
              * @param port the network port on which to open the socket
@@ -668,7 +668,6 @@ namespace tt {
 
             /* A blocking queue used by {@link #execute()} to wait for messages */
             BlockingQueue<std::unique_ptr<Message>> messageQueue_;
-            // std::atomic<bool> running_{true};
 
             /**
              * This function deserializes raw json into a unique pointer for a message object
