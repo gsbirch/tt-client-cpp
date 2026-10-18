@@ -36,8 +36,13 @@ namespace tt
             /** The seed used for large language model text completion requests. */
             const int COMPLETE_SEED = 0;
 
+            /** Constructs an ExternalAPI object.
+             * 
+             * @param key the api key to use
+             */
             ExternalAPI(const std::string& key);
 
+            /** Constructs an ExternalAPI object. */
             ExternalAPI();
 
             /**
@@ -85,7 +90,7 @@ namespace tt
              * `COMPLETE_IN_TOKENS_LIMIT` or `COMPLETE_OUT_TOKENS_LIMIT`
              * respectively, this method will raise an exception.
              * 
-             * @param messages the message from the user.
+             * @param message the message from the user.
              * @returns The response for the text completion API as a string
              * @throws std::logic_error if the client does not have an API key
              */

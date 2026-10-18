@@ -72,7 +72,7 @@ tt::Client has the following lifecycle methods:
 
 tt::ClientFactory has the following lifecycle methods:
 
-- @ref tt::ClientFactory::onStart(void) "tt::ClientFactory::onStart", which runs after the factory starts.
+- @ref tt::ClientFactory::onStart() const "tt::ClientFactory::onStart", which runs after the factory starts.
 - tt::ClientFactory::onClose, which runs after the factory has been shut
   down.
 - tt::ClientFactory::onStop, which runs before the factory stops.
