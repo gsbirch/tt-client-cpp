@@ -14,6 +14,7 @@
 #include <tt/Role.h>
 #include <tt/util/BlockingQueue.h>
 #include <atomic>
+#include <tt/ExternalAPI.h>
 
 #ifndef CLIENT_H
 #define CLIENT_H
@@ -24,23 +25,6 @@ namespace tt {
     class Join;
     class Message;
 
-    /** The URL to which large language model text embedding requests will be sent.*/
-    const std::string EMBED_URL = "https://openrouter.ai/api/v1/embeddings";
-    /** The model to be used for large language model text embedding requests. */
-    const std::string EMBED_MODEL = "qwen/qwen3-embedding-8b";
-    /** The maximum number of input tokens that can use for text embedding requests.*/
-    const int EMBED_TOKENS_LIMIT = 1000000;
-
-    /** The URL to which large language model text completion requests will be sent. */
-    const std::string COMPLETE_URL = "https://openrouter.ai/api/v1/chat/completions";
-    /** The large language model to be used for text completion requests. */
-    const std::string COMPLETE_MODEL = "deepseek/deepseek-v4-flash-0731";
-    /** The maximum number of input tokens that can use for text completion requests. */
-    const int COMPLETE_IN_TOKENS_LIMIT = 1000000;
-    /** The maximum number of output tokens that can use for text completion requests.*/
-    const int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
-    /** The seed used for large language model text completion requests. */
-    const int COMPLETE_SEED = 0;
     /** 
      * A client connects to a server to find a partner and play a
      * {@link tt::Role role} in a storytelling session.
@@ -96,6 +80,9 @@ namespace tt {
              */
             const static int DEFAULT_PORT;
 
+            /** Used to access external APIs */
+            ExternalAPI external;
+
             /**
              * Constructs a client with the given session preferences, password, API
              * key, and network details.
@@ -114,7 +101,7 @@ namespace tt {
              * @param url the URL of the server to which this client will connect
              * @param port the network port on which this client will connect
              */
-            Client(const std::string& name, const std::string& password, const std::string& world, Role role, const std::string& partner, const std::string& key, const std::string& url, int port);
+            Client(const std::string& name, const std::string& password, const std::string& world, Role role, const std::string& partner, const char* key, const std::string& url, int port);
 
             /**
              * Constructs a client with the given session preferences and network
@@ -551,51 +538,6 @@ namespace tt {
             virtual void onError(const std::string& message);
 
             /**
-             * Queries the external text completion API and returns its response as a
-             * string. Each time this method is called, the number of tokens used
-             * in the prompt is added to `complete_in_tokens` and the number of
-             * tokens used in reasoning and completion is added to
-             * `complete_out_tokens`. If the number of tokens used exceeds
-             * `COMPLETE_IN_TOKENS_LIMIT` or `COMPLETE_OUT_TOKENS_LIMIT`
-             * respectively, this method will raise an exception.
-             * 
-             * @param messages An array of strings representing a conversation.
-             * The first string will be used as the system prompt. Every odd
-             * numbered message will be treated as a message from the user. 
-             * Every even numbered message (after the first) will be treated as 
-             * a response from the assistant.
-             * @param reasoning The level of reasoning used by the large language
-             * model during text completion. Value includes `max`, `high`,
-             * `medium`, `low`, and `none`.
-             * @param maxt The maximum number of tokens the model may use to
-             * generate its response.
-             * @param temp Influences the randomness of the response. A value of
-             * 0.0 will give deterministic responses. The max value is 2.0.
-             * @param topk When choosing a next token to add to the output, the
-             * model may only choose from the best k tokens.
-             * @param topp When choosing a next token to add to the output, the
-             * model may only choose from tokens whose probability add to p.
-             * @param minp When choosing a next token to add to the output, the
-             * model may only choose from tokens whose probability is p times
-             * the probability of the most likely token.
-             * @returns The response for the text completion API as a string
-             * @throws std::logic_error if the client does not have an API key
-             */
-            std::string complete(const std::vector<std::string>& messages, const std::string& reasoning, int maxt = -1, float temp = 0.0, int topk = -1, float topp = -1.0, float minp = -1.0);
-
-            /**
-             * Queries the external text embedding API and returns its response as a
-             * vector of floats. Each time this method is called, the number of tokens
-             * used it added to `embed_tokens`. If the number of tokens used exceeds
-             * `EMBED_TOKENS_LIMIT`, this method will raise an exception.
-             * 
-             * @param text The text which will be embedded as an array of floats.
-             * @param dim The number of dimensions in the returned array.
-             * @returns the vector embedding of the text as a vector of floats
-             */
-            std::vector<float> embed(std::string text, int dim = 1028);
-
-            /**
              * Waits for a {@link tt::Message Message} of any type to be received.
              * <p>
              * It is not recommended for implementations of this abstract class to
@@ -620,8 +562,7 @@ namespace tt {
             std::unique_ptr<T> receive();
 
         private:
-            /** The client's API key */
-            std::string key;
+            
 
             /** The URL where the client will attempt to connect */
             std::string url;
@@ -664,13 +605,6 @@ namespace tt {
             
             /** The session ID received from the server at the end of the session */
             std::string session = "";
-
-            /** The number of input tokens used so far by the text embedding model. */
-            int embedTokens = 0;
-            /** The number of input tokens used so far by the text completion model. */
-            int completeInTokens = 0;
-            /** The number of output toeksn used so far by the text completion model. */
-            int completeOutTokens = 0;
 
             /**
              * If the client has sent its join request, this method throws an exception
@@ -723,15 +657,6 @@ namespace tt {
             void sendMessage(const std::string& s);
 
             /**
-             * Returns this client's {@link #key API key} or throws an exception if it
-             * does not have one.
-             * 
-             * @return the client's API key
-             * @throws std::logic_error if the client does not have an API key
-             */
-            const std::string& getKey() const;
-
-            /**
              * This function constantly waits for messages to be sent. It places received
              * messages in the {@link #messageQueue_ message queue} to be processed.
              * <p>
@@ -756,6 +681,7 @@ namespace tt {
 
             /* A buffer used by {@link #receiveLoop} to store messages if they are received in parts*/
             std::string recvBuffer_;
+
     };
     /**
      * Override stream insertion operator to allow printing the Client class
