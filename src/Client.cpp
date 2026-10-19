@@ -309,6 +309,9 @@ SSL* tt::Client::connect(const std::string& url, int port)
     SSL_set_tlsext_host_name(ssl_ptr, url.c_str());
     SSL_set1_host(ssl_ptr, url.c_str());
 
+    const char* f = std::getenv("SSL_CERT_FILE");
+    std::cerr << "SSL_CERT_FILE=" << (f ? f : "(unset)") << std::endl;
+
     // Start TLS
     if (SSL_connect(ssl_ptr) != 1) {
         long vr = SSL_get_verify_result(ssl_ptr);
