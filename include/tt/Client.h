@@ -562,8 +562,6 @@ namespace tt {
             std::unique_ptr<T> receive();
 
         private:
-            
-
             /** The URL where the client will attempt to connect */
             std::string url;
 

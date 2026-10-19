@@ -293,12 +293,25 @@ SSL* tt::Client::connect(const std::string& url, int port)
 
     // SSL setup
     ctx = SSL_CTX_new(TLS_client_method());
+    if (!ctx)
+        throw std::runtime_error("Failed to create SSL context");
+
+    if (SSL_CTX_set_default_verify_paths(ctx) != 1)
+        throw std::runtime_error("Failed to load default trust store");
+
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, nullptr);
+
     SSL* ssl_ptr = SSL_new(ctx);
     SSL_set_fd(ssl_ptr, sock);
+    SSL_set_tlsext_host_name(ssl_ptr, url.c_str());
+    SSL_set1_host(ssl_ptr, url.c_str());
 
     // Start TLS
-    if (SSL_connect(ssl_ptr) != 1)
-        throw std::runtime_error("TLS handshake failed");
+    if (SSL_connect(ssl_ptr) != 1) {
+        long vr = SSL_get_verify_result(ssl_ptr);
+        throw std::runtime_error(std::string("TLS handshake failed: ") +
+                                 X509_verify_cert_error_string(vr));
+    }
 
     return ssl_ptr;
 }
