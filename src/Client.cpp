@@ -138,16 +138,16 @@ std::string tt::Client::execute(ClientFactory* factory)
     if(external.getKey() == external.INVALID_KEY)
 		onWarning("The environment variable \"" + ENVIRONMENT_VARIABLE_API_KEY + "\" is not set. This agent will not be able to use the external API.");
     
-    // Connect the socket
-    ssl = connect(url, port);
-
-    // Run a thread for receiving messages
-    running_ = true;
-    receiveThread_ = std::thread(&Client::receiveLoop, this);
-
     // If an exception is thrown, catch it to throw later
     std::exception_ptr uncaught = nullptr;
     try {
+        // Connect the socket
+        ssl = connect(url, port);
+    
+        // Run a thread for receiving messages
+        running_ = true;
+        receiveThread_ = std::thread(&Client::receiveLoop, this);
+    
         // Wait for the connect message
         std::unique_ptr<Connect> connect = std::move(receive<Connect>());
         if (connect != nullptr) {
@@ -255,9 +255,9 @@ std::string tt::Client::execute(ClientFactory* factory)
         try {
             std::rethrow_exception(uncaught);
         } catch (const std::exception& e) {
-            std::cerr << "Error: " << e.what() << '\n';
+            std::cerr << "Error: " << e.what() << '\n' << std::endl;
         } catch (...) {
-            std::cerr << "Unknown error\n";
+            std::cerr << "Unknown error\n" << std::endl;
         }
         std::rethrow_exception(uncaught);
     }
@@ -286,8 +286,11 @@ SSL* tt::Client::connect(const std::string& url, int port)
     }
 
     if (::connect(sock, result->ai_addr, result->ai_addrlen) < 0) {
+        int err = errno;
         freeaddrinfo(result);
-        throw std::runtime_error("Failed to connect to " + url);
+        ::close(sock);
+        throw std::runtime_error("Failed to connect to " + url + ":" + std::to_string(port) +
+                                ": " + std::strerror(err));
     }
     freeaddrinfo(result);
 

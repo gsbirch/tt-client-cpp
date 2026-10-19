@@ -66,6 +66,13 @@ void tt::ClientFactory::execute()
 
     // Only rethrow if something actually failed.
     if (uncaught) {
+        try {
+            std::rethrow_exception(uncaught);
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << '\n' << std::endl;
+        } catch (...) {
+            std::cerr << "Unknown error\n" << std::endl;
+        }
         std::rethrow_exception(uncaught);
     }
 }
