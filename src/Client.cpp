@@ -299,18 +299,23 @@ SSL* tt::Client::connect(const std::string& url, int port)
     if (!ctx)
         throw std::runtime_error("Failed to create SSL context");
 
-    if (SSL_CTX_set_default_verify_paths(ctx) != 1)
-        throw std::runtime_error("Failed to load default trust store");
+    // Verify there is actually a certificate at the location specified in the env var
+    if (SSL_CTX_load_verify_locations(ctx, std::getenv("SSL_CERT_FILE"), nullptr) != 1) {
+        ERR_print_errors_fp(stderr);
+        throw std::runtime_error("Failed to load truststore");
+    }
 
+    // Verify the server's certificate
     SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, nullptr);
 
+    // Create a TLS object
     SSL* ssl_ptr = SSL_new(ctx);
+    // Attach the socker to the TLS object
     SSL_set_fd(ssl_ptr, sock);
+    // Sends hostname to the server
     SSL_set_tlsext_host_name(ssl_ptr, url.c_str());
+    // Tells OpenSSL which hostname the server's certificate must match 
     SSL_set1_host(ssl_ptr, url.c_str());
-
-    const char* f = std::getenv("SSL_CERT_FILE");
-    std::cerr << "SSL_CERT_FILE=" << (f ? f : "(unset)") << std::endl;
 
     // Start TLS
     if (SSL_connect(ssl_ptr) != 1) {
@@ -463,7 +468,6 @@ void tt::Client::receiveLoop()
                 }
             }
         } else {
-            std::cerr << "There has been an SSL error, or the connection has been closed!" << std::endl;
             running_ = false;
             break;
         }
