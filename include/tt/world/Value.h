@@ -16,6 +16,9 @@ namespace tt {
      */
     class Value {
         public:
+            /** Virtual deconstructor so Entity and Value can have their own. */
+            virtual ~Value() = default;
+
             /**
              * If this value represents a Boolean, this method convert it into a bool;
              * all other values are converted to `false`.
