@@ -1,11 +1,11 @@
 # Tandem Tales Client (C++)
 
-This C++ libray provides the abstract `tt::Client` and `tt::Factory` classes
+This C++ libray provides the abstract `tt::Client` and `tt::ClientFactory` classes
 that can be extended to create [Tandem Tales](https://sgware.github.io/tt)
 agents. See
 [this example C++ agent](https://github.com/gsbirch/tt-random-agent-cpp)
 for a demonstration of how to download and run a Tandem Tales server, define a
-Python agent, connect it to the server, and play with it.
+C++ agent, connect it to the server, and play with it.
 
 ## Download and Install
 
