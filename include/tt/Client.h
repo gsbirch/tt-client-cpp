@@ -599,7 +599,7 @@ namespace tt {
             std::vector<const Turn *> choices;
             
             /** The stop message received from the server */
-            const Stop *stop = nullptr;
+            std::unique_ptr<Stop> stop = nullptr;
             
             /** The session ID received from the server at the end of the session */
             std::string session = "";
@@ -678,6 +678,9 @@ namespace tt {
 
             /* A buffer used by {@link #receiveLoop} to store messages if they are received in parts*/
             std::string recvBuffer_;
+
+            /** Whether or not a stop message was received. */
+            bool receivedStop = false;
 
     };
     /**

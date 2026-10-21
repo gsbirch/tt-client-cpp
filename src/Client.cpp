@@ -194,7 +194,8 @@ std::string tt::Client::execute(ClientFactory* factory)
                     int index = onChoice(status.get());
                     choices.clear();
                     Choice c(index);
-                    sendMessage(c);
+                    if (!receivedStop)
+                        sendMessage(c);
                 }
                 // If the story has ended, notify the client.
                 else if (status->getEnding() != nullptr) {
@@ -204,7 +205,8 @@ std::string tt::Client::execute(ClientFactory* factory)
             // Immediately acknowledge stop messages.
             else if (Stop* stopPtr = dynamic_cast<Stop*>(message.get())) {
                 message.release();
-                std::unique_ptr<Stop> stop(stopPtr);
+                std::unique_ptr<Stop> recStop(stopPtr);
+                this->stop = std::move(recStop);
                 Stop s(role);
                 sendMessage(s);
                 onStop(stop->message);
@@ -228,10 +230,19 @@ std::string tt::Client::execute(ClientFactory* factory)
     catch (...) {
         uncaught = std::current_exception();
     }
-    // If the session has started but not yet stopped, notify.
+    // If the client ended normally, notify.
     if (uncaught == nullptr) {
         try {
             onClose();
+        }
+        catch (...) {
+            uncaught = std::current_exception();
+        }
+    }
+    // If the session has started but not yet stopped, notify.
+    if (world != nullptr && stop == nullptr) {
+        try {
+            onStop("");
         }
         catch (...) {
             uncaught = std::current_exception();
@@ -463,6 +474,9 @@ void tt::Client::receiveLoop()
                 if (line.empty()) continue; // skip stray blank lines
 
                 auto msg = processMessage(line.data(), line.size());
+                if (msg->type() == "Stop") {
+                    receivedStop = true;
+                }
                 if (msg) {
                     messageQueue_.Push(std::move(msg));
                 }

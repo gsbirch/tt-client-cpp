@@ -84,8 +84,11 @@ void tt::to_json(nlohmann::json &j, const Status &obj)
     j = {
         {"role", rtos(obj.role)},
         {"state", *obj.state},
-        {"ending", *obj.ending},
+        
     };
+    if (obj.ending != nullptr) {
+        j["ending"] = *obj.ending;
+    }
     toJsonInVector(j, "history", obj.history);
     toJsonInVector(j, "descriptions", obj.descriptions);
     toJsonInVector(j, "choices", obj.choices);
