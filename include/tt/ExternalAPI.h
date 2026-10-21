@@ -188,7 +188,7 @@ namespace tt
              * 
              * @return the current topk value
              */
-            const std::optional<int>& setTopK() const;
+            const std::optional<int>& getTopK() const;
 
             /**
              * Gives the current topp value.
@@ -209,6 +209,42 @@ namespace tt
              * @return the key
              */
             const std::string& getKey() const;
+
+            /** Gives the remaining amount of in tokens for completion
+             * 
+             * @return the remaining amount of tokens
+             */
+            const int getRemainingInTokens() const;
+
+            /** Gives the remaining amount of out tokens for completion
+             * 
+             * @return the remaining amount of tokens
+             */
+            const int getRemainingOutTokens() const;
+
+            /** Gives the remaining amount of tokens for embed
+             * 
+             * @return the remaining amount of tokens
+             */
+            const int getRemainingEmbedTokens() const;
+            
+            /** Gives the amount of in tokens used for completion
+             * 
+             * @return the amount of used in tokens
+             */
+            const int getInTokensUsed() const;
+
+            /** Gives the amount of out tokens used for completion
+             * 
+             * @return the amount of used out tokens
+             */
+            const int getOutTokensUsed() const;
+
+            /** Gives the amount of tokens used for embed
+             * 
+             * @return the amount of used tokens
+             */
+            const int getEmbedTokensUsed() const;
 
         private:
             /**

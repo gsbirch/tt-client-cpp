@@ -3,6 +3,7 @@
 #include <cpr/cpr.h>
 #include <iostream>
 #include <tt/util/Util.h>
+#include <algorithm>
 
 using namespace tt;
 
@@ -192,7 +193,7 @@ const std::optional<float> &tt::ExternalAPI::getTemp() const
     return temp;
 }
 
-const std::optional<int> &tt::ExternalAPI::setTopK() const
+const std::optional<int> &tt::ExternalAPI::getTopK() const
 {
     return topk;
 }
@@ -210,6 +211,36 @@ const std::optional<float> &tt::ExternalAPI::getMinP() const
 const std::string &tt::ExternalAPI::getKey() const
 {
     return key;
+}
+
+const int tt::ExternalAPI::getRemainingInTokens() const
+{
+    return std::max(0, COMPLETE_IN_TOKENS_LIMIT - completeInTokens);
+}
+
+const int tt::ExternalAPI::getRemainingOutTokens() const
+{
+    return std::max(0, COMPLETE_OUT_TOKENS_LIMIT - completeOutTokens);
+}
+
+const int tt::ExternalAPI::getRemainingEmbedTokens() const
+{
+    return std::max(0, EMBED_TOKENS_LIMIT - embedTokens);
+}
+
+const int tt::ExternalAPI::getInTokensUsed() const
+{
+    return completeInTokens;
+}
+
+const int tt::ExternalAPI::getOutTokensUsed() const
+{
+    return completeOutTokens;
+}
+
+const int tt::ExternalAPI::getEmbedTokensUsed() const
+{
+    return embedTokens;
 }
 
 void tt::ExternalAPI::checkKey() const
