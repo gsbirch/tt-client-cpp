@@ -16,7 +16,7 @@ include(FetchContent)
 FetchContent_Declare(
   tt
   GIT_REPOSITORY https://github.com/gsbirch/tt-client-cpp.git
-  GIT_TAG v1.0.0
+  GIT_TAG main
 )
 FetchContent_MakeAvailable(tt)
 target_link_libraries(*your app name* PRIVATE tt::tt)
