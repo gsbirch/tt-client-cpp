@@ -39,10 +39,13 @@ const Ending *tt::Stop::getEnding() const
 void tt::from_json(const nlohmann::json &j, Stop &msg)
 {
     j.at("message").get_to(msg.message);
+    // None role by default
+    msg.role = Role::NONE;
     if (j.contains("ending")) {
         fromJsonPtr(j, "ending", msg.ending);
     }
-    else {
+    // Role can sometimes be absent or null
+    if (j.contains("role") && !j["role"].is_null()) {
         msg.role = stor(j.at("role").get<std::string>());
     }
 }
