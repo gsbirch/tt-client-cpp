@@ -23,9 +23,9 @@ namespace tt {
     /**
 	 * Throws an exception if the given number is less than 0.
 	 * 
-	 * @param x the number which should not be positive
+	 * @param x the number which should not be negative
 	 * @param description a short description of the number, used in the
-	 * message of the exception which is thrown if the string is empty
+	 * message of the exception which is thrown if the number is negative
 	 * @throws std::invalid_argument if the number is negative
 	 */
     template <typename T>
