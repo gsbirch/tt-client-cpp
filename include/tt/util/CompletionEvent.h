@@ -5,6 +5,11 @@
 #include <queue>
 #include <thread>
 
+#pragma once 
+
+#ifndef COMPLETIONEVENT_H
+#define COMPLETIONEVENT_H
+
 namespace tt {
     class CompletionEvent {
         public:
@@ -34,3 +39,4 @@ namespace tt {
     };
 }
 
+#endif
