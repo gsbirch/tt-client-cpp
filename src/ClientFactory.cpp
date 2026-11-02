@@ -10,8 +10,8 @@ maxClients(maxClients), tp(maxClients)
 }
 
 /**
- * Creates a new client factory with no upper limit on the number of clients
- * that may run simultaneously.
+ * Creates a new client factory with the hardware concurrency as the
+ * limit on the number of clients that may run simultaneously.
  */
 tt::ClientFactory::ClientFactory():
 ClientFactory(std::thread::hardware_concurrency())
