@@ -14,7 +14,7 @@ reasoning(std::nullopt), maxt(std::nullopt), temp(std::nullopt), topk(std::nullo
 }
 
 tt::ExternalAPI::ExternalAPI():
-ExternalAPI(INVALID_KEY)
+ExternalAPI(std::string(INVALID_KEY))
 {
 }
 
@@ -62,7 +62,7 @@ std::string tt::ExternalAPI::complete(const std::vector<std::string> &messages)
     // Check if this request is possible.
     checkKey();
     checkInLimit(completeInTokens, COMPLETE_IN_TOKENS_LIMIT);
-    checkInLimit(completeOutTokens, COMPLETE_OUT_TOKENS_LIMIT);
+    checkOutLimit(completeOutTokens, COMPLETE_OUT_TOKENS_LIMIT);
 
     std::vector<nlohmann::json> msg;
     // If messages is a single string, use no system prompt.
@@ -76,9 +76,9 @@ std::string tt::ExternalAPI::complete(const std::vector<std::string> &messages)
         msg.push_back({{"role", "system"}, {"content", messages[0]}});
         for (int i = 1; i < messages.size(); i++) {
             if (i % 2 == 0)
-                msg.push_back({{"role", "user"}, {"content", messages[i]}});
-            else
                 msg.push_back({{"role", "assistant"}, {"content", messages[i]}});
+            else
+                msg.push_back({{"role", "user"}, {"content", messages[i]}});
         }
     }
     
@@ -263,6 +263,7 @@ void tt::ExternalAPI::checkOutLimit(int used, int limit) const
 
 void tt::ExternalAPI::checkNominal(const std::string &name, const std::string &value, const std::vector<std::string> &values) const
 {
+    if (std::find(values.begin(), values.end(), value) == values.end()) {
         std::string names = "[";
         for (int i = 0; i < values.size(); i++) { 
             names += values[i];
@@ -271,7 +272,7 @@ void tt::ExternalAPI::checkNominal(const std::string &name, const std::string &v
         }
         names += "]";
         throw std::logic_error(name + " must be one of " + names);
-
+    };
 }
 
 void tt::ExternalAPI::checkInt(const std::string &name, int value, int min, int max)

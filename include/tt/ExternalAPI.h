@@ -137,7 +137,7 @@ namespace tt
 
             /**
              * When choosing a next token to add to the output, the
-             * model may only choose from tokens whose probability add to p.
+             * model may only choose from tokens whose probabilities add to p.
              * 
              * To use the default value, you can pass `std::nullopt` as a parameter,
              * or pass no parameter at all.
@@ -304,7 +304,7 @@ namespace tt
             int embedTokens = 0;
             /** The number of input tokens used so far by the text completion model. */
             int completeInTokens = 0;
-            /** The number of output toeksn used so far by the text completion model. */
+            /** The number of output tokens used so far by the text completion model. */
             int completeOutTokens = 0;
 
             /** The level of reasoning used by the large language
@@ -318,7 +318,7 @@ namespace tt
             /** When choosing a next token to add to the output, the model may only choose from the best k tokens. */
             std::optional<int> topk = std::nullopt;
             /** When choosing a next token to add to the output, the
-                model may only choose from tokens whose probability add to p. */
+                model may only choose from tokens whose probabilities add to p. */
             std::optional<float> topp = std::nullopt;
             /** When choosing a next token to add to the output, the
                 model may only choose from tokens whose probability is p times
