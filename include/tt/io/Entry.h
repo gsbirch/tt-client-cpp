@@ -8,7 +8,7 @@
 
 namespace tt {
     /**
-	 * A database entry represents an individual elements in the database,
+	 * A database entry represents an individual element in a database,
 	 * including its meta-data, such as its {@link #title title} and 
      * {@link #description description}.
 	 * 
@@ -28,7 +28,7 @@ namespace tt {
             std::string title;
             /**
              * A description of this element that will be shown to potential
-             * participants of a session to help them decide if this elements is
+             * participants of a session to help them decide if this element is
              * something they are interested in
              */
             std::string description;

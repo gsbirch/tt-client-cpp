@@ -22,7 +22,7 @@ namespace tt {
             std::string value;
             
             /**
-             * A comment provided by the agent explaining their answer, or null if the
+             * A comment provided by the agent explaining their answer, or empty if the
              * question does not allow comments or the agent does not provide one
              */
             std::string comment;
@@ -32,7 +32,7 @@ namespace tt {
              * 
              * @param item the name or ID of the survey question
              * @param value the answer the agent gives to the question
-             * @param comment a comment explaining the answer, or null
+             * @param comment a comment explaining the answer, or empty
              */
             Report(const std::string& item, const std::string& value, const std::string& comment);
 

@@ -40,7 +40,7 @@ namespace tt {
             Role role;
             
             /**
-             * The name of the partner this new agent wants to play with, or null if
+             * The name of the partner this new agent wants to play with, or empty if
              * they are willing to play with any partner
              */
             std::string partner;
@@ -50,14 +50,14 @@ namespace tt {
              * preferences.
              * 
              * @param name the new agent's name
-             * @param password the new agent's password, or null if they are not using
+             * @param password the new agent's password, or empty if they are not using
              * a reserved name
-             * @param world the world the new agent wants to play in, or null if they
+             * @param world the world the new agent wants to play in, or empty if they
              * have no preference
-             * @param role the role the new agent wants to have, or null if they have no
+             * @param role the role the new agent wants to have, or empty if they have no
              * preference
              * @param partner the name of the partner this new agent wants to play with,
-             * or null if they have no preference
+             * or empty if they have no preference
              */
             Join(std::string name, std::string password, std::string world, Role role, std::string partner);
 

@@ -54,7 +54,7 @@ namespace tt {
             Stop(Role role);
             /**
              * Constructs a stop message with a string explaining how the session
-             * ended before it reached a pre-definded ending.
+             * ended before it reached a pre-defined ending.
              * 
              * @param message a string explaining why the session ended
              */

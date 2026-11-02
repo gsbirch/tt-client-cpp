@@ -9,7 +9,7 @@
 namespace tt {
     /**
      * The end message is sent from the server to an
-     * agent to indicate that the session had ended
+     * agent to indicate that the session has ended
      * and that they should now disconnect. If the server is logging sessions, this
      * message contains ID of the logged session.
      * 
@@ -17,7 +17,7 @@ namespace tt {
      */
     class End : public Message {
         public:
-            /** The ID of the session, or null if the session was not logged */
+            /** The ID of the session, or empty if the session was not logged */
             std::string session;
 
             End() {};

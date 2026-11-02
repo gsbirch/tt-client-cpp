@@ -13,7 +13,7 @@ std::string tt::Choice::toString() const
     std::string string = "[Choice Message:";
     if (getClient() != nullptr)
         string += " \"" + getClient()->getName() + "\"";
-    string += " " + index;
+    string += " " + std::to_string(index);
     return string + "]";
 }
 
@@ -21,7 +21,7 @@ void tt::to_json(json &j, const Choice &msg)
 {
     j = {
         {"type", msg.type()},
-        {"index", std::to_string(msg.index)},
+        {"index", msg.index},
     };
 }
 

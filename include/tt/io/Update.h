@@ -8,7 +8,7 @@
 
 namespace tt {
     /**
-     * The updates message is sent from the server to a client each time a turn is taken and the
+     * The update message is sent from the server to a client each time a turn is taken and the
      * state of the story world changes. An update is also sent immediately after
      * a session {@link tt::Start starts} to give the story world's initial state.
      * 

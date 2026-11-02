@@ -5,7 +5,7 @@
 using namespace tt;
 
 tt::Stop::Stop(Role role):
-ending(nullptr), role(Role::NONE)
+ending(nullptr), role(role)
 {
     if(role == Role::GAME_MASTER)
         this->message = "The game master ended the session early.";
@@ -41,7 +41,7 @@ void tt::from_json(const nlohmann::json &j, Stop &msg)
     j.at("message").get_to(msg.message);
     // None role by default
     msg.role = Role::NONE;
-    if (j.contains("ending")) {
+    if (j.contains("ending") && !j["ending"].is_null()) {
         fromJsonPtr(j, "ending", msg.ending);
     }
     // Role can sometimes be absent or null
