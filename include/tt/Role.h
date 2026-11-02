@@ -35,7 +35,7 @@ namespace tt {
     /**
      * Returns the partner of this role. If this role is the game master, this
      * method returns the player. If this role is the player, this method
-     * return the game master.
+     * returns the game master.
      * 
      * @return the partner of this role
      */

@@ -2,10 +2,12 @@
 
 namespace tt {
     Role getPartner(Role role) {
-        if(role == Role::GAME_MASTER)
+        if (role == Role::GAME_MASTER)
             return Role::PLAYER;
-        else
+        if (role == Role::PLAYER) {
             return Role::GAME_MASTER;
+        }
+        return Role::NONE;
     }
 
     std::string rtos(Role role) {
