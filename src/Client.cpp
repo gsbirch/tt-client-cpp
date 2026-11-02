@@ -310,8 +310,8 @@ SSL* tt::Client::connect(const std::string& url, int port)
     if (!ctx)
         throw std::runtime_error("Failed to create SSL context");
 
-    // Verify there is actually a certificate at the location specified in the env var
-    if (SSL_CTX_load_verify_locations(ctx, std::getenv("SSL_CERT_FILE"), nullptr) != 1) {
+    // Load the trust store
+    if (SSL_CTX_set_default_verify_paths(ctx) != 1) {
         ERR_print_errors_fp(stderr);
         throw std::runtime_error("Failed to load truststore");
     }
