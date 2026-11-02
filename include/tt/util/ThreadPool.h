@@ -15,7 +15,7 @@ namespace tt {
     template <typename T>
     class ThreadPool {
     public:
-        // // Constructor to creates a thread pool with given
+        // Constructor to create a thread pool with given
         // number of threads
         ThreadPool(size_t num_threads = std::thread::hardware_concurrency())
         {
