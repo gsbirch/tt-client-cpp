@@ -32,35 +32,9 @@ namespace tt {
             /** The maximum number of characters allowed in a name */
             static const int NAME_MAX_LENGTH;
 
-            /** The characters that can be legally used in a name */
-            static const std::unordered_set<char> NAME_ALLOWED_CHARACTERS;
-
-            /**
-             * The amount of time in milliseconds between clock ticks.
-             */
-            static const long TICK_SPEED;
-
-            /**
-             * The amount of time in milliseconds an agent has to send an expected
-             * message before they will be disconnected for inactivity 
-             */
-            static const long AGENT_TIMEOUT;
-
-            /**
-             * The number of passed turn in a row which causes a session to be
-             * automatically stopped
-             */
-            static const int PASS_LIMIT;
-
             /** The default port the server will listen on, if one is not specified */
             static const int DEFAULT_PORT;
 
-            /**
-             * The number of characters that can be read from a client socket before
-             * an exception is thrown. This limit is used to avoid Out of Memory Errors
-             * from malicious clients that send overly long inputs.
-             */
-            static const int READ_LIMIT;
     };
 }
 
