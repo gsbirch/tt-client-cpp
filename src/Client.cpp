@@ -20,7 +20,6 @@
 #include <tt/util/Util.h>
 #include <tt/io/Report.h>
 #include <cstdlib>
-#include <cpr/cpr.h>
 
 using namespace tt;
 
@@ -153,7 +152,7 @@ std::string tt::Client::execute(ClientFactory* factory)
         if (connect != nullptr) {
             // Warn if the server's version number does not match.
             if(connect->version != Settings::SERVER_VERSION)
-                onWarning("This client is expecting server version " + Settings::SERVER_VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause misconnunications.");
+                onWarning("This client is expecting server version " + Settings::SERVER_VERSION + " of the communication protocol, but the server is using version " + connect->version + ". This may cause miscommunications.");
             //Notify the client is has connected.
 			onConnect(connect.get());
             // Send the join message.
@@ -330,7 +329,7 @@ SSL* tt::Client::connect(const std::string& url, int port)
         close();
         throw std::runtime_error("Failed to create SSL object");
     }
-    // Attach the socker to the TLS object
+    // Attach the socket to the TLS object
     if (SSL_set_fd(ssl_ptr, sock) != 1) {
         close();
         throw std::runtime_error("Failed to attach socket");

@@ -2,6 +2,9 @@
 
 #include <string>
 #include <deque>
+#include <mutex>
+#include <atomic>
+#include <functional>
 #include <tt/Client.h>
 #include <tt/util/BlockingQueue.h>
 #include <tt/util/ThreadPool.h>
@@ -18,7 +21,7 @@ namespace tt {
     using client_ptr = std::unique_ptr<Client>;
 
     /**
-    * A client factory creates continuously creates {@link tt::Client clients} to
+    * A client factory continuously creates {@link tt::Client clients} to
     * connect to a server and is useful for deploying automated
     * agents.
     * <p>
@@ -69,7 +72,7 @@ namespace tt {
             /**
              * This method starts the client factory, creates the first client,
              * periodically creates new clients as needed, and shuts down gracefully
-             * if the factory is closed or if a client throw an uncaught exception.
+             * if the factory is closed or if a client throws an uncaught exception.
              * <p>
              * As this method runs, it calls other methods to notify the factory of
              * important events. Some of these methods are guaranteed to be called even
@@ -80,7 +83,7 @@ namespace tt {
              * an exception it is thrown immediately, and no other methods are called.
              * </li>
              * <li>The first client is created and {@link Client#execute() runs} on a new
-             * virtual thread.</li>
+             * thread.</li>
              * <li>Each time a client starts its session, a new client will be created
              * to take its place in the server's queue of waiting clients. If creating a
              * new client would exceed this factory's {@link #maxClients limit} on the
@@ -103,7 +106,7 @@ namespace tt {
              * is called. If this factory stopped because the thread which
              * called this method was interrupted, that method will not be called.</li>
              * <li>If a client threw an exception, that exception will be thrown from
-             * this method. If no exception was thrown, this method returns null.</li>
+             * this method.</li>
              * </ul>
              */
             void execute();
@@ -135,7 +138,7 @@ namespace tt {
              */
             const int maxClients;
 
-            ~ClientFactory();
+            virtual ~ClientFactory();
 
         protected:
             /**
@@ -237,7 +240,7 @@ namespace tt {
             /** Clients whose sessions are currently happening */
             std::deque<client_ptr> running;
             
-            /** An thread pool to run each new client */
+            /** A thread pool to run each new client */
             ThreadPool<Operation> tp;
             
             /**
@@ -284,7 +287,7 @@ namespace tt {
     };
 
     /**
-     * Override stream insertion operator to allow printing the Client class
+     * Override stream insertion operator to allow printing the ClientFactory class
      * 
      * @param os an output stream to insert into
      * @param a a reference to a client factory object

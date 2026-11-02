@@ -44,7 +44,7 @@ namespace tt {
      * If the session begins and ends normally the client's {@link #execute()} method
      * returns the session ID of the completed session. If this client disconnects
      * early, or if a problem occurs that does not cause an uncaught exception, that
-     * method will return null.
+     * method will return an empty string.
      * 
      * @author Gage Birchmeier
      */
@@ -92,7 +92,7 @@ namespace tt {
              * empty if the client will not use a password
              * @param world the name of the world the client wants their session to take
              * place in, or empty if the client has no preference for a story world
-             * @param role the role the client wants to play in the session, or empty if
+             * @param role the role the client wants to play in the session, or NONE if
              * the client is willing to play either role
              * @param partner the name of the client's desired partner, or empty if the
              * client is willing to play with any partner
@@ -112,7 +112,7 @@ namespace tt {
              * @param name the name the client will use
              * @param world the name of the world the client wants their session to take
              * place in, or empty if the client has no preference for a story world
-             * @param role the role the client wants to play in the session, or empty if
+             * @param role the role the client wants to play in the session, or NONE if
              * the client is willing to play either role
              * @param partner the name of the client's desired partner, or empty if the
              * client is willing to play with any partner
@@ -129,7 +129,7 @@ namespace tt {
              * @param name the name the client will use
              * @param world the name of the world the client wants their session to take
              * place in, or empty if the client has no preference for a story world
-             * @param role the role the client wants to play in the session, or empty if
+             * @param role the role the client wants to play in the session, or NONE if
              * the client is willing to play either role
              * @param partner the name of the client's desired partner, or empty if the
              * client is willing to play with any partner
@@ -175,7 +175,7 @@ namespace tt {
             /**
              * Returns the name of the story world this client will play in or is
              * currently playing in. An empty value means this client's session has not
-             * yet started this client is willing to play in any world. Once the session
+             * yet started and this client is willing to play in any world. Once the session
              * starts, this method will return the name of the world the client is
              * playing in.
              * 
@@ -197,7 +197,7 @@ namespace tt {
              * Returns the name of the partner this client wants to play with. An empty
              * value means this client is willing to play with any partner. This value
              * does not change when the session starts. In other words, if the client
-             * did not request a specific partner, they client has no way to know the
+             * did not request a specific partner, the client has no way to know the
              * name of the partner they were assigned.
              * 
              * @return the name of the partner this client wants to play with
@@ -310,10 +310,7 @@ namespace tt {
              * By default, this method resolves the host name, opens a TCP connection,
              * performs a TLS handshake using OpenSSL's TLS client method, and returns a
              * new SSL session.
-             * <p>
-             * The caller takes ownership of the returned object and is responsible for
-             * releasing it with `SSL_free()`.
-             *
+             * 
              * @param url the host name or IP address of the server
              * @param port the network port on which to open the socket
              * @return a secure connection to the server
@@ -325,7 +322,7 @@ namespace tt {
              */
             SSL* connect(const std::string& url, int port);
 
-            ~Client();
+            virtual ~Client();
 
             /**
              * This method sends a message to the server.

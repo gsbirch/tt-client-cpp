@@ -16,25 +16,25 @@ namespace tt
     class ExternalAPI {
         public:
             /** Used for checking whether a key has been set */
-            const std::string INVALID_KEY = "API-INVALID-KEY";
+            static constexpr std::string_view INVALID_KEY = "API-INVALID-KEY";
 
             /** The URL to which large language model text embedding requests will be sent.*/
-            const std::string EMBED_URL = "https://openrouter.ai/api/v1/embeddings";
+            static constexpr std::string_view EMBED_URL = "https://openrouter.ai/api/v1/embeddings";
             /** The model to be used for large language model text embedding requests. */
-            const std::string EMBED_MODEL = "qwen/qwen3-embedding-8b";
-            /** The maximum number of input tokens that can use for text embedding requests.*/
-            const int EMBED_TOKENS_LIMIT = 1000000;
+            static constexpr std::string_view EMBED_MODEL = "qwen/qwen3-embedding-8b";
+            /** The maximum number of input tokens that can be used for text embedding requests.*/
+            static const int EMBED_TOKENS_LIMIT = 1000000;
 
             /** The URL to which large language model text completion requests will be sent. */
-            const std::string COMPLETE_URL = "https://openrouter.ai/api/v1/chat/completions";
+            static constexpr std::string_view COMPLETE_URL = "https://openrouter.ai/api/v1/chat/completions";
             /** The large language model to be used for text completion requests. */
-            const std::string COMPLETE_MODEL = "deepseek/deepseek-v4-flash-0731";
-            /** The maximum number of input tokens that can use for text completion requests. */
-            const int COMPLETE_IN_TOKENS_LIMIT = 1000000;
-            /** The maximum number of output tokens that can use for text completion requests.*/
-            const int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
+            static constexpr std::string_view COMPLETE_MODEL = "deepseek/deepseek-v4-flash-0731";
+            /** The maximum number of input tokens that can be used for text completion requests. */
+            static const int COMPLETE_IN_TOKENS_LIMIT = 1000000;
+            /** The maximum number of output tokens that can be used for text completion requests.*/
+            static const int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
             /** The seed used for large language model text completion requests. */
-            const int COMPLETE_SEED = 0;
+            static const int COMPLETE_SEED = 0;
 
             /** Constructs an ExternalAPI object.
              * 
@@ -48,23 +48,23 @@ namespace tt
             /**
              * Queries the external text embedding API and returns its response as a
              * vector of floats. Each time this method is called, the number of tokens
-             * used it added to `embed_tokens`. If the number of tokens used exceeds
+             * used is added to `embedTokens`. If the number of tokens used exceeds
              * `EMBED_TOKENS_LIMIT`, this method will raise an exception.
              * 
              * @param text The text which will be embedded as an array of floats.
              * @param dim The number of dimensions in the returned array.
              * @returns the vector embedding of the text as a vector of floats
              */
-            std::vector<float> embed(std::string text, int dim = 1028);
+            std::vector<float> embed(std::string text, int dim = 1024);
 
             /**
              * Queries the external text completion API and returns its response as a
              * string. 
              * 
              * Each time this method is called, the number of tokens used
-             * in the prompt is added to `complete_in_tokens` and the number of
+             * in the prompt is added to `completeInTokens` and the number of
              * tokens used in reasoning and completion is added to
-             * `complete_out_tokens`. If the number of tokens used exceeds
+             * `completeOutTokens`. If the number of tokens used exceeds
              * `COMPLETE_IN_TOKENS_LIMIT` or `COMPLETE_OUT_TOKENS_LIMIT`
              * respectively, this method will raise an exception.
              * 
@@ -116,7 +116,7 @@ namespace tt
             void setMaxT(const std::optional<int>& value = std::nullopt);
 
             /**
-             * Sets the temperature, which influence the randomness of the response.
+             * Sets the temperature, which influences the randomness of the response.
              * A value of 0.0 will give deterministic responses. The max value is 2.0.
              * 
              * To use the default value, you can pass `std::nullopt` as a parameter,
