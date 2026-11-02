@@ -575,9 +575,9 @@ namespace tt {
             std::unique_ptr<Join> join;
 
             /** The secure socket used to connect to the server */
-            SSL* ssl;
-            SSL_CTX* ctx;
-            int sock;
+            SSL* ssl = nullptr;
+            SSL_CTX* ctx = nullptr;
+            int sock = -1;
             
             /** Used to read messages received over the socket */
             std::thread receiveThread_;

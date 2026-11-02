@@ -77,7 +77,7 @@ std::string tt::Client::toString() const
     if(join->world != "")
         string += "; world=\"" + join->world + "\"";
     if(join->role != Role::NONE)
-        string += "; role=" + join->role;
+        string += "; role=" + rtos(join->role);
     if(join->partner != "")
         string += "; partner=\"" + join->partner + "\"";
     return string + "]";
@@ -307,12 +307,16 @@ SSL* tt::Client::connect(const std::string& url, int port)
 
     // SSL setup
     ctx = SSL_CTX_new(TLS_client_method());
-    if (!ctx)
+    if (!ctx){
+        close();
         throw std::runtime_error("Failed to create SSL context");
+    }
+       
 
     // Load the trust store
     if (SSL_CTX_set_default_verify_paths(ctx) != 1) {
         ERR_print_errors_fp(stderr);
+        close();
         throw std::runtime_error("Failed to load truststore");
     }
 
@@ -321,16 +325,31 @@ SSL* tt::Client::connect(const std::string& url, int port)
 
     // Create a TLS object
     SSL* ssl_ptr = SSL_new(ctx);
+
+    if (!ssl_ptr) {
+        close();
+        throw std::runtime_error("Failed to create SSL object");
+    }
     // Attach the socker to the TLS object
-    SSL_set_fd(ssl_ptr, sock);
+    if (SSL_set_fd(ssl_ptr, sock) != 1) {
+        close();
+        throw std::runtime_error("Failed to attach socket");
+    }
     // Sends hostname to the server
-    SSL_set_tlsext_host_name(ssl_ptr, url.c_str());
+    if (SSL_set_tlsext_host_name(ssl_ptr, url.c_str()) != 1) {
+        close();
+        throw std::runtime_error("Failed to set TLS hostname");
+    }
     // Tells OpenSSL which hostname the server's certificate must match 
-    SSL_set1_host(ssl_ptr, url.c_str());
+    if (SSL_set1_host(ssl_ptr, url.c_str()) != 1) {
+        close();
+        throw std::runtime_error("Failed to set certificate hostname");
+    }
 
     // Start TLS
     if (SSL_connect(ssl_ptr) != 1) {
         long vr = SSL_get_verify_result(ssl_ptr);
+        close();
         throw std::runtime_error(std::string("TLS handshake failed: ") +
                                  X509_verify_cert_error_string(vr));
     }
@@ -474,10 +493,10 @@ void tt::Client::receiveLoop()
                 if (line.empty()) continue; // skip stray blank lines
 
                 auto msg = processMessage(line.data(), line.size());
-                if (msg->type() == "Stop") {
-                    receivedStop = true;
-                }
                 if (msg) {
+                    if (msg->type() == "Stop") {
+                        receivedStop = true;
+                    }
                     messageQueue_.Push(std::move(msg));
                 }
             }
@@ -511,16 +530,25 @@ std::unique_ptr<Message> tt::Client::processMessage(const char *data, int length
 
 void tt::Client::close()
 {
-    // This mainly cleans up SSL stuff, so if it isn't open yet, do nothing
-    if (ssl == nullptr) return;
-
     if (receiveThread_.joinable()) {
         receiveThread_.join();
     }
-    SSL_shutdown(ssl);
-    SSL_free(ssl);
-    SSL_CTX_free(ctx);
-    ::close(sock);
+
+    if (ssl != nullptr) {
+        SSL_shutdown(ssl);
+        SSL_free(ssl);
+        ssl = nullptr;
+    }
+
+    if (ctx != nullptr) {
+        SSL_CTX_free(ctx);
+        ctx = nullptr;
+    }
+
+    if (sock >= 0) {
+        ::close(sock);
+        sock = -1;
+    }
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const Client &a)
