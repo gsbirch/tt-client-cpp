@@ -11,7 +11,7 @@ tt::Client::onChoice method to choose what the agent will do on
 its turn.
 
 tt::ClientFactory continuously creates new clients to connect to the
-server and wait for partners. A minimal subclass of tt::Factory only
+server and wait for partners. A minimal subclass of tt::ClientFactory only
 needs to implement the tt::ClientFactory::create method to return a new
 Client instance.
 
@@ -32,7 +32,7 @@ class MinimalClient : public tt::Client {
         auto choices = status->getChoices();
         int count = choices.size();
         std::srand(std::time(nullptr));
-        int choice = std::rand() % (count + 1);
+        int choice = std::rand() % count;
         std::cout << choices[choice]->getDescription() << std::endl;
         return choice;
     }
@@ -41,7 +41,7 @@ class MinimalClient : public tt::Client {
 class MinimalClientFactory : public tt::ClientFactory {
     public:
         std::unique_ptr<tt::Client> create() const override {
-            return std::make_unique<MinimalClient>('localhost', 9005);
+            return std::make_unique<MinimalClient>("localhost", 9005);
         }
 };
 
@@ -83,7 +83,7 @@ tt::Client::external member variable.
 
 - tt::ExternalAPI::embed lets you embed a text string as an
   array of `float`s.
-- tt::ExternalAPI::complete lets you complete a textconversation.
+- tt::ExternalAPI::complete lets you complete a text conversation.
 
 This [more complete example](https://github.com/gsbirch/tt-random-agent-cpp)
 shows you everything you need to download and run a Tandem Tales server and

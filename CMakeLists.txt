@@ -67,14 +67,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(nlohmann_json)
 
+set(CPR_USE_SYSTEM_CURL ON CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     cpr 
     GIT_REPOSITORY 
     https://github.com/libcpr/cpr.git
     GIT_TAG 1.10.5)
 FetchContent_MakeAvailable(cpr)
-
-set(CPR_USE_SYSTEM_CURL ON CACHE BOOL "" FORCE)
 
 target_link_libraries(tt
     PUBLIC nlohmann_json::nlohmann_json
