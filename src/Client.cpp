@@ -36,7 +36,7 @@ url(url), port(port), external()
     if (key != nullptr)
         external.setKey(key);
     else 
-        external.setKey(external.INVALID_KEY);
+        external.setKey(std::string(external.INVALID_KEY));
 
     requireNonEmpty(name, "name");
     requireNonEmpty(url, "server URL");
