@@ -23,18 +23,18 @@ namespace tt
             /** The model to be used for large language model text embedding requests. */
             static constexpr std::string_view EMBED_MODEL = "qwen/qwen3-embedding-8b";
             /** The maximum number of input tokens that can be used for text embedding requests.*/
-            static const int EMBED_TOKENS_LIMIT = 1000000;
+            static constexpr int EMBED_TOKENS_LIMIT = 1000000;
 
             /** The URL to which large language model text completion requests will be sent. */
             static constexpr std::string_view COMPLETE_URL = "https://openrouter.ai/api/v1/chat/completions";
             /** The large language model to be used for text completion requests. */
             static constexpr std::string_view COMPLETE_MODEL = "deepseek/deepseek-v4-flash-0731";
             /** The maximum number of input tokens that can be used for text completion requests. */
-            static const int COMPLETE_IN_TOKENS_LIMIT = 1000000;
+            static constexpr int COMPLETE_IN_TOKENS_LIMIT = 1000000;
             /** The maximum number of output tokens that can be used for text completion requests.*/
-            static const int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
+            static constexpr int COMPLETE_OUT_TOKENS_LIMIT = 1000000;
             /** The seed used for large language model text completion requests. */
-            static const int COMPLETE_SEED = 0;
+            static constexpr int COMPLETE_SEED = 0;
 
             /** Constructs an ExternalAPI object.
              * 
