@@ -46,6 +46,8 @@ add_library(tt
     
 )
 
+add_library(tt::tt ALIAS tt)
+
 target_include_directories(tt
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -64,7 +66,7 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/nlohmann/json.git
     GIT_TAG v3.12.0
 )
-
+set(JSON_BuildTests OFF CACHE INTERNAL "")
 FetchContent_MakeAvailable(nlohmann_json)
 
 set(CPR_USE_SYSTEM_CURL ON CACHE BOOL "" FORCE)
@@ -73,10 +75,20 @@ FetchContent_Declare(
     cpr 
     GIT_REPOSITORY 
     https://github.com/libcpr/cpr.git
-    GIT_TAG 1.10.5)
+    GIT_TAG 1.10.5
+)
+set(CPR_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(cpr)
 
+find_package(OpenSSL REQUIRED)
+find_package(Threads REQUIRED)
+
 target_link_libraries(tt
-    PUBLIC nlohmann_json::nlohmann_json
-    PRIVATE cpr::cpr
+    PUBLIC
+        nlohmann_json::nlohmann_json
+        OpenSSL::SSL
+        OpenSSL::Crypto
+        Threads::Threads
+    PRIVATE
+        cpr::cpr
 )
