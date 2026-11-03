@@ -29,7 +29,7 @@ class MinimalClient : public tt::Client {
     Client("random", "", tt::Role::NONE, "", url, port) {}
 
     int onChoice(const tt::Status* status) override {
-        auto choices = status->getChoices();
+        const auto& choices = status->getChoices();
         int count = choices.size();
         std::srand(std::time(nullptr));
         int choice = std::rand() % count;
