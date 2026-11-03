@@ -16,11 +16,11 @@ namespace tt {
      */
     class Value {
         public:
-            /** Virtual deconstructor so Entity and Value can have their own. */
+            /** Virtual destructor so Entity and Value can have their own. */
             virtual ~Value() = default;
 
             /**
-             * If this value represents a Boolean, this method convert it into a bool;
+             * If this value represents a Boolean, this method converts it into a bool;
              * all other values are converted to `false`.
              * 
              * @return a `bool`, or `false` if this value does not
@@ -29,7 +29,7 @@ namespace tt {
             virtual bool toBool() const;
 
             /**
-             * If this value represents a number, this method convert it into a Java
+             * If this value represents a number, this method convert it into a
              * `double`; all other values are converted to `NaN`.
              * 
              * @return a `double`, or `NaN` if this value represents `NaN` or is
@@ -78,7 +78,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the Value class
      * 
      * @param os an output stream to insert into
-     * @param obj a reference to an value object
+     * @param obj a reference to a value object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Value& obj);

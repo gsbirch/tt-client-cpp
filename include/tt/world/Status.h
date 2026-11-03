@@ -43,14 +43,14 @@ namespace tt {
             const std::vector<const Turn *>& getHistory() const;
             /**
              * Returns an unmodifiable list of all the {@link tt::Entity entities} that
-             * {@link #role this role} can current see. Each one will have a 
+             * {@link #role this role} can currently see. Each one will have a 
              * {@link Entity#getDescription() natural language description} that gives some
              * helpful context about it. Note that not all entities in the story world
              * will be in this list; if an entity cannot be seen it is excluded.
              * 
              * @return a vector of all visible entities and their descriptions
              */
-            const std::vector<const Entity *> getDescriptions() const;
+            const std::vector<const Entity *>& getDescriptions() const;
             /**
              * Returns an unmodifiable list of next {@link tt::Turn turns} that
              * {@link #role this role} can take next in the session. This list 
@@ -58,7 +58,7 @@ namespace tt {
              * 
              * @return a vector of available next turns
              */
-            const std::vector<const Turn *> getChoices() const;
+            const std::vector<const Turn *>& getChoices() const;
             /**
              * Returns a state that gives the current value of all the story world's
              * {@link tt::Variable variables}.
@@ -85,7 +85,7 @@ namespace tt {
             std::vector<std::unique_ptr<Entity>> descriptions;
             /** A list of turns the role can take next (which may be none) */
             std::vector<std::unique_ptr<Turn>> choices;
-            /** The current values of all variables the story world */
+            /** The current values of all variables in the story world */
             std::unique_ptr<State> state;
             /**
              * The ending the session's story has reached, or null if the story has not

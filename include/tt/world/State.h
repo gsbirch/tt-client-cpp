@@ -50,7 +50,7 @@ namespace tt {
              * 
              * @return an unmodifiable list of variable assignments
              */
-            const std::vector<const Assignment*> getAssignments() const;
+            const std::vector<const Assignment*>& getAssignments() const;
 
             /**
              * Returns the value assigned to the given variable, or nullptr if the variable
@@ -69,9 +69,9 @@ namespace tt {
         private:
             /** A natural language description of the state */
             std::string description;   
-            /** The {@link Encoded encoding} of the state */ 
+            /** The encoding of the state */ 
             std::string code;
-            /** An vector of assignments for each variable in the story world */
+            /** A vector of assignments for each variable in the story world */
             std::vector<std::unique_ptr<Assignment>> assignments;
             /** A cache of the usable vector */
             mutable std::vector<const Assignment *> assignmentsPtrs;
@@ -84,7 +84,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the State class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an state object
+     * @param a a reference to a state object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const State& a);

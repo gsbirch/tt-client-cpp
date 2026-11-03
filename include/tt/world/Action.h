@@ -45,7 +45,7 @@ namespace tt {
              * 
              * @return the action's set of consenting characters
              */
-            const std::unordered_set<const Entity*>& getConsenting();
+            const std::unordered_set<const Entity*>& getConsenting() const;
 
             /**
              * Returns true if the given story role controls one or more of the 
@@ -58,7 +58,7 @@ namespace tt {
              * @param role the role in question
              * @return true if the given role needs to consent to take this action
              */
-            bool consents(Role role);
+            bool consents(Role role) const;
 
             /**
              * Returns a string representation of this object.
@@ -104,7 +104,7 @@ namespace tt {
              */
             std::vector<std::unique_ptr<Entity>> consenting;
             /** The action's {@link #consenting consenting characters} as a set */
-            std::unordered_set<const Entity*> consentingSet;
+            mutable std::unordered_set<const Entity*> consentingSet;
 
             /** A human-readable description of the asset */
             std::string description;

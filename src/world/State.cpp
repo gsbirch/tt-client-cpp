@@ -1,6 +1,7 @@
 #include <tt/world/State.h>
 #include <tt/world/Assignment.h>
 #include <tt/util/JsonUtil.h>
+#include <algorithm>
 
 using namespace tt;
 
@@ -11,6 +12,7 @@ std::string tt::State::toString() const
         const Assignment * a = assignments[i].get();
         string += a->toString();
     }
+    string += "]";
     return string;
 }
 
@@ -24,7 +26,7 @@ const std::string &tt::State::getCode() const
     return code;
 }
 
-const std::vector<const Assignment *> tt::State::getAssignments() const
+const std::vector<const Assignment *>& tt::State::getAssignments() const
 {
     if (assignmentsPtrs.size() != assignments.size()) {
         assignmentsPtrs.clear();

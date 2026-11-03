@@ -24,7 +24,7 @@ const std::vector<const Turn *>& tt::Status::getHistory() const
     return historyPtrs;
 }
 
-const std::vector<const Entity *> tt::Status::getDescriptions() const
+const std::vector<const Entity *>& tt::Status::getDescriptions() const
 {
     if (descriptionsPtrs.size() != descriptions.size()) {
         descriptionsPtrs.clear();
@@ -36,7 +36,7 @@ const std::vector<const Entity *> tt::Status::getDescriptions() const
     return descriptionsPtrs;
 }
 
-const std::vector<const Turn *> tt::Status::getChoices() const
+const std::vector<const Turn *>& tt::Status::getChoices() const
 {
     if (choicesPtrs.size() != choices.size()) {
         choicesPtrs.clear();

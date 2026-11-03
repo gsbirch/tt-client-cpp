@@ -6,7 +6,7 @@
 
 using namespace tt;
 
-const std::unordered_set<const Entity *> &tt::Action::getConsenting()
+const std::unordered_set<const Entity *> &tt::Action::getConsenting() const
 {
     if (consentingSet.empty()) {
         for (const auto& e : consenting) {
@@ -16,10 +16,10 @@ const std::unordered_set<const Entity *> &tt::Action::getConsenting()
     return consentingSet;
 }
 
-bool tt::Action::consents(Role role)
+bool tt::Action::consents(Role role) const
 {
-    auto consenting = getConsenting();
-    bool gm = consenting.size() == 0;
+    auto c = getConsenting();
+    bool gm = c.size() == 0;
     bool player = false;
     for(const Entity* character : getConsenting()) {
         if(character->isPlayer())

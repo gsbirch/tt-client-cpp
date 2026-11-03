@@ -112,7 +112,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the Turn class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an turn object
+     * @param a a reference to a turn object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Turn& a);

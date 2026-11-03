@@ -67,9 +67,9 @@ namespace tt {
             virtual bool equals(const Value& other) const override;
 
         private:
-            /** A natural language description of this assignments */
+            /** A natural language description of this entity */
             std::string description;
-            /** The assignment's encoding */
+            /** The entity's encoding */
             std::string code;
     };
     void from_json(const nlohmann::json& j, Entity& msg);

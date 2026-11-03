@@ -50,6 +50,8 @@ void tt::to_json(nlohmann::json &j, const Constant &msg)
 {
     j = {
         {"type", "Constant"},
-        {"value", msg.toString()},
     };
+    if (auto p = std::get_if<bool>(&msg.value))         j["value"] = msg.toBool();
+    if (auto p = std::get_if<std::int64_t>(&msg.value)) j["value"] = msg.toNumber();
+    if (auto p = std::get_if<double>(&msg.value))       j["value"] = msg.toNumber();
 }

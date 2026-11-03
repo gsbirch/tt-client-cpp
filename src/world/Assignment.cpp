@@ -32,7 +32,9 @@ const Value *tt::Assignment::getValue() const
 
 bool tt::Assignment::operator==(const Assignment &rhs) const
 {
-    return *variable == *(rhs.variable) ;
+    return *variable == *(rhs.variable) &&
+            *value == *(rhs.value) &&
+            visible == rhs.visible;
 }
 
 std::ostream &tt::operator<<(std::ostream &os, const Assignment &a)

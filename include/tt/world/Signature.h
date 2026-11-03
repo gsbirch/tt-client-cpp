@@ -26,7 +26,7 @@ namespace tt {
 
         Signature() {};
 
-        bool operator==(const Signature& s);
+        bool operator==(const Signature& s) const;
 
         /**
          * Returns an unmodifiable list of all arguments defined in this story
@@ -61,7 +61,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the Signature class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an signature object
+     * @param a a reference to a signature object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Signature& a);

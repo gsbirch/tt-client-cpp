@@ -48,7 +48,7 @@ namespace tt {
             /**
              * Returns the signature of this object.
              * 
-             * @return a pointer to the signature of this Action.
+             * @return a pointer to the signature of this Variable.
              */
             const Signature* getSignature() const;
 
@@ -61,7 +61,7 @@ namespace tt {
         private:
             /** The asset's unique signature */
             std::unique_ptr<Signature> signature;
-            /** A natural language description of this assignments */
+            /** A natural language description of this variable */
             std::string description;
     };
 
@@ -72,7 +72,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the Variable class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an variable object
+     * @param a a reference to a variable object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const Variable& a);

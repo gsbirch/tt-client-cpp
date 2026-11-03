@@ -21,6 +21,10 @@ namespace tt {
         public:
             /** The unique name of this story world */
             std::string name;
+            /** The short natural language title of the world */
+            std::string title;
+            /** The longer natural language description of the world */
+            std::string description;
 
             // default constructor for JSON deserialization
             World() {};
@@ -91,7 +95,7 @@ namespace tt {
      * Override stream insertion operator to allow printing the World class
      * 
      * @param os an output stream to insert into
-     * @param a a reference to an world object
+     * @param a a reference to a world object
      * @returns the output stream referenced
      */
     std::ostream& operator<<(std::ostream& os, const World& a);

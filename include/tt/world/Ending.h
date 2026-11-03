@@ -51,7 +51,7 @@ namespace tt {
             /**
              * Returns the signature of this object.
              * 
-             * @return a pointer to the signature of this Action.
+             * @return a pointer to the signature of this Ending.
              */
             const Signature* getSignature() const;
 
@@ -66,7 +66,7 @@ namespace tt {
             std::unique_ptr<Signature> signature;
             /** The ending's encoding */
             std::string code;
-            /** A natural language description of this assignments */
+            /** A natural language description of this ending */
             std::string description;
     };
 

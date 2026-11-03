@@ -4,12 +4,19 @@
 
 using namespace tt;
 
-bool tt::Signature::operator==(const Signature &s)
+bool tt::Signature::operator==(const Signature &s) const
 {
-    return name == s.name && arguments == s.arguments;
+    bool eq = std::equal(
+        arguments.begin(), arguments.end(),
+        s.arguments.begin(), s.arguments.end(),
+        [](const std::unique_ptr<tt::Value>& a, const std::unique_ptr<tt::Value>& b) {
+            return *a == *b;
+        }
+    );
+    return name == s.name && eq;
 }
 
-const std::vector<const Value *> &tt::Signature::getArguments() const
+const std::vector<const Value *>& tt::Signature::getArguments() const
 {
     if (argumentsPtrs.size() != arguments.size()) {
         argumentsPtrs.clear();

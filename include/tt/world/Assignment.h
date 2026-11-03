@@ -25,7 +25,7 @@ namespace tt {
              */
             bool visible;
 
-            Assignment(): variable(nullptr), value(nullptr) {};
+            Assignment(): variable(nullptr), value(nullptr), visible(false) {};
 
             /**
              * Returns a string representation of this object.
@@ -72,7 +72,7 @@ namespace tt {
             friend std::ostream& operator<<(std::ostream& os, const Assignment& a);
 
         private:
-            /** A natural language description of this assignments */
+            /** A natural language description of this assignment */
             std::string description;
             /** The assignment's encoding */
             std::string code;

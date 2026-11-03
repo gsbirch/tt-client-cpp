@@ -71,6 +71,8 @@ std::ostream &tt::operator<<(std::ostream &os, const World &a)
 void tt::from_json(const nlohmann::json &j, World &obj)
 {
     j.at("name").get_to(obj.name);
+    j.at("title").get_to(obj.title);
+    j.at("description").get_to(obj.description);
     fromJsonPtrVec(j, "entities", obj.entities);
     fromJsonPtrVec(j, "variables", obj.variables);
     fromJsonPtrVec(j, "actions", obj.actions);
@@ -81,6 +83,8 @@ void tt::to_json(nlohmann::json &j, const World &obj)
 {
     j = {
         {"name", obj.name},
+        {"title", obj.title},
+        {"description", obj.description},
     };
     toJsonInVector(j, "entities", obj.entities);
     toJsonInVector(j, "variables", obj.variables);

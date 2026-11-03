@@ -13,7 +13,7 @@
 namespace tt {
     /**
      * A constant is a {@link tt::Value logical value} that always exists in all 
-     * {@link tt::World story worlds}, such a the Boolean concepts of True and 
+     * {@link tt::World story worlds}, such as the boolean concepts of True and 
      * False, numbers, and so on.
      * 
      * @author Gage Birchmeier
@@ -52,7 +52,7 @@ namespace tt {
              * 
              * @param value the integer value
              */
-            Constant(std::int16_t value): value(value) {};
+            Constant(std::int64_t value): value(value) {};
 
             /**
              * Constructs a new constant that represents a decimal number.
@@ -61,7 +61,7 @@ namespace tt {
              */
             Constant(float value): value(value) {};
 
-            // default constructor necessary for
+            // default constructor necessary for deserialization
             Constant(): value(std::monostate()) {};
 
             std::string toString() const override;
