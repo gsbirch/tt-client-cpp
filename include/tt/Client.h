@@ -679,6 +679,9 @@ namespace tt {
             /** Whether or not a stop message was received. */
             bool receivedStop = false;
 
+            /** Used during shutdown */
+            std::mutex closeMutex_;
+
     };
     /**
      * Override stream insertion operator to allow printing the Client class

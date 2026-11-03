@@ -39,11 +39,15 @@ void tt::ClientFactory::execute()
             if (!ptr) continue;          // avoid null deref if Pop gives nothing
             ptr->execute();
         }
-        try { onClose(); }
-        catch (...) { captureException("onClose"); }
+        try { 
+            onClose(); 
+        }
+        catch (...) { 
+            if (uncaught == nullptr)
+                uncaught = std::current_exception();
+        }
     } catch (...) {
         interrupted = true;
-        captureException("main loop");
     }
 
     // Shutdown steps must not throw, or they'd skip the remaining cleanup.
@@ -64,7 +68,6 @@ void tt::ClientFactory::execute()
     queue.Clear();
     completion.signal();
 
-    // Only rethrow if something actually failed.
     if (uncaught) {
         try {
             std::rethrow_exception(uncaught);

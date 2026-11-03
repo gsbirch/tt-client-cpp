@@ -529,21 +529,24 @@ std::unique_ptr<Message> tt::Client::processMessage(const char *data, int length
 
 void tt::Client::close()
 {
-    if (receiveThread_.joinable()) {
+    std::lock_guard<std::mutex> lock(closeMutex_);
+
+    running_ = false;
+    if (sock >= 0)
+        // wakes the SSL_read in receiveLoop
+        ::shutdown(sock, SHUT_RDWR);      
+
+    if (receiveThread_.joinable())
         receiveThread_.join();
-    }
 
     if (ssl != nullptr) {
-        SSL_shutdown(ssl);
         SSL_free(ssl);
         ssl = nullptr;
     }
-
     if (ctx != nullptr) {
         SSL_CTX_free(ctx);
         ctx = nullptr;
     }
-
     if (sock >= 0) {
         ::close(sock);
         sock = -1;
