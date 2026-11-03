@@ -23,10 +23,10 @@ Here is an example client and factory:
 #include <ctime>
 #include <iostream>
 
-class MinimalClient : public tt::Client {
+class RandomAgent : public tt::Client {
     public:
-    MinimalClient(const std::string &url, int port):
-    Client("random", "", tt::Role::NONE, "", url, port) {}
+    RandomAgent(const std::string &url, int port):
+    tt::Client("random", "", tt::Role::NONE, "", url, port) {}
 
     int onChoice(const tt::Status* status) override {
         const auto& choices = status->getChoices();
@@ -38,15 +38,15 @@ class MinimalClient : public tt::Client {
     }
 };
 
-class MinimalClientFactory : public tt::ClientFactory {
+class RandomAgentFactory : public tt::ClientFactory {
     public:
         std::unique_ptr<tt::Client> create() const override {
-            return std::make_unique<MinimalClient>("localhost", 9005);
+            return std::make_unique<RandomAgent>("localhost", 9005);
         }
 };
 
 int main() {
-    auto factory = MinimalClientFactory();
+    RandomAgentFactory factory;
     factory.execute();
 }
 ```
